@@ -1082,17 +1082,19 @@ function drawRiver() {
   });
 }
 
+const isMobile = window.innerWidth < 768;
+
 // ── 🌸 벚꽃 (봄) ──
-const petals = Array.from({length: 55}, () => ({
+const petals = Array.from({length: isMobile ? 18 : 55}, () => ({
   x: Math.random() * window.innerWidth,
   y: Math.random() * window.innerHeight,
-  r: 7 + Math.random() * 9,
+  r: isMobile ? 3 + Math.random() * 3 : 7 + Math.random() * 9,
   speedY: 0.8 + Math.random() * 1.4,
   speedX: -0.4 + Math.random() * 0.8,
   rot: Math.random() * Math.PI * 2,
   rotSpeed: (Math.random() - 0.5) * 0.05,
   sway: Math.random() * Math.PI * 2,
-  opacity: 0.75 + Math.random() * 0.25,
+  opacity: isMobile ? 0.4 + Math.random() * 0.25 : 0.75 + Math.random() * 0.25,
 }));
 
 function drawPetals() {
@@ -1117,7 +1119,7 @@ function drawPetals() {
 }
 
 // ── 🌿 반딧불 (여름) ──
-const fireflies = Array.from({length: 40}, () => ({
+const fireflies = Array.from({length: isMobile ? 15 : 40}, () => ({
   x: Math.random() * window.innerWidth,
   y: Math.random() * window.innerHeight,
   r: 1.5 + Math.random() * 2,
@@ -1147,10 +1149,10 @@ function drawFireflies() {
 }
 
 // ── 🍂 단풍잎 (가을) ──
-const leaves = Array.from({length: 35}, () => ({
+const leaves = Array.from({length: isMobile ? 12 : 35}, () => ({
   x: Math.random() * window.innerWidth,
   y: Math.random() * window.innerHeight,
-  r: 5 + Math.random() * 6,
+  r: isMobile ? 3 + Math.random() * 4 : 5 + Math.random() * 6,
   speedY: 0.8 + Math.random() * 1.4,
   sway: Math.random() * Math.PI * 2,
   rot: Math.random() * Math.PI * 2,
@@ -1181,10 +1183,10 @@ function drawLeaves() {
 }
 
 // ── ❄️ 눈 (겨울) ──
-const snowflakes = Array.from({length: 120}, () => ({
+const snowflakes = Array.from({length: isMobile ? 40 : 120}, () => ({
   x: Math.random() * window.innerWidth,
   y: Math.random() * window.innerHeight,
-  r: 2 + Math.random() * 4,
+  r: isMobile ? 1 + Math.random() * 2 : 2 + Math.random() * 4,
   speedY: 0.6 + Math.random() * 1.6,
   sway: Math.random() * Math.PI * 2,
   opacity: 0.6 + Math.random() * 0.4,
