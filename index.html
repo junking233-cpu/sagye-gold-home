@@ -141,7 +141,17 @@ nav.scrolled {
 #s8 { background-image: url('winter.png'); }
 #s9 { background-image: url('winter_dark.png'); }
 
-.hero-overlay {
+.hero-transition-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0);
+  z-index: 3;
+  pointer-events: none;
+  transition: background 0.8s ease;
+}
+.hero-transition-overlay.dimming {
+  background: rgba(0,0,0,0.55);
+}
   position: absolute;
   inset: 0;
   background: linear-gradient(
@@ -760,6 +770,7 @@ footer {
   <div class="hero-slide" id="s8"></div>
   <div class="hero-slide" id="s9"></div>
   <div class="hero-overlay"></div>
+  <div class="hero-transition-overlay" id="hero-trans"></div>
 
   <div class="hero-content">
     <img class="hero-logo" src="logo.png" alt="로고" onerror="this.style.display='none'">
@@ -1071,29 +1082,162 @@ function drawRiver() {
   });
 }
 
+// ── 🌸 벚꽃 (봄) ──
+const petals = Array.from({length: 60}, () => ({
+  x: Math.random() * window.innerWidth,
+  y: Math.random() * window.innerHeight,
+  r: 3 + Math.random() * 4,
+  speedY: 0.6 + Math.random() * 1.2,
+  speedX: -0.3 + Math.random() * 0.6,
+  rot: Math.random() * Math.PI * 2,
+  rotSpeed: (Math.random() - 0.5) * 0.04,
+  sway: Math.random() * Math.PI * 2,
+  opacity: 0.5 + Math.random() * 0.5,
+}));
+
+function drawPetals() {
+  ctx.clearRect(0, 0, W, H);
+  petals.forEach(p => {
+    p.sway += 0.02;
+    p.x += p.speedX + Math.sin(p.sway) * 0.5;
+    p.y += p.speedY;
+    p.rot += p.rotSpeed;
+    if (p.y > H + 10) { p.y = -10; p.x = Math.random() * W; }
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, p.r, p.r * 0.6, 0, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,192,203,${p.opacity})`;
+    ctx.fill();
+    ctx.restore();
+  });
+}
+
+// ── 🌿 반딧불 (여름) ──
+const fireflies = Array.from({length: 40}, () => ({
+  x: Math.random() * window.innerWidth,
+  y: Math.random() * window.innerHeight,
+  r: 1.5 + Math.random() * 2,
+  phase: Math.random() * Math.PI * 2,
+  speedX: (Math.random() - 0.5) * 0.6,
+  speedY: (Math.random() - 0.5) * 0.4,
+}));
+let ffTime = 0;
+
+function drawFireflies() {
+  ctx.clearRect(0, 0, W, H);
+  ffTime += 0.03;
+  fireflies.forEach(f => {
+    f.x += f.speedX + Math.sin(ffTime + f.phase) * 0.3;
+    f.y += f.speedY + Math.cos(ffTime * 0.7 + f.phase) * 0.2;
+    if (f.x < 0) f.x = W; if (f.x > W) f.x = 0;
+    if (f.y < 0) f.y = H; if (f.y > H) f.y = 0;
+    const glow = 0.4 + 0.6 * Math.sin(ffTime * 2 + f.phase);
+    const g = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r * 6);
+    g.addColorStop(0, `rgba(200,255,150,${glow * 0.9})`);
+    g.addColorStop(1, `rgba(150,255,100,0)`);
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, f.r * 6, 0, Math.PI * 2);
+    ctx.fillStyle = g;
+    ctx.fill();
+  });
+}
+
+// ── 🍂 단풍잎 (가을) ──
+const leaves = Array.from({length: 35}, () => ({
+  x: Math.random() * window.innerWidth,
+  y: Math.random() * window.innerHeight,
+  r: 5 + Math.random() * 6,
+  speedY: 0.8 + Math.random() * 1.4,
+  sway: Math.random() * Math.PI * 2,
+  rot: Math.random() * Math.PI * 2,
+  rotSpeed: (Math.random() - 0.5) * 0.05,
+  color: ['rgba(210,80,20,', 'rgba(200,120,10,', 'rgba(180,60,10,'][Math.floor(Math.random()*3)],
+  opacity: 0.6 + Math.random() * 0.4,
+}));
+
+function drawLeaves() {
+  ctx.clearRect(0, 0, W, H);
+  leaves.forEach(l => {
+    l.sway += 0.015;
+    l.x += Math.sin(l.sway) * 1.2;
+    l.y += l.speedY;
+    l.rot += l.rotSpeed;
+    if (l.y > H + 20) { l.y = -20; l.x = Math.random() * W; }
+    ctx.save();
+    ctx.translate(l.x, l.y);
+    ctx.rotate(l.rot);
+    ctx.beginPath();
+    ctx.moveTo(0, -l.r);
+    ctx.bezierCurveTo(l.r, -l.r * 0.5, l.r, l.r * 0.5, 0, l.r);
+    ctx.bezierCurveTo(-l.r, l.r * 0.5, -l.r, -l.r * 0.5, 0, -l.r);
+    ctx.fillStyle = `${l.color}${l.opacity})`;
+    ctx.fill();
+    ctx.restore();
+  });
+}
+
+// ── ❄️ 눈 (겨울) ──
+const snowflakes = Array.from({length: 120}, () => ({
+  x: Math.random() * window.innerWidth,
+  y: Math.random() * window.innerHeight,
+  r: 1 + Math.random() * 3,
+  speedY: 0.5 + Math.random() * 1.5,
+  sway: Math.random() * Math.PI * 2,
+  opacity: 0.4 + Math.random() * 0.6,
+}));
+
+function drawSnow() {
+  ctx.clearRect(0, 0, W, H);
+  snowflakes.forEach(s => {
+    s.sway += 0.01;
+    s.x += Math.sin(s.sway) * 0.5;
+    s.y += s.speedY;
+    if (s.y > H + 5) { s.y = -5; s.x = Math.random() * W; }
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${s.opacity})`;
+    ctx.fill();
+  });
+}
+
 function startFx(type) {
   cancelAnimationFrame(animId);
   currentFx = type;
   if (!type) { canvas.style.opacity = 0; return; }
   canvas.style.opacity = 1;
 
-  // re-init wave y positions based on current H
   if (type === 'river') {
     waveLines.forEach((w, i) => { w.y = H * 0.45 + i * (H * 0.05); });
   }
 
   function loop() {
-    if (type === 'rain')  drawRain();
-    if (type === 'river') drawRiver();
+    if (type === 'rain')       drawRain();
+    if (type === 'river')      drawRiver();
+    if (type === 'petals')     drawPetals();
+    if (type === 'fireflies')  drawFireflies();
+    if (type === 'leaves')     drawLeaves();
+    if (type === 'snow')       drawSnow();
     animId = requestAnimationFrame(loop);
   }
   loop();
 }
 
-// ── slide index → fx type ──
-// s4 = summer_rain → rain
-// s3 = summer (강/물느낌) → river  (원하면 조정)
-const FX_MAP = { 3: 'rain', 2: 'river' }; // 0-indexed
+// ── slide index → fx type (0-indexed) ──
+// 0:spring  1:spring_dark  2:summer  3:summer_rain  4:summer_dark
+// 5:autumn  6:autumn_dark  7:winter  8:winter_dark
+const FX_MAP = {
+  0: 'petals',     // 봄 → 벚꽃
+  1: 'petals',     // 봄밤 → 벚꽃
+  2: 'fireflies',  // 여름 → 반딧불
+  3: 'rain',       // 여름비 → 비
+  4: 'fireflies',  // 여름밤 → 반딧불
+  5: 'leaves',     // 가을 → 단풍
+  6: 'leaves',     // 가을밤 → 단풍
+  7: 'snow',       // 겨울 → 눈
+  8: 'snow',       // 겨울밤 → 눈
+};
 
 
 const slides = document.querySelectorAll('.hero-slide');
@@ -1107,14 +1251,22 @@ const labels = [
 let current = 0;
 let timer;
 
+const trans = document.getElementById('hero-trans');
+
 function goSlide(idx) {
-  slides[current].classList.remove('active');
-  dots[current].classList.remove('active');
-  current = idx;
-  slides[current].classList.add('active');
-  dots[current].classList.add('active');
-  document.getElementById('season-label').textContent = labels[current];
-  startFx(FX_MAP[current] || null);
+  // 1. 어둡게
+  trans.classList.add('dimming');
+  setTimeout(() => {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = idx;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+    document.getElementById('season-label').textContent = labels[current];
+    startFx(FX_MAP[current] || null);
+    // 2. 다시 밝게
+    setTimeout(() => trans.classList.remove('dimming'), 100);
+  }, 750);
   clearInterval(timer);
   startTimer();
 }
@@ -1122,7 +1274,7 @@ function goSlide(idx) {
 function startTimer() {
   timer = setInterval(() => {
     goSlide((current + 1) % slides.length);
-  }, 7000);
+  }, 10000);
 }
 
 // 이미지 미리 로드 (끊김 방지)
