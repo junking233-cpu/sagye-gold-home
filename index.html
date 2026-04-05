@@ -123,7 +123,7 @@ nav.scrolled {
   background-position: center;
   opacity: 0;
   transform: scale(1.05);
-  transition: opacity 2s ease-in-out, transform 9s ease-out;
+  transition: opacity 2.5s ease-in-out, transform 12s ease-out;
   will-change: opacity, transform;
 }
 .hero-slide.active {
@@ -1122,10 +1122,16 @@ function goSlide(idx) {
 function startTimer() {
   timer = setInterval(() => {
     goSlide((current + 1) % slides.length);
-  }, 5000);
+  }, 7000);
 }
 
+// 이미지 미리 로드 (끊김 방지)
+['spring.png','spring_dark.png','summer.png','summer_rain.png',
+ 'summer_dark.png','autumn.png','autumn_dark.png','winter.png','winter_dark.png']
+.forEach(src => { new Image().src = src; });
+
 startTimer();
+startFx(FX_MAP[0] || null); // 첫 슬라이드 효과 초기화
 
 /* ── NAV SCROLL ── */
 const nav = document.getElementById('nav');
