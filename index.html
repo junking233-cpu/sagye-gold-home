@@ -122,14 +122,13 @@ nav.scrolled {
   background-size: cover;
   background-position: center;
   opacity: 0;
-  transition: opacity 1.6s ease-in-out;
-  transform: scale(1.04);
-  animation: zoomout 12s ease forwards;
+  transform: scale(1.05);
+  transition: opacity 2s ease-in-out, transform 9s ease-out;
+  will-change: opacity, transform;
 }
-.hero-slide.active { opacity: 1; }
-@keyframes zoomout {
-  from { transform: scale(1.04); }
-  to   { transform: scale(1.0); }
+.hero-slide.active {
+  opacity: 1;
+  transform: scale(1.0);
 }
 /* 9 slides */
 #s1 { background-image: url('spring.png'); }
@@ -1004,9 +1003,99 @@ footer {
   <div class="footer-copy">© 2025 사계절 금거래소. All rights reserved.</div>
 </footer>
 
+<!-- ═══════════════ CANVAS EFFECTS ═══════════════ -->
+<canvas id="fx-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0;transition:opacity 1.5s;"></canvas>
+
 <!-- ═══════════════ JAVASCRIPT ═══════════════ -->
 <script>
-/* ── HERO SLIDESHOW ── */
+/* ── CANVAS FX ── */
+const canvas = document.getElementById('fx-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, animId, currentFx = null;
+
+function resizeCanvas() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+// ── RAIN ──
+const rainDrops = Array.from({length: 220}, () => ({
+  x: Math.random() * window.innerWidth,
+  y: Math.random() * window.innerHeight,
+  len: 10 + Math.random() * 18,
+  speed: 14 + Math.random() * 10,
+  opacity: 0.15 + Math.random() * 0.35,
+}));
+
+function drawRain() {
+  ctx.clearRect(0, 0, W, H);
+  rainDrops.forEach(d => {
+    ctx.beginPath();
+    ctx.moveTo(d.x, d.y);
+    ctx.lineTo(d.x - 1.5, d.y + d.len);
+    ctx.strokeStyle = `rgba(180,210,240,${d.opacity})`;
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+    d.y += d.speed;
+    d.x -= 1;
+    if (d.y > H) { d.y = -d.len; d.x = Math.random() * W; }
+    if (d.x < 0) { d.x = W; }
+  });
+}
+
+// ── RIVER / WATER ──
+let waveOffset = 0;
+const waveLines = Array.from({length: 12}, (_, i) => ({
+  y: H * 0.45 + i * (H * 0.05),
+  amp: 3 + Math.random() * 4,
+  freq: 0.006 + Math.random() * 0.004,
+  speed: 0.3 + Math.random() * 0.3,
+  phase: Math.random() * Math.PI * 2,
+  opacity: 0.04 + Math.random() * 0.06,
+}));
+
+function drawRiver() {
+  ctx.clearRect(0, 0, W, H);
+  waveOffset += 0.012;
+  waveLines.forEach(w => {
+    ctx.beginPath();
+    for (let x = 0; x <= W; x += 4) {
+      const y = w.y + Math.sin(x * w.freq + waveOffset * w.speed + w.phase) * w.amp;
+      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = `rgba(160,200,230,${w.opacity})`;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+}
+
+function startFx(type) {
+  cancelAnimationFrame(animId);
+  currentFx = type;
+  if (!type) { canvas.style.opacity = 0; return; }
+  canvas.style.opacity = 1;
+
+  // re-init wave y positions based on current H
+  if (type === 'river') {
+    waveLines.forEach((w, i) => { w.y = H * 0.45 + i * (H * 0.05); });
+  }
+
+  function loop() {
+    if (type === 'rain')  drawRain();
+    if (type === 'river') drawRiver();
+    animId = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+// ── slide index → fx type ──
+// s4 = summer_rain → rain
+// s3 = summer (강/물느낌) → river  (원하면 조정)
+const FX_MAP = { 3: 'rain', 2: 'river' }; // 0-indexed
+
+
 const slides = document.querySelectorAll('.hero-slide');
 const dots   = document.querySelectorAll('.sdot');
 const labels = [
@@ -1024,11 +1113,8 @@ function goSlide(idx) {
   current = idx;
   slides[current].classList.add('active');
   dots[current].classList.add('active');
-  // reset animation
-  slides[current].style.animation = 'none';
-  slides[current].offsetHeight; // reflow
-  slides[current].style.animation = '';
   document.getElementById('season-label').textContent = labels[current];
+  startFx(FX_MAP[current] || null);
   clearInterval(timer);
   startTimer();
 }
