@@ -77,7 +77,9 @@ section{padding:100px 48px;max-width:1280px;margin:0 auto;}
 @keyframes fadein{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 
 /* PRICE TABLE */
-.price-table{width:100%;border:1px solid rgba(201,168,76,0.2);}
+.price-table-wrap{position:relative;overflow:hidden;}
+.price-table-watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:320px;height:320px;background:url('logo.png') center/contain no-repeat;opacity:0.06;pointer-events:none;z-index:0;}
+.price-table{width:100%;border:1px solid rgba(201,168,76,0.2);position:relative;z-index:1;}
 .price-table-header{display:grid;grid-template-columns:1fr 1fr 1fr;background:rgba(201,168,76,0.12);padding:16px 28px;border-bottom:1px solid rgba(201,168,76,0.2);}
 .price-table-header div{font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2.5px;color:var(--gold);text-transform:uppercase;text-align:center;}
 .price-table-header .pt-item{text-align:left;}
@@ -190,7 +192,63 @@ footer{background:var(--dark);border-top:1px solid rgba(201,168,76,0.1);padding:
 </head>
 <body>
 
-<!-- NAV -->
+<!-- 팝업 -->
+<div id="popup-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:999;display:flex;align-items:center;justify-content:center;padding:24px;">
+  <div id="popup-box" style="background:#111109;border:1px solid rgba(201,168,76,0.35);max-width:420px;width:100%;position:relative;overflow:hidden;">
+    <!-- 상단 골드 라인 -->
+    <div style="height:2px;background:linear-gradient(90deg,transparent,#C9A84C,transparent);"></div>
+    <!-- 닫기 -->
+    <button onclick="closePopup()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:rgba(245,237,216,0.4);font-size:20px;cursor:pointer;line-height:1;">✕</button>
+    <!-- 내용 -->
+    <div style="padding:40px 36px 28px;">
+      <!-- 로고 -->
+      <div style="text-align:center;margin-bottom:20px;">
+        <img src="logo.png" alt="로고" style="height:64px;width:64px;object-fit:contain;filter:drop-shadow(0 0 12px rgba(201,168,76,0.5));" onerror="this.style.display='none'">
+      </div>
+      <!-- 타이틀 -->
+      <div style="text-align:center;margin-bottom:6px;font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:4px;color:#C9A84C;">GRAND OPEN EVENT</div>
+      <div style="text-align:center;font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#F5EDD8;margin-bottom:6px;">그랜드 오픈 이벤트</div>
+      <div style="text-align:center;font-size:11px;color:rgba(245,237,216,0.45);letter-spacing:2px;margin-bottom:28px;">2026. 04. 25 OPEN</div>
+      <!-- 구분선 -->
+      <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);margin-bottom:28px;"></div>
+      <!-- 이벤트 목록 -->
+      <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:28px;">
+        <div style="display:flex;align-items:flex-start;gap:14px;">
+          <span style="color:#C9A84C;font-size:16px;margin-top:1px;">💍</span>
+          <div>
+            <div style="font-size:13px;color:#F5EDD8;letter-spacing:0.5px;margin-bottom:3px;">돌반지 오픈 기념 특가</div>
+            <div style="font-size:11px;color:rgba(245,237,216,0.45);letter-spacing:0.3px;">오픈 기념 특별 할인 적용</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px;">
+          <span style="color:#C9A84C;font-size:16px;margin-top:1px;">✂️</span>
+          <div>
+            <div style="font-size:13px;color:#F5EDD8;letter-spacing:0.5px;margin-bottom:3px;">공임비 할인 이벤트</div>
+            <div style="font-size:11px;color:rgba(245,237,216,0.45);letter-spacing:0.3px;">오픈 기간 한정 공임비 특별 혜택</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px;">
+          <span style="color:#C9A84C;font-size:16px;margin-top:1px;">⭐</span>
+          <div>
+            <div style="font-size:13px;color:#F5EDD8;letter-spacing:0.5px;margin-bottom:3px;">리뷰 작성 이벤트</div>
+            <div style="font-size:11px;color:rgba(245,237,216,0.45);letter-spacing:0.3px;">영수증 리뷰 작성 시 소정의 선물 증정</div>
+          </div>
+        </div>
+      </div>
+      <!-- 구분선 -->
+      <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);margin-bottom:20px;"></div>
+      <!-- 오늘 하루 보지 않음 -->
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(245,237,216,0.35);">
+          <input type="checkbox" id="popup-hide" style="accent-color:#C9A84C;"> 오늘 하루 보지 않음
+        </label>
+        <button onclick="closePopup()" style="padding:8px 20px;background:linear-gradient(135deg,#C9A84C,#8A6E2F);color:#0A0A08;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;border:none;cursor:pointer;">닫기</button>
+      </div>
+    </div>
+    <!-- 하단 골드 라인 -->
+    <div style="height:2px;background:linear-gradient(90deg,transparent,#C9A84C,transparent);"></div>
+  </div>
+</div>
 <nav id="nav">
   <div class="nav-logo">
     <img src="logo.png" alt="로고" onerror="this.style.display='none'">
@@ -253,7 +311,9 @@ footer{background:var(--dark);border-top:1px solid rgba(201,168,76,0.1);padding:
       <div class="section-title">오늘의 금시세</div>
       <div class="gold-line"></div>
     </div>
-    <div class="price-table reveal">
+    <div class="price-table-wrap reveal">
+      <div class="price-table-watermark"></div>
+      <div class="price-table">
       <div class="price-table-header">
         <div class="pt-item">품목</div>
         <div class="pt-buy">내가 살 때</div>
@@ -284,8 +344,8 @@ footer{background:var(--dark);border-top:1px solid rgba(201,168,76,0.1);padding:
         <div class="pt-buy" id="buy-silver">4,200,000 원</div>
         <div class="pt-sell" id="sell-silver">3,300,000 원</div>
       </div>
-    </div>
-    <p class="price-note">※ 시세는 매일 업데이트됩니다. 정확한 가격은 매장으로 문의해 주세요.</p>
+      </div>
+    </div>※ 시세는 매일 업데이트됩니다. 정확한 가격은 매장으로 문의해 주세요.</p>
     <p class="price-updated" id="price-updated"></p>
   </div>
 </div>
@@ -474,6 +534,25 @@ function goSlide(i){
   startTimer();
 }
 function startTimer(){timer=setInterval(()=>goSlide((cur+1)%slides.length),10000);}
+
+/* ── 팝업 ── */
+function closePopup(){
+  const hide = document.getElementById('popup-hide').checked;
+  if(hide){
+    const expires = new Date();
+    expires.setHours(23,59,59,0);
+    document.cookie = 'popup_hide=1;expires='+expires.toUTCString()+';path=/';
+  }
+  document.getElementById('popup-overlay').style.display='none';
+}
+function getCookie(name){
+  return document.cookie.split(';').some(c=>c.trim().startsWith(name+'='));
+}
+window.addEventListener('DOMContentLoaded',()=>{
+  if(getCookie('popup_hide')){
+    document.getElementById('popup-overlay').style.display='none';
+  }
+});
 
 window.onload=function(){
   ['spring.png','spring_dark.png','summer.png','summer_rain.png','autumn.png','autumn_dark.png','winter.png','winter_dark.png'].forEach(s=>{new Image().src=s;});
