@@ -47,8 +47,8 @@ nav.scrolled{padding:14px 48px;background:rgba(10,10,8,0.92);backdrop-filter:blu
 
 /* 상단 타이틀 - 정중앙 */
 .hero-top{position:absolute;top:0;left:0;right:0;z-index:4;display:flex;justify-content:center;padding-top:36px;}
-.hero-title{font-family:'Noto Serif KR',serif;font-size:clamp(24px,3.5vw,48px);font-weight:400;letter-spacing:12px;color:var(--text);white-space:nowrap;text-shadow:0 2px 24px rgba(0,0,0,0.7);}
-.hero-title span{color:var(--gold-light);}
+.hero-title{font-family:'Noto Serif KR',serif;font-size:clamp(24px,3.5vw,48px);font-weight:400;letter-spacing:12px;white-space:nowrap;text-shadow:0 2px 12px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.5);background:linear-gradient(180deg,#FFFFFF 0%,#C8C8C8 35%,#E8E8E8 50%,#A0A0A0 65%,#D0D0D0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-title span{background:linear-gradient(180deg,#F0D878 0%,#C9A84C 35%,#F5E070 50%,#A07828 65%,#E8C850 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 
 /* 하단 버튼 */
 .hero-bottom{position:absolute;bottom:90px;left:0;right:0;z-index:4;display:flex;flex-direction:column;align-items:center;}
@@ -206,7 +206,7 @@ footer{background:var(--dark);border-top:1px solid rgba(201,168,76,0.1);padding:
 
   <!-- 하단 버튼 -->
   <div class="hero-bottom">
-    <p class="hero-tagline">믿을 수 있는 귀금속 거래의 시작</p>
+    <p class="hero-tagline">소중한 순간, 사계절이 함께합니다</p>
     <div class="hero-divider"></div>
     <div class="hero-cta">
       <a href="#price" class="btn-primary">오늘의 금시세</a>
