@@ -343,34 +343,54 @@ const isMobile = window.innerWidth < 768;
 const rain = Array.from({length:150},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,len:12+Math.random()*16,speed:3+Math.random()*4,op:0.12+Math.random()*0.25}));
 function drawRain(){ctx.clearRect(0,0,W,H);rain.forEach(d=>{ctx.beginPath();ctx.moveTo(d.x,d.y);ctx.lineTo(d.x-0.5,d.y+d.len);ctx.strokeStyle=`rgba(180,210,240,${d.op})`;ctx.lineWidth=0.7;ctx.stroke();d.y+=d.speed;d.x-=0.3;if(d.y>H){d.y=-d.len;d.x=Math.random()*W;}if(d.x<0)d.x=W;});}
 
-// 벚꽃
-const petals=Array.from({length:isMobile?18:50},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:isMobile?3+Math.random()*3:6+Math.random()*8,sy:0.8+Math.random()*1.4,sx:-0.4+Math.random()*0.8,rot:Math.random()*Math.PI*2,rs:(Math.random()-0.5)*0.05,sw:Math.random()*Math.PI*2,op:isMobile?0.4+Math.random()*0.25:0.7+Math.random()*0.3}));
-function drawPetals(){ctx.clearRect(0,0,W,H);petals.forEach(p=>{p.sw+=0.018;p.x+=p.sx+Math.sin(p.sw)*0.7;p.y+=p.sy;p.rot+=p.rs;if(p.y>H+20){p.y=-20;p.x=Math.random()*W;}ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.beginPath();ctx.ellipse(0,0,p.r,p.r*0.55,0,0,Math.PI*2);ctx.fillStyle=`rgba(255,182,215,${p.op})`;ctx.shadowColor='rgba(255,150,180,0.5)';ctx.shadowBlur=4;ctx.fill();ctx.restore();});}
+// 벚꽃 (가냘프고 얇게)
+const petals=Array.from({length:isMobile?20:55},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:isMobile?1.5+Math.random()*2:2+Math.random()*3,sy:0.4+Math.random()*0.8,sx:-0.2+Math.random()*0.4,rot:Math.random()*Math.PI*2,rs:(Math.random()-0.5)*0.03,sw:Math.random()*Math.PI*2,op:isMobile?0.3+Math.random()*0.3:0.4+Math.random()*0.45}));
+function drawPetals(){ctx.clearRect(0,0,W,H);petals.forEach(p=>{p.sw+=0.012;p.x+=p.sx+Math.sin(p.sw)*0.5;p.y+=p.sy;p.rot+=p.rs;if(p.y>H+10){p.y=-10;p.x=Math.random()*W;}ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);// 꽃잎 모양 - 얇고 긴 타원
+ctx.beginPath();ctx.ellipse(0,0,p.r*0.4,p.r,0,0,Math.PI*2);ctx.fillStyle=`rgba(255,210,225,${p.op})`;ctx.fill();// 중앙 라인 (꽃맥)
+ctx.beginPath();ctx.moveTo(0,-p.r);ctx.lineTo(0,p.r);ctx.strokeStyle=`rgba(255,170,200,${p.op*0.4})`;ctx.lineWidth=0.3;ctx.stroke();ctx.restore();});}
 
 // 반딧불
 const ff=Array.from({length:isMobile?15:38},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:1.5+Math.random()*2,ph:Math.random()*Math.PI*2,sx:(Math.random()-0.5)*0.6,sy:(Math.random()-0.5)*0.4}));
 let fft=0;
 function drawFF(){ctx.clearRect(0,0,W,H);fft+=0.03;ff.forEach(f=>{f.x+=f.sx+Math.sin(fft+f.ph)*0.3;f.y+=f.sy+Math.cos(fft*0.7+f.ph)*0.2;if(f.x<0)f.x=W;if(f.x>W)f.x=0;if(f.y<0)f.y=H;if(f.y>H)f.y=0;const g=0.4+0.6*Math.sin(fft*2+f.ph);const gr=ctx.createRadialGradient(f.x,f.y,0,f.x,f.y,f.r*6);gr.addColorStop(0,`rgba(200,255,150,${g*0.9})`);gr.addColorStop(1,'rgba(150,255,100,0)');ctx.beginPath();ctx.arc(f.x,f.y,f.r*6,0,Math.PI*2);ctx.fillStyle=gr;ctx.fill();});}
 
-// 단풍잎 (진짜 단풍잎 모양)
-const leaves=Array.from({length:isMobile?12:32},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:isMobile?5+Math.random()*5:8+Math.random()*10,sy:0.6+Math.random()*1.0,sw:Math.random()*Math.PI*2,rot:Math.random()*Math.PI*2,rs:(Math.random()-0.5)*0.04,c:['rgba(210,60,10,','rgba(195,100,5,','rgba(170,40,10,','rgba(220,130,0,'][Math.floor(Math.random()*4)],op:0.7+Math.random()*0.3}));
+// 단풍잎
+const leaves=Array.from({length:isMobile?10:28},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:isMobile?6+Math.random()*5:9+Math.random()*9,sy:0.5+Math.random()*0.9,sw:Math.random()*Math.PI*2,rot:Math.random()*Math.PI*2,rs:(Math.random()-0.5)*0.035,c:['rgba(210,55,5,','rgba(190,90,0,','rgba(165,35,5,','rgba(215,120,0,','rgba(180,70,10,'][Math.floor(Math.random()*5)],op:0.75+Math.random()*0.25}));
 
-function drawMapleLeaf(ctx, r){
-  // 5갈래 단풍잎
+function drawMapleLeaf(r){
   ctx.beginPath();
-  const tips=5, inner=r*0.38;
-  for(let i=0;i<tips;i++){
-    const a=(i/tips)*Math.PI*2 - Math.PI/2;
-    const na=((i+1)/tips)*Math.PI*2 - Math.PI/2;
-    const mx=(a+na)/2;
-    ctx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
-    ctx.quadraticCurveTo(Math.cos(a)*r*0.6+Math.cos(mx)*r*0.1, Math.sin(a)*r*0.6+Math.sin(mx)*r*0.1, Math.cos(mx)*inner, Math.sin(mx)*inner);
+  // 단풍나무잎 - 5개 뾰족한 갈래
+  function lobe(angle, len){
+    const tip = [Math.cos(angle)*len, Math.sin(angle)*len];
+    const lAngle = angle - 0.35;
+    const rAngle = angle + 0.35;
+    const base = r * 0.22;
+    return {tip, left:[Math.cos(lAngle)*base, Math.sin(lAngle)*base], right:[Math.cos(rAngle)*base, Math.sin(rAngle)*base]};
   }
+  const lobes = [
+    lobe(-Math.PI/2, r),          // 위 중앙
+    lobe(-Math.PI/2 + Math.PI*0.4, r*0.82),  // 오른쪽 위
+    lobe(-Math.PI/2 + Math.PI*0.75, r*0.72), // 오른쪽
+    lobe(-Math.PI/2 - Math.PI*0.75, r*0.72), // 왼쪽
+    lobe(-Math.PI/2 - Math.PI*0.4, r*0.82),  // 왼쪽 위
+  ];
+  ctx.moveTo(0, r*0.55); // 줄기 시작
+  for(let i=0;i<lobes.length;i++){
+    const l = lobes[i];
+    ctx.lineTo(l.left[0], l.left[1]);
+    ctx.quadraticCurveTo(l.tip[0]*0.92, l.tip[1]*0.92, l.tip[0], l.tip[1]);
+    ctx.quadraticCurveTo(l.tip[0]*0.92, l.tip[1]*0.92, l.right[0], l.right[1]);
+  }
+  ctx.lineTo(0, r*0.55);
   ctx.closePath();
 }
 
-function drawLeaves(){ctx.clearRect(0,0,W,H);leaves.forEach(l=>{l.sw+=0.012;l.x+=Math.sin(l.sw)*1.0;l.y+=l.sy;l.rot+=l.rs;if(l.y>H+20){l.y=-20;l.x=Math.random()*W;}ctx.save();ctx.translate(l.x,l.y);ctx.rotate(l.rot);drawMapleLeaf(ctx,l.r);ctx.fillStyle=`${l.c}${l.op})`;ctx.fill();// 줄기
-ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,l.r*0.6);ctx.strokeStyle=`${l.c}${l.op*0.8})`;ctx.lineWidth=0.8;ctx.stroke();ctx.restore();});}
+function drawLeaves(){ctx.clearRect(0,0,W,H);leaves.forEach(l=>{l.sw+=0.01;l.x+=Math.sin(l.sw)*0.9;l.y+=l.sy;l.rot+=l.rs;if(l.y>H+20){l.y=-20;l.x=Math.random()*W;}ctx.save();ctx.translate(l.x,l.y);ctx.rotate(l.rot);drawMapleLeaf(l.r);ctx.fillStyle=`${l.c}${l.op})`;ctx.fill();
+// 줄기
+ctx.beginPath();ctx.moveTo(0,l.r*0.75);ctx.lineTo(0,l.r*1.15);ctx.strokeStyle=`${l.c}${l.op*0.9})`;ctx.lineWidth=1.2;ctx.stroke();
+// 잎맥
+ctx.beginPath();ctx.moveTo(0,l.r*0.7);ctx.lineTo(0,-l.r*0.85);ctx.strokeStyle=`rgba(180,30,0,${l.op*0.25})`;ctx.lineWidth=0.6;ctx.stroke();
+ctx.restore();});}
 
 // 눈
 const snow=Array.from({length:isMobile?40:110},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:isMobile?1+Math.random()*2:2+Math.random()*4,sy:0.6+Math.random()*1.6,sw:Math.random()*Math.PI*2,op:0.6+Math.random()*0.4}));
