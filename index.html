@@ -348,20 +348,114 @@ footer{background:var(--dark);border-top:1px solid rgba(201,168,76,0.1);padding:
   </div>
 </div>
 
-<!-- PRODUCTS -->
-<section id="products">
-  <div class="reveal">
-    <div class="section-eyebrow">Our Collections</div>
-    <div class="section-title">주요 상품</div>
-    <div class="gold-line"></div>
+<!-- COLLECTION MENU + PRODUCTS -->
+<div id="products" style="background:var(--dark);border-top:1px solid rgba(201,168,76,0.1);">
+
+  <!-- 햄버거 버튼 -->
+  <div style="max-width:1280px;margin:0 auto;padding:48px 48px 0;">
+    <button id="menu-btn" onclick="toggleMenu()" style="display:flex;align-items:center;gap:12px;background:none;border:none;cursor:pointer;color:var(--text-muted);font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:0;">
+      <span id="menu-icon" style="font-size:18px;color:var(--gold);">☰</span> COLLECTIONS
+    </button>
   </div>
-  <div class="products-grid reveal">
-    <div class="product-card"><div class="product-bg" style="background:linear-gradient(135deg,#1a1000,#2d2200);display:flex;align-items:center;justify-content:center;font-size:80px;">💍</div><div class="product-overlay"><span class="product-icon">💍</span><div class="product-name">순금 돌반지</div><div class="product-sub">24K · 조각형 · 용띠형</div><div class="product-hover-detail">24K 순금으로 제작된 돌반지. 계절별 패키징으로 소중한 순간을 더욱 특별하게 담아드립니다.</div></div></div>
-    <div class="product-card"><div class="product-bg" style="background:linear-gradient(135deg,#161200,#28200a);display:flex;align-items:center;justify-content:center;font-size:80px;">🥇</div><div class="product-overlay"><span class="product-icon">🥇</span><div class="product-name">골드바</div><div class="product-sub">999.9 · 1돈 ~ 10돈</div><div class="product-hover-detail">LBMA 인증 순금 골드바. 안전한 자산 보관과 투자를 위한 최선의 선택입니다.</div></div></div>
-    <div class="product-card"><div class="product-bg" style="background:linear-gradient(135deg,#100d00,#1c1800);display:flex;align-items:center;justify-content:center;font-size:80px;">📿</div><div class="product-overlay"><span class="product-icon">📿</span><div class="product-name">목걸이 · 팔찌</div><div class="product-sub">14K · 18K · 24K</div><div class="product-hover-detail">정품 인증 귀금속 장신구. 14K부터 순금까지 다양한 라인을 보유합니다.</div></div></div>
-    <div class="product-card"><div class="product-bg" style="background:linear-gradient(135deg,#0d0d08,#161610);display:flex;align-items:center;justify-content:center;font-size:80px;">✦</div><div class="product-overlay"><span class="product-icon">✦</span><div class="product-name">고금 매입</div><div class="product-sub">최고가 · 당일 현금</div><div class="product-hover-detail">보유하신 금을 시세 그대로 최고가에 매입합니다. 당일 현금 지급, 투명한 감정.</div></div></div>
+
+  <!-- 사이드 메뉴 오버레이 -->
+  <div id="menu-overlay" onclick="toggleMenu()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;"></div>
+
+  <!-- 사이드 메뉴 패널 -->
+  <div id="menu-panel" style="position:fixed;top:0;left:-320px;width:300px;height:100%;background:#0d0d0b;border-right:1px solid rgba(201,168,76,0.15);z-index:201;transition:left .4s ease;overflow-y:auto;">
+    <div style="padding:32px 36px;">
+      <!-- 닫기 -->
+      <button onclick="toggleMenu()" style="background:none;border:none;color:rgba(245,237,216,0.4);font-size:20px;cursor:pointer;margin-bottom:40px;display:block;">✕</button>
+      <!-- 컬렉션 -->
+      <div style="font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:4px;color:var(--gold);margin-bottom:20px;text-transform:uppercase;">Collections</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:4px;">
+        <li><button onclick="filterProducts('all')" class="menu-item active-menu" style="background:none;border:none;cursor:pointer;font-family:'Noto Serif KR',serif;font-size:16px;font-weight:300;color:var(--text);letter-spacing:1px;padding:10px 0;text-align:left;width:100%;border-bottom:1px solid rgba(201,168,76,0.08);transition:color .25s;">전체</button></li>
+        <li><button onclick="filterProducts('goldbar')" class="menu-item" style="background:none;border:none;cursor:pointer;font-family:'Noto Serif KR',serif;font-size:16px;font-weight:300;color:var(--text-muted);letter-spacing:1px;padding:10px 0;text-align:left;width:100%;border-bottom:1px solid rgba(201,168,76,0.08);transition:color .25s;">골드바</button></li>
+        <li><button onclick="filterProducts('gift')" class="menu-item" style="background:none;border:none;cursor:pointer;font-family:'Noto Serif KR',serif;font-size:16px;font-weight:300;color:var(--text-muted);letter-spacing:1px;padding:10px 0;text-align:left;width:100%;border-bottom:1px solid rgba(201,168,76,0.08);transition:color .25s;">선물용 순금</button></li>
+        <li><button onclick="filterProducts('ring')" class="menu-item" style="background:none;border:none;cursor:pointer;font-family:'Noto Serif KR',serif;font-size:16px;font-weight:300;color:var(--text-muted);letter-spacing:1px;padding:10px 0;text-align:left;width:100%;border-bottom:1px solid rgba(201,168,76,0.08);transition:color .25s;">링 · 반지</button></li>
+        <li><button onclick="filterProducts('bracelet')" class="menu-item" style="background:none;border:none;cursor:pointer;font-family:'Noto Serif KR',serif;font-size:16px;font-weight:300;color:var(--text-muted);letter-spacing:1px;padding:10px 0;text-align:left;width:100%;border-bottom:1px solid rgba(201,168,76,0.08);transition:color .25s;">팔찌 · 브레이슬릿</button></li>
+        <li><button onclick="filterProducts('necklace')" class="menu-item" style="background:none;border:none;cursor:pointer;font-family:'Noto Serif KR',serif;font-size:16px;font-weight:300;color:var(--text-muted);letter-spacing:1px;padding:10px 0;text-align:left;width:100%;transition:color .25s;">목걸이 · 네크리스</button></li>
+      </ul>
+      <!-- 구분선 -->
+      <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.2),transparent);margin:32px 0;"></div>
+      <!-- 문의 -->
+      <div style="font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:4px;color:var(--gold);margin-bottom:16px;text-transform:uppercase;">Contact</div>
+      <a href="#contact" onclick="toggleMenu()" style="display:block;font-size:13px;color:var(--text-muted);letter-spacing:1px;margin-bottom:8px;">오시는 길</a>
+      <a href="tel:01089499683" style="display:block;font-size:13px;color:var(--text-muted);letter-spacing:1px;">010-8949-9683</a>
+    </div>
   </div>
-</section>
+
+  <!-- 상품 그리드 -->
+  <section style="max-width:1280px;margin:0 auto;padding:48px 48px 100px;">
+    <div style="margin-bottom:32px;" class="reveal">
+      <div class="section-eyebrow" id="collection-label">All Collections</div>
+      <div class="section-title">컬렉션</div>
+      <div class="gold-line"></div>
+    </div>
+    <div class="products-grid reveal" id="product-grid">
+      <!-- 골드바 -->
+      <div class="product-card" data-cat="goldbar">
+        <div class="product-bg" style="background:linear-gradient(135deg,#161200,#28200a);display:flex;align-items:center;justify-content:center;font-size:80px;">🥇</div>
+        <div class="product-overlay">
+          <span class="product-icon">🥇</span>
+          <div class="product-name">골드바</div>
+          <div class="product-sub">999.9 · 1돈 ~ 10돈</div>
+          <div class="product-hover-detail">LBMA 인증 순금 골드바. 안전한 자산 보관과 투자를 위한 최선의 선택입니다.</div>
+        </div>
+      </div>
+      <!-- 선물용 순금 -->
+      <div class="product-card" data-cat="gift">
+        <div class="product-bg" style="background:linear-gradient(135deg,#1a1000,#2d2200);display:flex;align-items:center;justify-content:center;font-size:80px;">💍</div>
+        <div class="product-overlay">
+          <span class="product-icon">💍</span>
+          <div class="product-name">선물용 순금</div>
+          <div class="product-sub">24K · 돌반지 · 기념품</div>
+          <div class="product-hover-detail">계절별 프리미엄 패키징으로 소중한 순간을 더욱 특별하게 담아드립니다.</div>
+        </div>
+      </div>
+      <!-- 링 -->
+      <div class="product-card" data-cat="ring">
+        <div class="product-bg" style="background:linear-gradient(135deg,#0f0c00,#201800);display:flex;align-items:center;justify-content:center;font-size:80px;">💫</div>
+        <div class="product-overlay">
+          <span class="product-icon">💫</span>
+          <div class="product-name">링 · 반지</div>
+          <div class="product-sub">14K · 18K · 24K</div>
+          <div class="product-hover-detail">다양한 디자인의 반지 컬렉션. 일상의 특별함을 더해드립니다.</div>
+        </div>
+      </div>
+      <!-- 팔찌 -->
+      <div class="product-card" data-cat="bracelet">
+        <div class="product-bg" style="background:linear-gradient(135deg,#100d00,#1c1800);display:flex;align-items:center;justify-content:center;font-size:80px;">📿</div>
+        <div class="product-overlay">
+          <span class="product-icon">📿</span>
+          <div class="product-name">팔찌 · 브레이슬릿</div>
+          <div class="product-sub">14K · 18K · 24K</div>
+          <div class="product-hover-detail">세련된 디자인의 팔찌 컬렉션. 손목을 더욱 우아하게 빛내드립니다.</div>
+        </div>
+      </div>
+      <!-- 목걸이 -->
+      <div class="product-card" data-cat="necklace">
+        <div class="product-bg" style="background:linear-gradient(135deg,#0d0d08,#161610);display:flex;align-items:center;justify-content:center;font-size:80px;">✨</div>
+        <div class="product-overlay">
+          <span class="product-icon">✨</span>
+          <div class="product-name">목걸이 · 네크리스</div>
+          <div class="product-sub">14K · 18K · 24K</div>
+          <div class="product-hover-detail">고급스러운 목걸이 컬렉션. 특별한 순간을 더욱 빛나게 해드립니다.</div>
+        </div>
+      </div>
+      <!-- 고금 매입 -->
+      <div class="product-card" data-cat="all">
+        <div class="product-bg" style="background:linear-gradient(135deg,#0a0a06,#141410);display:flex;align-items:center;justify-content:center;font-size:80px;">✦</div>
+        <div class="product-overlay">
+          <span class="product-icon">✦</span>
+          <div class="product-name">고금 매입</div>
+          <div class="product-sub">최고가 · 당일 현금</div>
+          <div class="product-hover-detail">보유하신 금을 시세 그대로 최고가에 매입합니다. 당일 현금 지급, 투명한 감정.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
 
 <!-- SEASON STRIP -->
 <div class="seasons-strip">
@@ -402,8 +496,8 @@ footer{background:var(--dark);border-top:1px solid rgba(201,168,76,0.1);padding:
     </div>
     <div class="contact-grid reveal">
       <ul class="contact-info-list">
-        <li><span class="contact-key">주소</span><span class="contact-val">인천광역시 — 매장 오픈 준비 중<br>2026년 4월 25일 Grand Open</span></li>
-        <li><span class="contact-key">전화</span><span class="contact-val">오픈 후 공개 예정</span></li>
+        <li><span class="contact-key">주소</span><span class="contact-val">인천광역시 서구 가정로 451<br>1동 101호 (가정동, 벨라미센텀시티)</span></li>
+        <li><span class="contact-key">전화</span><span class="contact-val">010-8949-9683</span></li>
         <li><span class="contact-key">영업시간</span><span class="contact-val">월~토 10:00 — 19:00<br>일요일 · 공휴일 휴무</span></li>
         <li><span class="contact-key">인스타그램</span><span class="contact-val">@fourseasonsgold</span></li>
         <li><span class="contact-key">카카오채널</span><span class="contact-val">사계절 금거래소 (오픈 예정)</span></li>
@@ -412,7 +506,7 @@ footer{background:var(--dark);border-top:1px solid rgba(201,168,76,0.1);padding:
         <div class="map-inner">
           <span class="map-icon">📍</span>
           <div class="map-label">Location</div>
-          <div class="map-addr">인천광역시<br>오픈 준비 중</div>
+          <div class="map-addr">인천 서구 가정로 451<br>벨라미센텀시티 1동 101호</div>
         </div>
       </div>
     </div>
@@ -551,6 +645,28 @@ window.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('popup-overlay').style.display='none';
   }
 });
+
+/* ── 컬렉션 사이드 메뉴 ── */
+const catLabels = {all:'All Collections', goldbar:'골드바', gift:'선물용 순금', ring:'링 · 반지', bracelet:'팔찌 · 브레이슬릿', necklace:'목걸이 · 네크리스'};
+function toggleMenu(){
+  const panel = document.getElementById('menu-panel');
+  const overlay = document.getElementById('menu-overlay');
+  const isOpen = panel.style.left === '0px';
+  panel.style.left = isOpen ? '-320px' : '0px';
+  overlay.style.display = isOpen ? 'none' : 'block';
+}
+function filterProducts(cat){
+  document.querySelectorAll('.menu-item').forEach(b=>{
+    b.style.color = 'rgba(245,237,216,0.55)';
+  });
+  event.target.style.color = '#E8D08A';
+  document.getElementById('collection-label').textContent = catLabels[cat];
+  document.querySelectorAll('.product-card').forEach(card=>{
+    const c = card.getAttribute('data-cat');
+    card.style.display = (cat==='all' || c===cat || c==='all') ? 'block' : 'none';
+  });
+  toggleMenu();
+}
 
 window.onload=function(){
   ['spring.png','spring_dark.png','summer.png','summer_rain.png','autumn.png','autumn_dark.png','winter.png','winter_dark.png'].forEach(s=>{new Image().src=s;});
