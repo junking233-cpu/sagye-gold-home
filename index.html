@@ -76,6 +76,23 @@ section{padding:100px 48px;max-width:1280px;margin:0 auto;}
 .reveal.visible{opacity:1;transform:translateY(0);}
 @keyframes fadein{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 
+/* PRICE TABLE */
+.price-table{width:100%;border:1px solid rgba(201,168,76,0.2);}
+.price-table-header{display:grid;grid-template-columns:1fr 1fr 1fr;background:rgba(201,168,76,0.12);padding:16px 28px;border-bottom:1px solid rgba(201,168,76,0.2);}
+.price-table-header div{font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2.5px;color:var(--gold);text-transform:uppercase;text-align:center;}
+.price-table-header .pt-item{text-align:left;}
+.price-table-row{display:grid;grid-template-columns:1fr 1fr 1fr;padding:22px 28px;border-bottom:1px solid rgba(201,168,76,0.08);transition:background .25s;}
+.price-table-row:last-child{border-bottom:none;}
+.price-table-row:hover{background:rgba(201,168,76,0.05);}
+.pt-item{font-size:13px;letter-spacing:1px;color:var(--text-muted);}
+.pt-buy{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--gold-light);text-align:center;letter-spacing:0.5px;}
+.pt-sell{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#A8C4D8;text-align:center;letter-spacing:0.5px;}
+@media(max-width:600px){
+  .price-table-header,.price-table-row{padding:14px 16px;}
+  .pt-buy,.pt-sell{font-size:15px;}
+  .pt-item{font-size:11px;}
+}
+
 /* PRICE */
 .price-wrap{background:var(--dark2);border-top:1px solid rgba(201,168,76,0.12);border-bottom:1px solid rgba(201,168,76,0.12);}
 .price-inner{max-width:1280px;margin:0 auto;padding:100px 48px;}
@@ -236,13 +253,37 @@ footer{background:var(--dark);border-top:1px solid rgba(201,168,76,0.1);padding:
       <div class="section-title">오늘의 금시세</div>
       <div class="gold-line"></div>
     </div>
-    <div class="price-grid reveal">
-      <div class="price-card"><div class="price-label">순금 24K · 1돈</div><div class="price-value" id="p-24k">—</div><div class="price-unit">원 / 매입가</div><div class="price-badge">999.9 FINE GOLD</div></div>
-      <div class="price-card"><div class="price-label">18K · 1돈</div><div class="price-value" id="p-18k">—</div><div class="price-unit">원 / 매입가</div><div class="price-badge">750 GOLD</div></div>
-      <div class="price-card"><div class="price-label">14K · 1돈</div><div class="price-value" id="p-14k">—</div><div class="price-unit">원 / 매입가</div><div class="price-badge">585 GOLD</div></div>
-      <div class="price-card"><div class="price-label">순금 돌반지 · 1돈</div><div class="price-value" id="p-ring">—</div><div class="price-unit">원 / 판매가</div><div class="price-badge">24K · 계절 선택</div></div>
-      <div class="price-card"><div class="price-label">골드바 · 1돈</div><div class="price-value" id="p-bar">—</div><div class="price-unit">원 / 판매가</div><div class="price-badge">LBMA CERTIFIED</div></div>
-      <div class="price-card"><div class="price-label">실버 · 1kg</div><div class="price-value">문의</div><div class="price-unit">매장 직접 문의</div><div class="price-badge">SILVER 999</div></div>
+    <div class="price-table reveal">
+      <div class="price-table-header">
+        <div class="pt-item">품목</div>
+        <div class="pt-buy">내가 살 때</div>
+        <div class="pt-sell">내가 팔 때</div>
+      </div>
+      <div class="price-table-row">
+        <div class="pt-item">골드바 · 1돈</div>
+        <div class="pt-buy" id="buy-gold">860,000 원</div>
+        <div class="pt-sell" id="sell-gold">835,000 원</div>
+      </div>
+      <div class="price-table-row">
+        <div class="pt-item">18K · 1돈</div>
+        <div class="pt-buy">제품시세 적용</div>
+        <div class="pt-sell" id="sell-18k">617,000 원</div>
+      </div>
+      <div class="price-table-row">
+        <div class="pt-item">14K · 1돈</div>
+        <div class="pt-buy">제품시세 적용</div>
+        <div class="pt-sell" id="sell-14k">476,000 원</div>
+      </div>
+      <div class="price-table-row">
+        <div class="pt-item">백금 · 1돈</div>
+        <div class="pt-buy">제품시세 적용</div>
+        <div class="pt-sell" id="sell-pt">200,000 원</div>
+      </div>
+      <div class="price-table-row">
+        <div class="pt-item">실버바 · 1kg</div>
+        <div class="pt-buy" id="buy-silver">4,200,000 원</div>
+        <div class="pt-sell" id="sell-silver">3,300,000 원</div>
+      </div>
     </div>
     <p class="price-note">※ 시세는 매일 업데이트됩니다. 정확한 가격은 매장으로 문의해 주세요.</p>
     <p class="price-updated" id="price-updated"></p>
@@ -449,12 +490,23 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 const now=new Date();
 document.getElementById('price-updated').textContent=`UPDATED · ${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
 
-const prices={'24k':'456,000','18k':'340,000','14k':'265,000',ring:'480,000',bar:'490,000'};
-document.getElementById('p-24k').textContent=prices['24k'];
-document.getElementById('p-18k').textContent=prices['18k'];
-document.getElementById('p-14k').textContent=prices['14k'];
-document.getElementById('p-ring').textContent=prices.ring;
-document.getElementById('p-bar').textContent=prices.bar;
+/* ── 매일 여기서만 숫자 바꾸세요 ── */
+const prices = {
+  buyGold:   '860,000',   // 골드바 살 때
+  sellGold:  '835,000',   // 골드바 팔 때
+  sell18k:   '617,000',   // 18K 팔 때
+  sell14k:   '476,000',   // 14K 팔 때
+  sellPt:    '200,000',   // 백금 팔 때
+  buySilver: '4,200,000', // 실버바 살 때
+  sellSilver:'3,300,000', // 실버바 팔 때
+};
+document.getElementById('buy-gold').textContent   = prices.buyGold   + ' 원';
+document.getElementById('sell-gold').textContent  = prices.sellGold  + ' 원';
+document.getElementById('sell-18k').textContent   = prices.sell18k   + ' 원';
+document.getElementById('sell-14k').textContent   = prices.sell14k   + ' 원';
+document.getElementById('sell-pt').textContent    = prices.sellPt    + ' 원';
+document.getElementById('buy-silver').textContent = prices.buySilver + ' 원';
+document.getElementById('sell-silver').textContent= prices.sellSilver+ ' 원';
 </script>
 </body>
 </html>
