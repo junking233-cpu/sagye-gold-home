@@ -170,9 +170,18 @@ nav.scrolled {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   text-align: center;
-  padding: 0 24px;
+  padding: 120px 24px 0;
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: 8px;
+  color: var(--text);
+  white-space: nowrap;
 }
 .hero-logo {
   width: 88px;
@@ -190,15 +199,6 @@ nav.scrolled {
   margin-bottom: 18px;
   text-transform: uppercase;
   animation: fadein 1s ease .5s both;
-}
-.hero-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(52px, 8vw, 96px);
-  font-weight: 300;
-  line-height: 1.1;
-  letter-spacing: -1px;
-  color: var(--text);
-  animation: fadein 1s ease .7s both;
 }
 .hero-title span { color: var(--gold-light); font-style: italic; }
 .hero-tagline {
@@ -775,7 +775,7 @@ footer {
   <div class="hero-content">
     <img class="hero-logo" src="logo.png" alt="로고" onerror="this.style.display='none'">
     <div class="hero-eyebrow">Four Seasons Gold Exchange</div>
-    <h1 class="hero-title">사계절<br><span>금거래소</span></h1>
+    <h1 class="hero-title">사계절 <span>금거래소</span></h1>
     <p class="hero-tagline">믿을 수 있는 귀금속 거래의 시작</p>
     <div class="hero-divider"></div>
     <div class="hero-cta">
