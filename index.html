@@ -456,17 +456,42 @@ footer{background:var(--dark);border-top:1px solid rgba(201,168,76,0.1);padding:
     <div class="contact-grid reveal">
       <ul class="contact-info-list">
         <li><span class="contact-key">주소</span><span class="contact-val">인천광역시 서구 가정로 451<br>1동 101호 (가정동, 벨라미센텀시티)</span></li>
-        <li><span class="contact-key">전화</span><span class="contact-val">010-8949-9683</span></li>
+        <li><span class="contact-key">전화</span><span class="contact-val"><a href="tel:01089499683" style="color:var(--text-muted);text-decoration:none;">010-8949-9683</a></span></li>
         <li><span class="contact-key">영업시간</span><span class="contact-val">월~토 10:00 — 19:00<br>일요일 · 공휴일 휴무</span></li>
         <li><span class="contact-key">인스타그램</span><span class="contact-val">@fourseasonsgold</span></li>
         <li><span class="contact-key">카카오채널</span><span class="contact-val">사계절 금거래소 (오픈 예정)</span></li>
       </ul>
-      <div class="map-placeholder">
-        <div class="map-inner">
-          <span class="map-icon">📍</span>
-          <div class="map-label">Location</div>
-          <div class="map-addr">인천 서구 가정로 451<br>벨라미센텀시티 1동 101호</div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <!-- 네이버 지도 임베드 -->
+        <div style="width:100%;height:280px;overflow:hidden;border:1px solid rgba(201,168,76,0.12);">
+          <iframe
+            src="https://map.naver.com/p/entry/address/인천광역시 서구 가정로 451?c=15,0,0,0,dh&embed=true"
+            width="100%"
+            height="100%"
+            frameborder="0"
+            style="border:0;"
+            allowfullscreen>
+          </iframe>
         </div>
+        <!-- 길찾기 버튼 -->
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="https://map.naver.com/p/search/인천광역시 서구 가정로 451 벨라미센텀시티" target="_blank"
+            style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;background:linear-gradient(135deg,var(--gold),var(--gold-dim));color:var(--dark);font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;">
+            📍 네이버 지도
+          </a>
+          <a href="https://map.kakao.com/link/search/인천광역시 서구 가정로 451 벨라미센텀시티" target="_blank"
+            style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border:1px solid rgba(201,168,76,0.4);color:var(--gold-light);font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;">
+            🗺️ 카카오 지도
+          </a>
+        </div>
+        <!-- 주소 텍스트 -->
+        <div style="font-size:11px;color:var(--text-muted);letter-spacing:1px;text-align:center;">
+          인천 서구 가정로 451 · 벨라미센텀시티 1동 101호
+        </div>
+        <!-- 전화 버튼 -->
+        <a href="tel:01089499683" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:16px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);color:var(--gold-light);font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:2px;text-decoration:none;transition:background .25s;" onmouseover="this.style.background='rgba(201,168,76,0.12)'" onmouseout="this.style.background='rgba(201,168,76,0.06)'">
+          📞 010-8949-9683
+        </a>
       </div>
     </div>
   </section>
