@@ -103,6 +103,18 @@ document.addEventListener('DOMContentLoaded', function() {
   set('buy-silver',  실버바_살때);
   set('sell-silver', 실버바_팔때);
 
+  // ===== 실버바 판매 페이지 =====
+  set('price-silver999',     실버바_살때);
+  set('price-silver-granule', 실버바_살때 + 100000);
+  const sub = document.getElementById('price-silver9999-sub');
+  if (sub) sub.textContent = `999.9 — ${(실버바_살때 + 100000).toLocaleString('ko-KR')} 원`;
+
+  // ===== 실버바 판매 페이지 =====
+  set('price-silver999', 실버바_살때);
+  const subEl = document.getElementById('price-silver9999-sub');
+  if (subEl) subEl.textContent = '999.9 — ' + fmt(실버바_살때 + 100000);
+  set('price-silver-granule', 실버바_살때 + 100000);
+
   // ===== 서브 시세판 매입 등급표 (display.html) =====
   set('autumn-g1', BUYING.검증3대마크);
   set('autumn-g2', BUYING.검증덩이);
