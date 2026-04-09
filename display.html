@@ -308,72 +308,49 @@ function switchTab(s) {
 
 const d = new Date();
 document.getElementById('today-date').textContent = d.getFullYear() + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + String(d.getDate()).padStart(2,'0');
+</script>
+<script src="prices.js"></script>
+<script>
+// prices.js의 BUYING 객체로 봄 탭 가격표 렌더링
+document.addEventListener('DOMContentLoaded', function() {
+  const goldItems = [
+    { name: '골드바 (9999)', desc: '10돈 초과시 삼대마크 덩이로 매입', badge: 'gold', price: BUYING.골드바 },
+    { name: '검증덩이 (3대마크)', desc: '', badge: '', price: BUYING.검증3대마크 },
+    { name: '검증덩이', desc: '파인골드 · SJ · 태극기 문양', badge: '', price: BUYING.검증덩이 },
+    { name: '기타덩이', desc: '공방이름 있는 것', badge: '', price: BUYING.기타덩이 },
+    { name: '무검덩이', desc: '999.9 · 별표 · 공방이름 없는 것', badge: 'caution', price: BUYING.무검덩이 },
+    { name: '검인 반지 · 회사메달', desc: '', badge: '', price: BUYING.검인반지메달 },
+    { name: '검인 목걸이 · 팔찌', desc: '', badge: '', price: BUYING.검인목걸이 },
+    { name: '열쇠', desc: '', badge: '', price: BUYING.열쇠 },
+    { name: '상패 · 동물 · 골프공', desc: '', badge: '', price: BUYING.상패동물골프공 },
+    { name: '칠보 · 마고자 · 99금 등', desc: '통팔찌 · 떨잠 · 그물 · 노리개', badge: 'caution', price: BUYING.칠보마고자등 },
+  ];
 
-/* ========================================
-   💰 시세 수정은 여기서만 하세요!
-   ======================================== */
-const PRICES = {
-  골드바:        '860,000',
-  검증3대마크:   '845,000',
-  검증덩이:      '830,000',
-  기타덩이:      '820,000',
-  무검덩이:      '800,000',
-  검인반지메달:  '830,000',
-  검인목걸이:    '820,000',
-  열쇠:          '770~800',
-  상패동물골프공:'760~790',
-  칠보마고자등:  '700~730',
-  k18:           '622,000',
-  k14:           '484,000',
-  k10:           '246,000',
-  치금:          '38~53',
-  백금99:        '257,000',
-};
-/* ======================================== */
+  const otherItems = [
+    { name: '18K', desc: '', badge: '', price: BUYING.k18 },
+    { name: '14K', desc: '', badge: '', price: BUYING.k14 },
+    { name: '10K', desc: '', badge: '', price: BUYING.k10 },
+    { name: '치금', desc: '', badge: '', price: BUYING.치금 },
+    { name: '백금 99', desc: '', badge: '', price: BUYING.백금99 },
+  ];
 
-const goldItems = [
-  { name: '골드바 (9999)', desc: '10돈 초과시 삼대마크 덩이로 매입', badge: 'gold', price: PRICES.골드바 },
-  { name: '검증덩이 (3대마크)', desc: '', badge: '', price: PRICES.검증3대마크 },
-  { name: '검증덩이', desc: '파인골드 · SJ · 태극기 문양', badge: '', price: PRICES.검증덩이 },
-  { name: '기타덩이', desc: '공방이름 있는 것', badge: '', price: PRICES.기타덩이 },
-  { name: '무검덩이', desc: '999.9 · 별표 · 공방이름 없는 것', badge: 'caution', price: PRICES.무검덩이 },
-  { name: '검인 반지 · 회사메달', desc: '', badge: '', price: PRICES.검인반지메달 },
-  { name: '검인 목걸이 · 팔찌', desc: '', badge: '', price: PRICES.검인목걸이 },
-  { name: '열쇠', desc: '', badge: '', price: PRICES.열쇠 },
-  { name: '상패 · 동물 · 골프공', desc: '', badge: '', price: PRICES.상패동물골프공 },
-  { name: '칠보 · 마고자 · 99금 등', desc: '통팔찌 · 떨잠 · 그물 · 노리개', badge: 'caution', price: PRICES.칠보마고자등 },
-];
+  function makeRow(item) {
+    const badge = item.badge === 'gold' ? '<span class="badge badge-gold">BEST</span>' : item.badge === 'caution' ? '<span class="badge badge-caution">주의</span>' : '';
+    return `<div class="price-row">
+      <div class="row-left">
+        <div class="row-name">${item.name}${badge}</div>
+        ${item.desc ? `<div class="row-desc">${item.desc}</div>` : ''}
+      </div>
+      <div class="row-price">
+        <div class="price-num">${item.price}</div>
+        <div class="price-unit">원/g</div>
+      </div>
+    </div>`;
+  }
 
-const otherItems = [
-  { name: '18K', desc: '', badge: '', price: PRICES.k18 },
-  { name: '14K', desc: '', badge: '', price: PRICES.k14 },
-  { name: '10K', desc: '', badge: '', price: PRICES.k10 },
-  { name: '치금', desc: '', badge: '', price: PRICES.치금 },
-  { name: '백금 99', desc: '', badge: '', price: PRICES.백금99 },
-];
-
-function makeRow(item) {
-  const badge = item.badge === 'gold' ? '<span class="badge badge-gold">BEST</span>' : item.badge === 'caution' ? '<span class="badge badge-caution">주의</span>' : '';
-  return `<div class="price-row">
-    <div class="row-left">
-      <div class="row-name">${item.name}${badge}</div>
-      ${item.desc ? `<div class="row-desc">${item.desc}</div>` : ''}
-    </div>
-    <div class="row-price">
-      <div class="price-num">${item.price}</div>
-      <div class="price-unit">원/g</div>
-    </div>
-  </div>`;
-}
-
-document.getElementById('gold-rows').innerHTML = goldItems.map(makeRow).join('');
-document.getElementById('other-rows').innerHTML = otherItems.map(makeRow).join('');
-
-document.getElementById('autumn-g1').textContent = PRICES.검증3대마크;
-document.getElementById('autumn-g2').textContent = PRICES.검증덩이;
-document.getElementById('autumn-g3').textContent = PRICES.기타덩이;
-document.getElementById('autumn-g4').textContent = PRICES.무검덩이;
-document.getElementById('autumn-g5').textContent = PRICES.칠보마고자등;
+  document.getElementById('gold-rows').innerHTML = goldItems.map(makeRow).join('');
+  document.getElementById('other-rows').innerHTML = otherItems.map(makeRow).join('');
+});
 </script>
 </body>
 </html>
