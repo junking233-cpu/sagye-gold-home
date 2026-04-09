@@ -709,24 +709,7 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
 const now=new Date();
 document.getElementById('price-updated').textContent=`UPDATED · ${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
-
-/* ── 매일 여기서만 숫자 바꾸세요 ── */
-const prices = {
-  buyGold:   '860,000',   // 골드바 살 때
-  sellGold:  '835,000',   // 골드바 팔 때
-  sell18k:   '617,000',   // 18K 팔 때
-  sell14k:   '476,000',   // 14K 팔 때
-  sellPt:    '200,000',   // 백금 팔 때
-  buySilver: '4,200,000', // 실버바 살 때
-  sellSilver:'3,300,000', // 실버바 팔 때
-};
-document.getElementById('buy-gold').textContent   = prices.buyGold   + ' 원';
-document.getElementById('sell-gold').textContent  = prices.sellGold  + ' 원';
-document.getElementById('sell-18k').textContent   = prices.sell18k   + ' 원';
-document.getElementById('sell-14k').textContent   = prices.sell14k   + ' 원';
-document.getElementById('sell-pt').textContent    = prices.sellPt    + ' 원';
-document.getElementById('buy-silver').textContent = prices.buySilver + ' 원';
-document.getElementById('sell-silver').textContent= prices.sellSilver+ ' 원';
 </script>
+<script src="prices.js"></script>
 </body>
 </html>
