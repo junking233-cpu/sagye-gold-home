@@ -133,6 +133,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf8f5; min-height:
 <div class="header">
   <div class="header-en">Four Seasons Gold</div>
   <div class="header-kr">사계절 금거래소</div>
+  <div style="font-family:'Cormorant Garamond',serif;font-size:12px;letter-spacing:5px;color:#c9a84c;margin:4px 0;">— FOUR SEASONS GOLD EXCHANGE —</div>
   <div class="header-sub">당신의 금을 지켜줄 사계절</div>
 </div>
 
@@ -166,10 +167,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf8f5; min-height:
         <div class="intro-text">금 제품의 순도를 국가 공인 기관이 직접 검증하고 각인한 마크입니다.<br>이 마크가 있어야 <strong>순도 999.9 (24K)</strong>를 공식적으로 인정받을 수 있습니다.</div>
       </div>
 
-      <!-- 실사 사진 -->
-      <img src="mark_photo.png" alt="3대 마크 실사" style="width:100%;border-radius:10px;margin-bottom:1rem;display:block;">
-
-      <!-- 마크 3개 -->
+      <!-- 마크 3개 먼저 -->
       <div class="mark-cards">
         <div class="mark-card taeguk">
           <div class="mark-card-header">
@@ -193,6 +191,63 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf8f5; min-height:
           <div class="mark-desc">무궁화 문양의 홀마크. 영국 홀마크 제도를 기반으로 순도와 제조사를 함께 각인합니다.</div>
         </div>
       </div>
+
+      <!-- 실사사진 + 등급표 나란히 -->
+      <div style="display:flex;gap:12px;margin:1rem 0;align-items:flex-start;">
+        <img src="mark_photo.png" alt="3대 마크 실사" style="width:48%;border-radius:10px;display:block;flex-shrink:0;">
+        <div style="flex:1;">
+          <div class="grade-intro" style="margin-bottom:8px;">
+            <div class="grade-intro-title">마크별 매입 등급표</div>
+          </div>
+          <div class="grade-list">
+            <div class="grade-card grade-1">
+              <div class="grade-left">
+                <div class="grade-rank">GRADE 1 · 최고등급</div>
+                <div class="grade-name" style="font-size:12px;">검증덩이 (3대마크)</div>
+                <div class="grade-desc">태극 · 금자 · 무궁화홀마크</div>
+              </div>
+              <div class="grade-right"><div class="grade-price" id="autumn-g1" style="font-size:14px;"></div><div class="grade-unit">원/g</div><div class="grade-badge badge-best">최고가</div></div>
+            </div>
+            <div class="grade-card grade-2">
+              <div class="grade-left">
+                <img src="grade2.png" alt="GRADE2" style="width:100%;border-radius:6px;margin-bottom:4px;">
+                <div class="grade-rank">GRADE 2</div>
+                <div class="grade-name" style="font-size:12px;">검증덩이</div>
+                <div class="grade-desc">태극마크 · 파인골드 · SJ</div>
+              </div>
+              <div class="grade-right"><div class="grade-price" id="autumn-g2" style="font-size:14px;"></div><div class="grade-unit">원/g</div></div>
+            </div>
+            <div class="grade-card grade-3">
+              <div class="grade-left">
+                <img src="grade3.png" alt="GRADE3" style="width:100%;border-radius:6px;margin-bottom:4px;">
+                <div class="grade-rank">GRADE 3</div>
+                <div class="grade-name" style="font-size:12px;">기타덩이</div>
+                <div class="grade-desc">공방 이름 각인된 것</div>
+              </div>
+              <div class="grade-right"><div class="grade-price" id="autumn-g3" style="font-size:14px;"></div><div class="grade-unit">원/g</div></div>
+            </div>
+            <div class="grade-card grade-4">
+              <div class="grade-left">
+                <img src="grade4.png" alt="GRADE4" style="width:100%;border-radius:6px;margin-bottom:4px;">
+                <div class="grade-rank">GRADE 4</div>
+                <div class="grade-name" style="font-size:12px;">무검덩이</div>
+                <div class="grade-desc">별표 · 999 표기만 있는 것</div>
+              </div>
+              <div class="grade-right"><div class="grade-price" id="autumn-g4" style="font-size:14px;"></div><div class="grade-unit">원/g</div></div>
+            </div>
+            <div class="grade-card grade-5">
+              <div class="grade-left">
+                <img src="grade5.png" alt="GRADE5" style="width:100%;border-radius:6px;margin-bottom:4px;">
+                <div class="grade-rank">GRADE 5 · 감가적용</div>
+                <div class="grade-name" style="font-size:12px;">한자 金 표기</div>
+                <div class="grade-desc">칠보 · 마고자 · 99금 등</div>
+              </div>
+              <div class="grade-right"><div class="grade-price" id="autumn-g5" style="font-size:14px;"></div><div class="grade-unit">원/g</div><div class="grade-badge badge-caution2">감가</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="warning-box">
         <div class="warning-title">⚠️ 마크 없으면 왜 감가될까요?</div>
         <div class="warning-text">3대 마크가 없는 금은 <strong>순도를 육안으로 확인할 수 없습니다.</strong><br>종로 감정원에서 순도 체크를 받아야 하며,<br>이 비용이 <strong>돈당 감정 비용</strong>으로 발생하기 때문에 그만큼 매입가에서 차감됩니다.</div>
@@ -207,33 +262,8 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf8f5; min-height:
     <div class="tab-panel autumn" id="panel-autumn">
       <span class="section-badge-autumn">🍁 Autumn · 가을</span>
       <div class="grade-intro">
-        <div class="grade-intro-title">마크별 매입 등급표</div>
-        <div class="grade-intro-text">금 제품의 마크 종류에 따라 매입가가 달라집니다.<br>아래 등급표에서 내 금이 어디에 해당하는지 확인해보세요.</div>
-      </div>
-      <div class="grade-list">
-        <div class="grade-card grade-1">
-          <div class="grade-left"><div class="grade-rank">GRADE 1 · 최고등급</div><div class="grade-name">검증덩이 (3대마크)</div><div class="grade-desc">태극마크 · 금자마크 · 무궁화홀마크</div></div>
-          <div class="grade-right"><div class="grade-price" id="autumn-g1"></div><div class="grade-unit">원/g</div><div class="grade-badge badge-best">최고가</div></div>
-        </div>
-        <div class="grade-card grade-2">
-          <div class="grade-left"><div class="grade-rank">GRADE 2</div><div class="grade-name">검증덩이</div><div class="grade-desc">파인골드 · SJ · 태극기 문양</div></div>
-          <div class="grade-right"><div class="grade-price" id="autumn-g2"></div><div class="grade-unit">원/g</div></div>
-        </div>
-        <div class="grade-card grade-3">
-          <div class="grade-left"><div class="grade-rank">GRADE 3</div><div class="grade-name">기타덩이</div><div class="grade-desc">공방이름 있는 것</div></div>
-          <div class="grade-right"><div class="grade-price" id="autumn-g3"></div><div class="grade-unit">원/g</div></div>
-        </div>
-        <div class="grade-card grade-4">
-          <div class="grade-left"><div class="grade-rank">GRADE 4</div><div class="grade-name">무검덩이</div><div class="grade-desc">999.9 · 별표 · 공방이름 없는 것 · 조각덩이</div></div>
-          <div class="grade-right"><div class="grade-price" id="autumn-g4"></div><div class="grade-unit">원/g</div></div>
-        </div>
-        <div class="grade-card grade-5">
-          <div class="grade-left"><div class="grade-rank">GRADE 5 · 감가적용</div><div class="grade-name">칠보 · 마고자 · 99금 등</div><div class="grade-desc">통팔찌 · 떨잠 · 그물 · 노리개 · 비녀</div></div>
-          <div class="grade-right"><div class="grade-price" id="autumn-g5"></div><div class="grade-unit">원/g</div><div class="grade-badge badge-caution2">감가</div></div>
-        </div>
-      </div>
-      <div class="bottom-notice">
-        <div class="bottom-notice-text">💡 마크가 있을수록 순도가 보증되어 높은 가격으로 매입됩니다.<br>마크 확인이 어려우시면 편하게 문의해 주세요.</div>
+        <div class="grade-intro-title">준비 중입니다</div>
+        <div class="grade-intro-text">곧 업데이트 됩니다 😊</div>
       </div>
     </div>
 
