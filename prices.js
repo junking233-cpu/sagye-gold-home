@@ -2,7 +2,7 @@
    사계절 금거래소 — 가격 관리 파일
 
    ★★★ 매일 여기 숫자만 바꾸세요! ★★★
-   (손님 기준 — 살때: 손님이 우리한테 살때 / 팔때: 손님이 우리한테 팔때)
+   (손님 기준 — 살때: 손님이 살때 / 팔때: 손님이 팔때)
    ================================================ */
 
 const 골드바_살때  = 860000;   // 손님이 살때 (우리 판매가) 1돈 기준
@@ -45,11 +45,12 @@ const prices = {
 
 // 매입가 (손님이 팔때) — 덩이금 등급 자동 계산
 const BUYING = {
-  grade1: 골드바_팔때 - 5000,   // 3대마크 덩이금
-  grade2: 골드바_팔때 - 15000,  // 검증덩이
-  grade3: 골드바_팔때 - 25000,  // 기타덩이
-  grade4: 골드바_팔때 - 35000,  // 무검덩이
-  grade5: 골드바_팔때 - 45000,  // 칠보·마고자
+  골드바:       골드바_팔때,
+  검증3대마크:  골드바_팔때 - 5000,
+  검증덩이:     골드바_팔때 - 15000,
+  기타덩이:     골드바_팔때 - 25000,
+  무검덩이:     골드바_팔때 - 35000,
+  칠보마고자등: 골드바_팔때 - 45000,
   k18:    K18,
   k14:    K14,
   pt:     백금,
@@ -66,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (el) el.textContent = typeof val === 'number' ? fmt(val) : val;
   };
 
-  // 판매가
+  // ===== 골드바·선물 페이지 판매가 =====
   set('price-goldbar1',    prices.goldbar1);
   set('price-goldbar3',    prices.goldbar3);
   set('price-goldbar5',    prices.goldbar5);
@@ -86,10 +87,19 @@ document.addEventListener('DOMContentLoaded', function() {
   set('price-key1',        prices.key1);
   set('price-key3',        prices.key3);
 
-  // 서브 시세판 매입 등급표 (display.html)
-  set('autumn-g1', BUYING.grade1);
-  set('autumn-g2', BUYING.grade2);
-  set('autumn-g3', BUYING.grade3);
-  set('autumn-g4', BUYING.grade4);
-  set('autumn-g5', BUYING.grade5);
+  // ===== 메인 홈페이지 시세판 =====
+  set('buy-gold',    골드바_살때);
+  set('sell-gold',   골드바_팔때);
+  set('sell-18k',    K18);
+  set('sell-14k',    K14);
+  set('sell-pt',     백금);
+  set('buy-silver',  실버바_살때);
+  set('sell-silver', 실버바_팔때);
+
+  // ===== 서브 시세판 매입 등급표 (display.html) =====
+  set('autumn-g1', BUYING.검증3대마크);
+  set('autumn-g2', BUYING.검증덩이);
+  set('autumn-g3', BUYING.기타덩이);
+  set('autumn-g4', BUYING.무검덩이);
+  set('autumn-g5', BUYING.칠보마고자등);
 });
