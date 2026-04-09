@@ -98,8 +98,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
         <div class="product-desc">프리미엄 케이스 포함.<br>99.9 / 999.9 순도 선택 가능.</div>
         <div class="product-price-box">
           <div class="product-price-label">판매가</div>
-          <div class="product-price">4,600,000 원</div>
-          <div class="product-price-sub">999.9 — 4,700,000 원</div>
+          <div class="product-price" id="price-silver999">-</div>
+          <div class="product-price-sub" id="price-silver9999-sub">999.9 — -</div>
           <div class="product-price-unit">※ 시세에 따라 변동될 수 있습니다</div>
         </div>
       </div>
@@ -133,7 +133,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
         <div class="product-desc">고순도 실버 그래뉼 1kg 병 포장.<br>투자용 순은 알갱이.</div>
         <div class="product-price-box">
           <div class="product-price-label">판매가</div>
-          <div class="product-price">4,700,000 원</div>
+          <div class="product-price" id="price-silver-granule">-</div>
           <div class="product-price-unit">※ 시세에 따라 변동될 수 있습니다</div>
         </div>
       </div>
@@ -155,5 +155,6 @@ function openLightbox(src){document.getElementById('lightbox-img').src=src;docum
 function closeLightbox(){document.getElementById('lightbox').classList.remove('active');}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox();});
 </script>
+<script src="prices.js"></script>
 </body>
 </html>
