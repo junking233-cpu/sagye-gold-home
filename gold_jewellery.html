@@ -178,6 +178,84 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
   </div>
 </div>
 
+
+<!-- B라인 -->
+<div class="products-section" style="padding-top:0;">
+  <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.2),transparent);margin-bottom:48px;"></div>
+  <div class="section-label">B 라인 반지</div>
+  <div class="section-sub">순금 999.9 · 24K · 공임 포함 · 현금가 기준</div>
+  <div class="products-grid">
+
+    <div class="product-card">
+      <div class="product-img" onclick="openLightbox('tmr1030 3.75 40.png','B-1 볼패턴')">
+        <img src="tmr1030 3.75 40.png" alt="B-1 볼패턴">
+        <div class="zoom-icon">🔍</div>
+      </div>
+      <div class="product-info">
+        <div class="product-line">B Line · 순금 반지</div>
+        <div class="product-name">B-1 볼패턴</div>
+        <div class="product-desc">순금 999.9 · 24K<br>정품 보증서 포함</div>
+        <div class="product-price-box">
+          <div class="product-price-label">현금 판매가</div>
+          <div class="product-price" id="price-b1">-</div>
+          <div class="product-price-unit">※ 시세 연동 · 현금가 기준</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img" onclick="openLightbox('tmr1037 3.75 40.png','B-2 웨이브패턴')">
+        <img src="tmr1037 3.75 40.png" alt="B-2 웨이브패턴">
+        <div class="zoom-icon">🔍</div>
+      </div>
+      <div class="product-info">
+        <div class="product-line">B Line · 순금 반지</div>
+        <div class="product-name">B-2 웨이브패턴</div>
+        <div class="product-desc">순금 999.9 · 24K<br>정품 보증서 포함</div>
+        <div class="product-price-box">
+          <div class="product-price-label">현금 판매가</div>
+          <div class="product-price" id="price-b2">-</div>
+          <div class="product-price-unit">※ 시세 연동 · 현금가 기준</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img" onclick="openLightbox('tmr1038 3.75 40.png','B-3 트위스트패턴')">
+        <img src="tmr1038 3.75 40.png" alt="B-3 트위스트패턴">
+        <div class="zoom-icon">🔍</div>
+      </div>
+      <div class="product-info">
+        <div class="product-line">B Line · 순금 반지</div>
+        <div class="product-name">B-3 트위스트패턴</div>
+        <div class="product-desc">순금 999.9 · 24K<br>정품 보증서 포함</div>
+        <div class="product-price-box">
+          <div class="product-price-label">현금 판매가</div>
+          <div class="product-price" id="price-b3">-</div>
+          <div class="product-price-unit">※ 시세 연동 · 현금가 기준</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img" onclick="openLightbox('tmr1041r 3.75 40.png','B-4 리본패턴')">
+        <img src="tmr1041r 3.75 40.png" alt="B-4 리본패턴">
+        <div class="zoom-icon">🔍</div>
+      </div>
+      <div class="product-info">
+        <div class="product-line">B Line · 순금 반지</div>
+        <div class="product-name">B-4 리본패턴</div>
+        <div class="product-desc">순금 999.9 · 24K<br>정품 보증서 포함</div>
+        <div class="product-price-box">
+          <div class="product-price-label">현금 판매가</div>
+          <div class="product-price" id="price-b4">-</div>
+          <div class="product-price-unit">※ 시세 연동 · 현금가 기준</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 <!-- 라이트박스 -->
 <div class="lightbox" id="lightbox" onclick="closeLightboxBg(event)">
   <button class="lightbox-close" onclick="closeLightbox()">✕</button>
@@ -202,6 +280,10 @@ function fmt(n) {
 }
 function updatePrices(don) {
   const p = calcPrice(don);
+  ['b1','b2','b3','b4'].forEach(id => {
+    const elb = document.getElementById('price-' + id);
+    if (elb) elb.textContent = fmt(Math.floor((골드바_살때 * don + 40000) * 1.1 / 1000) * 1000);
+  });
   ['a1','a2','a3','a4'].forEach(id => {
     const el = document.getElementById('price-' + id);
     if (el) el.textContent = fmt(p);
