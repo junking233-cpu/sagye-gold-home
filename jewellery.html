@@ -124,6 +124,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
         <div class="product-img" style="background:#0a0a08;"><img src="tmr1041r 3.75 40.png" alt="B-4 리본패턴" style="height:100%;width:100%;object-fit:cover;"></div>
         <div class="product-info"><div class="product-name">B-4 리본패턴</div><div class="product-desc">순금 999.9 · 24K · B라인 반지</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-price-b4">-</div><div class="product-price-unit">※ 1돈 기준 · 시세 연동</div></div></div>
       </div>
+      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;">
+        <div class="product-img" style="background:#0a0a08;"><img src="tma0020r 3.75 45.png" alt="C-1 복(福)반지" style="height:100%;width:100%;object-fit:cover;"></div>
+        <div class="product-info"><div class="product-name">C-1 복(福)반지</div><div class="product-desc">순금 999.9 · 24K · C라인 반지</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-price-c1">-</div><div class="product-price-unit">※ 1돈 기준 · 시세 연동</div></div></div>
+      </div>
+      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;">
+        <div class="product-img" style="background:#0a0a08;"><img src="tmr1053 3.75 45.png" alt="C-2 스타반지" style="height:100%;width:100%;object-fit:cover;"></div>
+        <div class="product-info"><div class="product-name">C-2 스타반지</div><div class="product-desc">순금 999.9 · 24K · C라인 반지</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-price-c2">-</div><div class="product-price-unit">※ 1돈 기준 · 시세 연동</div></div></div>
+      </div>
+      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;">
+        <div class="product-img" style="background:#0a0a08;"><img src="tmr1112a 3.75 45.png" alt="C-3 플로럴반지" style="height:100%;width:100%;object-fit:cover;"></div>
+        <div class="product-info"><div class="product-name">C-3 플로럴반지</div><div class="product-desc">순금 999.9 · 24K · C라인 반지</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-price-c3">-</div><div class="product-price-unit">※ 1돈 기준 · 시세 연동</div></div></div>
+      </div>
+      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;">
+        <div class="product-img" style="background:#0a0a08;"><img src="tmr1133r 3.75 45.png" alt="C-4 다이아컷반지" style="height:100%;width:100%;object-fit:cover;"></div>
+        <div class="product-info"><div class="product-name">C-4 다이아컷반지</div><div class="product-desc">순금 999.9 · 24K · C라인 반지</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-price-c4">-</div><div class="product-price-unit">※ 1돈 기준 · 시세 연동</div></div></div>
+      </div>
       </div>
     </div>
   </div>
@@ -195,6 +211,10 @@ function showTab(tab){
 document.addEventListener('DOMContentLoaded', function() {
   const p = Math.floor((골드바_살때 * 0.5 + 45000) * 1.1 / 1000) * 1000;
   const fmt = n => n.toLocaleString('ko-KR') + ' 원';
+  ['j-price-c1','j-price-c2','j-price-c3','j-price-c4'].forEach(id => {
+    const elc = document.getElementById(id);
+    if(elc) elc.textContent = fmt(Math.floor((골드바_살때 * 1 + 45000) * 1.1 / 1000) * 1000);
+  });
   ['j-price-b1','j-price-b2','j-price-b3','j-price-b4'].forEach(id => {
     const elb = document.getElementById(id);
     if(elb) elb.textContent = fmt(Math.floor((골드바_살때 * 1 + 40000) * 1.1 / 1000) * 1000);
