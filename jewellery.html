@@ -51,6 +51,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
 .page-footer{border-top:1px solid rgba(201,168,76,0.1);padding:32px 48px;text-align:center;}
 .page-footer-text{font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:2px;color:var(--text-muted);}
 @media(max-width:768px){nav{padding:16px 24px;}.tab-wrap,.products-section{padding-left:24px;padding-right:24px;}.tab-btn{padding:12px 16px;font-size:9px;}}
+
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:999;align-items:center;justify-content:center;}
+.lightbox.open{display:flex;}
+.lb-img{max-width:85vw;max-height:88vh;object-fit:contain;}
+.lb-close{position:absolute;top:24px;right:32px;background:none;border:none;color:rgba(245,237,216,0.5);font-size:28px;cursor:pointer;z-index:1000;}
+.lb-close:hover{color:var(--gold-light);}
+.lb-caption{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);font-family:"Cormorant Garamond",serif;font-size:17px;letter-spacing:3px;color:var(--gold-light);white-space:nowrap;}
+.product-img{cursor:zoom-in;}
 </style>
 </head>
 <body>
@@ -89,12 +97,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
   <div id="sec-goldring">
     <div class="category-title">순금 반지</div>
     <div class="category-sub">999.9 · 24K Pure Gold</div>
-    <div style="margin-bottom:24px;"><a href="gold_jewellery.html" style="font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);text-decoration:none;">순금 반지 전체 보기 →</a></div>
-    <div class="products-grid">
-      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;"><div class="product-img" style="background:#0a0a08;"><img src="tmr1070r 1.88 45.png" alt="A-1" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">A-1 스타패턴</div><div class="product-desc">순금 999.9 · 24K · 반돈</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-a1">-</div><div class="product-price-unit">※ 반돈 기준</div></div></div></div>
-      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;"><div class="product-img" style="background:#0a0a08;"><img src="tmr1030 3.75 40.png" alt="B-1" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">B-1 볼패턴</div><div class="product-desc">순금 999.9 · 24K · 1돈</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-b1">-</div><div class="product-price-unit">※ 1돈 기준</div></div></div></div>
-      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;"><div class="product-img" style="background:#0a0a08;"><img src="tma0020r 3.75 45.png" alt="C-1" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">C-1 복(福)반지</div><div class="product-desc">순금 999.9 · 24K · 1돈</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-c1">-</div><div class="product-price-unit">※ 1돈 기준</div></div></div></div>
-    </div>
+    <div style="margin-bottom:8px;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);">A Line · 반돈</div>
+    <div class="products-grid" style="margin-bottom:32px;"><div class="product-card"><div class="product-img" style="background:#0a0a08;" onclick="openLb('tmr1070r 1.88 45.png','A-1 스타패턴')"><img src="tmr1070r 1.88 45.png" alt="A-1 스타패턴" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">A-1 스타패턴</div><div class="product-desc">순금 999.9 · 24K · 반돈</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-a1">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div><div class="product-card"><div class="product-img" style="background:#0a0a08;" onclick="openLb('tmr1072r 1.88 45.png','A-2 다이아패턴')"><img src="tmr1072r 1.88 45.png" alt="A-2 다이아패턴" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">A-2 다이아패턴</div><div class="product-desc">순금 999.9 · 24K · 반돈</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-a2">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div><div class="product-card"><div class="product-img" style="background:#0a0a08;" onclick="openLb('tmr1078 1.88 45.png','A-3 리프패턴')"><img src="tmr1078 1.88 45.png" alt="A-3 리프패턴" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">A-3 리프패턴</div><div class="product-desc">순금 999.9 · 24K · 반돈</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-a3">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div><div class="product-card"><div class="product-img" style="background:#0a0a08;" onclick="openLb('tmr1083 1.88 45.png','A-4 하트패턴')"><img src="tmr1083 1.88 45.png" alt="A-4 하트패턴" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">A-4 하트패턴</div><div class="product-desc">순금 999.9 · 24K · 반돈</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-a4">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div></div>
+    <div style="margin-bottom:8px;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);">B Line · 1돈</div>
+    <div class="products-grid" style="margin-bottom:32px;"><div class="product-card"><div class="product-img" style="background:#0a0a08;" onclick="openLb('tmr1030 3.75 40.png','B-1 볼패턴')"><img src="tmr1030 3.75 40.png" alt="B-1 볼패턴" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">B-1 볼패턴</div><div class="product-desc">순금 999.9 · 24K · 1돈</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-b1">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div><div class="product-card"><div class="product-img" style="background:#0a0a08;" onclick="openLb('tmr1037 3.75 40.png','B-2 웨이브패턴')"><img src="tmr1037 3.75 40.png" alt="B-2 웨이브패턴" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">B-2 웨이브패턴</div><div class="product-desc">순금 999.9 · 24K · 1돈</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-b2">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div><div class="product-card"><div class="product-img" style="background:#0a0a08;" onclick="openLb('tmr1038 3.75 40.png','B-3 트위스트패턴')"><img src="tmr1038 3.75 40.png" alt="B-3 트위스트패턴" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">B-3 트위스트패턴</div><div class="product-desc">순금 999.9 · 24K · 1돈</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-b3">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div><div class="product-card"><div class="product-img" style="background:#0a0a08;" onclick="openLb('tmr1041r 3.75 40.png','B-4 리본패턴')"><img src="tmr1041r 3.75 40.png" alt="B-4 리본패턴" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">B-4 리본패턴</div><div class="product-desc">순금 999.9 · 24K · 1돈</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-b4">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div></div>
+    <div style="margin-bottom:8px;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);">C Line · 1돈</div>
+    <div class="products-grid"><div class="product-card"><div class="product-img" style="background:#0a0a08;" onclick="openLb('tma0020r 3.75 45.png','C-1 복(福)반지')"><img src="tma0020r 3.75 45.png" alt="C-1 복(福)반지" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">C-1 복(福)반지</div><div class="product-desc">순금 999.9 · 24K · 1돈</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-c1">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div><div class="product-card"><div class="product-img" style="background:#0a0a08;" onclick="openLb('tmr1053 3.75 45.png','C-2 스타반지')"><img src="tmr1053 3.75 45.png" alt="C-2 스타반지" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">C-2 스타반지</div><div class="product-desc">순금 999.9 · 24K · 1돈</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-c2">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div><div class="product-card"><div class="product-img" style="background:#0a0a08;" onclick="openLb('tmr1112a 3.75 45.png','C-3 플로럴반지')"><img src="tmr1112a 3.75 45.png" alt="C-3 플로럴반지" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">C-3 플로럴반지</div><div class="product-desc">순금 999.9 · 24K · 1돈</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-c3">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div><div class="product-card"><div class="product-img" style="background:#0a0a08;" onclick="openLb('tmr1133r 3.75 45.png','C-4 다이아컷반지')"><img src="tmr1133r 3.75 45.png" alt="C-4 다이아컷반지" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">C-4 다이아컷반지</div><div class="product-desc">순금 999.9 · 24K · 1돈</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-c4">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div></div>
   </div>
 
   <div class="section-divider" id="div-goldbracelet"></div>
@@ -105,10 +113,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
     <div class="category-sub">999.9 · 24K · 18K 고리</div>
     <div style="margin-bottom:24px;"><a href="gold_jewellery.html" style="font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);text-decoration:none;">순금 팔찌 전체 보기 →</a></div>
     <div class="products-grid">
-      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;"><div class="product-img" style="background:#0a0a08;"><img src="tmr7059n 4.34g 0.56 70.png" alt="A-1 클로버팔찌" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">A-1 클로버팔찌</div><div class="product-desc">순금 24K · 4.34g</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-br1">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div>
-      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;"><div class="product-img" style="background:#0a0a08;"><img src="tma7034b 8.04g 0.54 65.png" alt="A-2 자물쇠팔찌" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">A-2 자물쇠팔찌</div><div class="product-desc">순금 24K · 8.04g</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-br2">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div>
-      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;"><div class="product-img" style="background:#0a0a08;"><img src="tmb7017 8.06g 0.56 58.png" alt="A-3 데이지팔찌" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">A-3 데이지팔찌</div><div class="product-desc">순금 24K · 8.06g</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-br3">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div>
-      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;"><div class="product-img" style="background:#0a0a08;"><img src="tma7035b 8.08g 0.58 58.png" alt="A-4 밀알팔찌" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">A-4 밀알팔찌</div><div class="product-desc">순금 24K · 8.08g</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-br4">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div>
+      <div class="product-card" ><div class="product-img" style="background:#0a0a08;" onclick="openLb('tmr7059n 4.34g 0.56 70.png','A-1 클로버팔찌')"><img src="tmr7059n 4.34g 0.56 70.png" alt="A-1 클로버팔찌" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">A-1 클로버팔찌</div><div class="product-desc">순금 24K · 4.34g</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-br1">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div>
+      <div class="product-card" ><div class="product-img" style="background:#0a0a08;" onclick="openLb('tma7034b 8.04g 0.54 65.png','A-2 자물쇠팔찌')"><img src="tma7034b 8.04g 0.54 65.png" alt="A-2 자물쇠팔찌" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">A-2 자물쇠팔찌</div><div class="product-desc">순금 24K · 8.04g</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-br2">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div>
+      <div class="product-card" ><div class="product-img" style="background:#0a0a08;" onclick="openLb('tmb7017 8.06g 0.56 58.png','A-3 데이지팔찌')"><img src="tmb7017 8.06g 0.56 58.png" alt="A-3 데이지팔찌" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">A-3 데이지팔찌</div><div class="product-desc">순금 24K · 8.06g</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-br3">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div>
+      <div class="product-card" ><div class="product-img" style="background:#0a0a08;" onclick="openLb('tma7035b 8.08g 0.58 58.png','A-4 밀알팔찌')"><img src="tma7035b 8.08g 0.58 58.png" alt="A-4 밀알팔찌" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">A-4 밀알팔찌</div><div class="product-desc">순금 24K · 8.08g</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-br4">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div>
     </div>
   </div>
 
@@ -119,7 +127,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
     <div class="category-title">순금 목걸이</div>
     <div class="category-sub">999.9 · 24K · 준비 중</div>
     <div class="products-grid">
-      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;"><div class="product-img" style="background:#111;display:flex;align-items:center;justify-content:center;"><span style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:3px;color:rgba(201,168,76,0.3);">Coming Soon</span></div><div class="product-info"><div class="product-name">순금 목걸이</div><div class="product-desc">순금 999.9 · 24K</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price">준비 중</div></div></div></div>
+      <div class="product-card" ><div class="product-img" style="background:#111;display:flex;align-items:center;justify-content:center;"><span style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:3px;color:rgba(201,168,76,0.3);">Coming Soon</span></div><div class="product-info"><div class="product-name">순금 목걸이</div><div class="product-desc">순금 999.9 · 24K</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price">준비 중</div></div></div></div>
     </div>
   </div>
 
@@ -164,11 +172,27 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
 
 </div>
 
+
+<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLb()">
+  <button class="lb-close" onclick="closeLb()">✕</button>
+  <img class="lb-img" id="lb-img" src="" alt="">
+  <div class="lb-caption" id="lb-caption"></div>
+</div>
 <div class="page-footer">
   <div class="page-footer-text">© 2026 사계절 금거래소 · 인천 서구 가정로 451 · 010-8949-9683</div>
 </div>
 
 <script>
+function openLb(src,caption){
+  document.getElementById("lb-img").src=src;
+  document.getElementById("lb-caption").textContent=caption;
+  document.getElementById("lightbox").classList.add("open");
+  document.body.style.overflow="hidden";
+}
+function closeLb(){
+  document.getElementById("lightbox").classList.remove("open");
+  document.body.style.overflow="";
+}
 function showTab(tab){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   event.target.classList.add('active');
@@ -192,9 +216,16 @@ document.addEventListener('DOMContentLoaded',function(){
   var fmt=function(n){return n.toLocaleString('ko-KR')+' 원';};
   var set=function(id,v){var e=document.getElementById(id);if(e)e.textContent=fmt(v);};
   var cb=function(g,cl,go){var sd=Math.round((g-cl)/3.75*100)/100;var cd=Math.round(cl/3.75*0.825*100)/100;return Math.floor((Math.round((sd+cd)*100)/100*골드바_살때+go)*1.1/1000)*1000;};
-  set('j-a1',Math.floor((골드바_살때*0.5+45000)*1.1/1000)*1000);
-  set('j-b1',Math.floor((골드바_살때*1+40000)*1.1/1000)*1000);
-  set('j-c1',Math.floor((골드바_살때*1+45000)*1.1/1000)*1000);
+  // A라인 반돈
+  var pa=Math.floor((골드바_살때*0.5+45000)*1.1/1000)*1000;
+  set('j-a1',pa); set('j-a2',pa); set('j-a3',pa); set('j-a4',pa);
+  // B라인 1돈
+  var pb=Math.floor((골드바_살때*1+40000)*1.1/1000)*1000;
+  set('j-b1',pb); set('j-b2',pb); set('j-b3',pb); set('j-b4',pb);
+  // C라인 1돈
+  var pc=Math.floor((골드바_살때*1+45000)*1.1/1000)*1000;
+  set('j-c1',pc); set('j-c2',pc); set('j-c3',pc); set('j-c4',pc);
+  // 팔찌
   set('j-br1',cb(4.34,0.56,70000));
   set('j-br2',cb(8.04,0.54,65000));
   set('j-br3',cb(8.06,0.56,58000));
