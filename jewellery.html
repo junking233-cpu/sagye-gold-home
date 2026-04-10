@@ -74,9 +74,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
 <div class="tab-wrap">
   <div class="tabs">
     <button class="tab-btn active" onclick="showTab('all')">전체</button>
-    <button class="tab-btn" onclick="showTab('ring')"><span style="font-size:9px;letter-spacing:1px;color:var(--gold);font-family:'Montserrat',sans-serif;">14K · 18K</span> 링 · 반지</button>
-    <button class="tab-btn" onclick="showTab('bracelet')"><span style="font-size:9px;letter-spacing:1px;color:var(--gold);font-family:'Montserrat',sans-serif;">14K · 18K</span> 팔찌 · 브레이슬릿</button>
-    <button class="tab-btn" onclick="showTab('necklace')"><span style="font-size:9px;letter-spacing:1px;color:var(--gold);font-family:'Montserrat',sans-serif;">14K · 18K</span> 목걸이 · 네크리스</button>
+    <button class="tab-btn" onclick="showTab('ring')">링 · 반지</button>
+    <button class="tab-btn" onclick="showTab('bracelet')">팔찌 · 브레이슬릿</button>
+    <button class="tab-btn" onclick="showTab('necklace')">목걸이 · 네크리스</button>
   </div>
 </div>
 
@@ -86,13 +86,26 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
   <div id="sec-gold">
     <div class="category-title">순금 쥬얼리</div>
     <div class="category-sub">999.9 · 24K Pure Gold</div>
-    <div style="margin-bottom:16px;">
+    <div style="margin-bottom:24px;">
       <a href="gold_jewellery.html" style="font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);text-decoration:none;">순금 쥬얼리 전체 보기 →</a>
     </div>
     <div class="products-grid">
-      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">순금 링 · 반지</div><div class="product-desc">999.9 · 24K 순금</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">중량에 따라 가격이 달라집니다</div></div></div></div>
-      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">순금 팔찌</div><div class="product-desc">999.9 · 24K 순금</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">중량에 따라 가격이 달라집니다</div></div></div></div>
-      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">순금 목걸이</div><div class="product-desc">999.9 · 24K 순금</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">중량에 따라 가격이 달라집니다</div></div></div></div>
+      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;">
+        <div class="product-img" style="background:#0a0a08;"><img src="tmr1070r 1.88 45.png" alt="A-1 스타패턴" style="height:100%;width:100%;object-fit:cover;"></div>
+        <div class="product-info"><div class="product-name">A-1 스타패턴</div><div class="product-desc">순금 999.9 · 24K · A라인 반지</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-price-a1">-</div><div class="product-price-unit">※ 반돈 기준 · 시세 연동</div></div></div>
+      </div>
+      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;">
+        <div class="product-img" style="background:#0a0a08;"><img src="tmr1072r 1.88 45.png" alt="A-2 다이아패턴" style="height:100%;width:100%;object-fit:cover;"></div>
+        <div class="product-info"><div class="product-name">A-2 다이아패턴</div><div class="product-desc">순금 999.9 · 24K · A라인 반지</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-price-a2">-</div><div class="product-price-unit">※ 반돈 기준 · 시세 연동</div></div></div>
+      </div>
+      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;">
+        <div class="product-img" style="background:#0a0a08;"><img src="tmr1078 1.88 45.png" alt="A-3 리프패턴" style="height:100%;width:100%;object-fit:cover;"></div>
+        <div class="product-info"><div class="product-name">A-3 리프패턴</div><div class="product-desc">순금 999.9 · 24K · A라인 반지</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-price-a3">-</div><div class="product-price-unit">※ 반돈 기준 · 시세 연동</div></div></div>
+      </div>
+      <div class="product-card" onclick="location.href='gold_jewellery.html'" style="cursor:pointer;">
+        <div class="product-img" style="background:#0a0a08;"><img src="tmr1083 1.88 45.png" alt="A-4 하트패턴" style="height:100%;width:100%;object-fit:cover;"></div>
+        <div class="product-info"><div class="product-name">A-4 하트패턴</div><div class="product-desc">순금 999.9 · 24K · A라인 반지</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-price-a4">-</div><div class="product-price-unit">※ 반돈 기준 · 시세 연동</div></div></div>
+      </div>
     </div>
   </div>
 
@@ -100,7 +113,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
 
   <!-- 링 섹션 -->
   <div id="sec-ring">
-    <div class="category-title"><span style="font-size:18px;color:var(--gold);font-family:'Montserrat',sans-serif;letter-spacing:2px;">14K · 18K</span> 링 · 반지</div>
+    <div class="category-title">링 · 반지</div>
     <div class="category-sub">14K · 18K · 24K</div>
     <div class="products-grid">
       <div class="product-card"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">상품명</div><div class="product-desc">상품 설명이 들어갑니다</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">정확한 가격은 매장으로 문의해 주세요</div></div></div></div>
@@ -113,7 +126,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
 
   <!-- 팔찌 섹션 -->
   <div id="sec-bracelet">
-    <div class="category-title"><span style="font-size:18px;color:var(--gold);font-family:'Montserrat',sans-serif;letter-spacing:2px;">14K · 18K</span> 팔찌 · 브레이슬릿</div>
+    <div class="category-title">팔찌 · 브레이슬릿</div>
     <div class="category-sub">14K · 18K · 24K</div>
     <div class="products-grid">
       <div class="product-card"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">상품명</div><div class="product-desc">상품 설명이 들어갑니다</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">정확한 가격은 매장으로 문의해 주세요</div></div></div></div>
@@ -126,7 +139,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
 
   <!-- 목걸이 섹션 -->
   <div id="sec-necklace">
-    <div class="category-title"><span style="font-size:18px;color:var(--gold);font-family:'Montserrat',sans-serif;letter-spacing:2px;">14K · 18K</span> 목걸이 · 네크리스</div>
+    <div class="category-title">목걸이 · 네크리스</div>
     <div class="category-sub">14K · 18K · 24K</div>
     <div class="products-grid">
       <div class="product-card"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">상품명</div><div class="product-desc">상품 설명이 들어갑니다</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">정확한 가격은 매장으로 문의해 주세요</div></div></div></div>
@@ -153,6 +166,17 @@ function showTab(tab){
   document.getElementById('div-bracelet').style.display=(tab==='all'||tab==='bracelet')?'block':'none';
   document.getElementById('div-necklace').style.display=(tab==='all'||tab==='necklace')?'block':'none';
 }
+</script>
+<script src="prices.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const p = Math.floor((골드바_살때 * 0.5 + 45000) * 1.1 / 1000) * 1000;
+  const fmt = n => n.toLocaleString('ko-KR') + ' 원';
+  ['j-price-a1','j-price-a2','j-price-a3','j-price-a4'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.textContent = fmt(p);
+  });
+});
 </script>
 </body>
 </html>
