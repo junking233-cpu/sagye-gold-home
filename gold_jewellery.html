@@ -56,6 +56,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
 .product-price{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--gold-light);}
 .product-price-unit{font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-top:4px;}
 
+
+/* 아코디언 */
+.accordion-toggle{margin-top:12px;background:none;border:1px solid rgba(201,168,76,0.2);width:100%;padding:8px;font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:2px;color:var(--gold);cursor:pointer;transition:all .25s;text-align:center;}
+.accordion-toggle:hover{background:rgba(201,168,76,0.08);border-color:var(--gold);}
+.accordion-body{display:none;margin-top:8px;border:1px solid rgba(201,168,76,0.1);background:rgba(201,168,76,0.03);}
+.accordion-body.open{display:block;}
+.accordion-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(201,168,76,0.08);}
+.accordion-row:last-child{border-bottom:none;}
+.accordion-don{font-size:11px;color:var(--text-muted);letter-spacing:1px;}
+.accordion-price{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold-light);}
 /* 라이트박스 */
 .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:999;align-items:center;justify-content:center;}
 .lightbox.open{display:flex;}
@@ -91,18 +101,18 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
   </div>
 </div>
 
-<!-- 돈수 선택 -->
+<!-- 카테고리 선택 -->
 <div class="don-selector-wrap">
-  <div class="don-label">중량 선택</div>
+  <div class="don-label">카테고리 선택</div>
   <div class="don-buttons">
-    <button class="don-btn active" onclick="setDon(0.5, this)">반돈 · 1.875g</button>
-    <button class="don-btn" onclick="setDon(1, this)">1돈 · 3.75g</button>
-    <button class="don-btn" onclick="setDon(2, this)">2돈 · 7.5g</button>
+    <button class="don-btn active" onclick="showCat('ring', this)">반지</button>
+    <button class="don-btn" onclick="showCat('bracelet', this)">팔찌</button>
+    <button class="don-btn" onclick="showCat('necklace', this)">목걸이</button>
   </div>
 </div>
 
 <!-- A라인 -->
-<div class="products-section">
+<div class="products-section" id="cat-ring">
   <div class="section-label">A 라인 반지</div>
   <div class="section-sub">순금 999.9 · 24K · 반지 · 공임 포함 · 현금가 기준</div>
   <div class="products-grid">
@@ -119,7 +129,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
         <div class="product-price-box">
           <div class="product-price-label">현금 판매가</div>
           <div class="product-price" id="price-a1">-</div>
-          <div class="product-price-unit">※ 시세 연동 · 현금가 기준</div>
+          <div class="product-price-unit">※ 반돈 기준 · 현금가</div>
+          <button class="accordion-toggle" onclick="toggleAcc('acc-a1')">▼ 다른 중량으로 제작 가능</button>
+          <div class="accordion-body" id="acc-a1">
+            <div class="accordion-row"><span class="accordion-don">1돈 · 3.75g</span><span class="accordion-price" id="acc-a1-1don">-</span></div>
+            <div class="accordion-row"><span class="accordion-don">2돈 · 7.5g</span><span class="accordion-price" id="acc-a1-2don">-</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -136,7 +151,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
         <div class="product-price-box">
           <div class="product-price-label">현금 판매가</div>
           <div class="product-price" id="price-a2">-</div>
-          <div class="product-price-unit">※ 시세 연동 · 현금가 기준</div>
+          <div class="product-price-unit">※ 반돈 기준 · 현금가</div>
+          <button class="accordion-toggle" onclick="toggleAcc('acc-a2')">▼ 다른 중량으로 제작 가능</button>
+          <div class="accordion-body" id="acc-a2">
+            <div class="accordion-row"><span class="accordion-don">1돈 · 3.75g</span><span class="accordion-price" id="acc-a2-1don">-</span></div>
+            <div class="accordion-row"><span class="accordion-don">2돈 · 7.5g</span><span class="accordion-price" id="acc-a2-2don">-</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -153,7 +173,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
         <div class="product-price-box">
           <div class="product-price-label">현금 판매가</div>
           <div class="product-price" id="price-a3">-</div>
-          <div class="product-price-unit">※ 시세 연동 · 현금가 기준</div>
+          <div class="product-price-unit">※ 반돈 기준 · 현금가</div>
+          <button class="accordion-toggle" onclick="toggleAcc('acc-a3')">▼ 다른 중량으로 제작 가능</button>
+          <div class="accordion-body" id="acc-a3">
+            <div class="accordion-row"><span class="accordion-don">1돈 · 3.75g</span><span class="accordion-price" id="acc-a3-1don">-</span></div>
+            <div class="accordion-row"><span class="accordion-don">2돈 · 7.5g</span><span class="accordion-price" id="acc-a3-2don">-</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -170,7 +195,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
         <div class="product-price-box">
           <div class="product-price-label">현금 판매가</div>
           <div class="product-price" id="price-a4">-</div>
-          <div class="product-price-unit">※ 시세 연동 · 현금가 기준</div>
+          <div class="product-price-unit">※ 반돈 기준 · 현금가</div>
+          <button class="accordion-toggle" onclick="toggleAcc('acc-a4')">▼ 다른 중량으로 제작 가능</button>
+          <div class="accordion-body" id="acc-a4">
+            <div class="accordion-row"><span class="accordion-don">1돈 · 3.75g</span><span class="accordion-price" id="acc-a4-1don">-</span></div>
+            <div class="accordion-row"><span class="accordion-don">2돈 · 7.5g</span><span class="accordion-price" id="acc-a4-2don">-</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -180,7 +210,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
 
 
 <!-- B라인 -->
-<div class="products-section" style="padding-top:0;">
+<div class="products-section" id="cat-ring-b" style="padding-top:0;">
   <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.2),transparent);margin-bottom:48px;"></div>
   <div class="section-label">B 라인 반지</div>
   <div class="section-sub">순금 999.9 · 24K · 공임 포함 · 현금가 기준</div>
@@ -258,7 +288,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
 </div>
 
 <!-- C라인 -->
-<div class="products-section" style="padding-top:0;">
+<div class="products-section" id="cat-ring-c" style="padding-top:0;">
   <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.2),transparent);margin-bottom:48px;"></div>
   <div class="section-label">C 라인 반지</div>
   <div class="section-sub">순금 999.9 · 24K · 공임 포함 · 현금가 기준</div>
@@ -334,6 +364,85 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
 
   </div>
 </div>
+
+<!-- 팔찌 섹션 -->
+<div class="products-section" id="cat-bracelet" style="padding-top:0;">
+  <div style="height:2px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);margin-bottom:48px;"></div>
+  <div style="font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">Bracelet Collection</div>
+  <div class="section-label">순금 팔찌</div>
+  <div class="section-sub">순금 999.9 · 24K · 18K 고리 · 공임 포함 · 현금가 기준</div>
+  <div class="products-grid">
+
+    <div class="product-card">
+      <div class="product-img" onclick="openLightbox('tmr7059n 4 34g 0 56 70.png','A-1 클로버팔찌')">
+        <img src="tmr7059n 4 34g 0 56 70.png" alt="A-1 클로버팔찌">
+        <div class="zoom-icon">🔍</div>
+      </div>
+      <div class="product-info">
+        <div class="product-line">순금 팔찌 · 24K</div>
+        <div class="product-name">A-1 클로버팔찌</div>
+        <div class="product-desc">순금 24K · 4.34g (18K 고리 0.56g 포함)<br>정품 보증서 포함</div>
+        <div class="product-price-box">
+          <div class="product-price-label">현금 판매가</div>
+          <div class="product-price" id="price-br1">-</div>
+          <div class="product-price-unit">※ 시세 연동 · 현금가 기준</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img" onclick="openLightbox('tma7034b 8 04g 0 54 65.png','A-2 자물쇠팔찌')">
+        <img src="tma7034b 8 04g 0 54 65.png" alt="A-2 자물쇠팔찌">
+        <div class="zoom-icon">🔍</div>
+      </div>
+      <div class="product-info">
+        <div class="product-line">순금 팔찌 · 24K</div>
+        <div class="product-name">A-2 자물쇠팔찌</div>
+        <div class="product-desc">순금 24K · 8.04g (18K 고리 0.54g 포함)<br>정품 보증서 포함</div>
+        <div class="product-price-box">
+          <div class="product-price-label">현금 판매가</div>
+          <div class="product-price" id="price-br2">-</div>
+          <div class="product-price-unit">※ 시세 연동 · 현금가 기준</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img" onclick="openLightbox('tmb7017 8 06g 0 56 58.png','A-3 데이지팔찌')">
+        <img src="tmb7017 8 06g 0 56 58.png" alt="A-3 데이지팔찌">
+        <div class="zoom-icon">🔍</div>
+      </div>
+      <div class="product-info">
+        <div class="product-line">순금 팔찌 · 24K</div>
+        <div class="product-name">A-3 데이지팔찌</div>
+        <div class="product-desc">순금 24K · 8.06g (18K 고리 0.56g 포함)<br>정품 보증서 포함</div>
+        <div class="product-price-box">
+          <div class="product-price-label">현금 판매가</div>
+          <div class="product-price" id="price-br3">-</div>
+          <div class="product-price-unit">※ 시세 연동 · 현금가 기준</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img" onclick="openLightbox('tma7035b 8 08g 0 58 58.png','A-4 밀알팔찌')">
+        <img src="tma7035b 8 08g 0 58 58.png" alt="A-4 밀알팔찌">
+        <div class="zoom-icon">🔍</div>
+      </div>
+      <div class="product-info">
+        <div class="product-line">순금 팔찌 · 24K</div>
+        <div class="product-name">A-4 밀알팔찌</div>
+        <div class="product-desc">순금 24K · 8.08g (18K 고리 0.58g 포함)<br>정품 보증서 포함</div>
+        <div class="product-price-box">
+          <div class="product-price-label">현금 판매가</div>
+          <div class="product-price" id="price-br4">-</div>
+          <div class="product-price-unit">※ 시세 연동 · 현금가 기준</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 <!-- 라이트박스 -->
 <div class="lightbox" id="lightbox" onclick="closeLightboxBg(event)">
   <button class="lightbox-close" onclick="closeLightbox()">✕</button>
@@ -361,6 +470,22 @@ function updatePrices(don) {
   ['b1','b2','b3','b4'].forEach(id => {
     const elb = document.getElementById('price-' + id);
     if (elb) elb.textContent = fmt(Math.floor((골드바_살때 * don + 40000) * 1.1 / 1000) * 1000);
+  });
+
+  // 팔찌 가격 계산 (순금g, 고리g, 공임비 각각 다름)
+  const 팔찌데이터 = [
+    { id: 'price-br1', gold_g: 4.34, clip_g: 0.56, gongim: 70000 },
+    { id: 'price-br2', gold_g: 8.04, clip_g: 0.54, gongim: 65000 },
+    { id: 'price-br3', gold_g: 8.06, clip_g: 0.56, gongim: 58000 },
+    { id: 'price-br4', gold_g: 8.08, clip_g: 0.58, gongim: 58000 },
+  ];
+  팔찌데이터.forEach(b => {
+    const 순금돈 = Math.round((b.gold_g - b.clip_g) / 3.75 * 100) / 100;
+    const 고리돈 = Math.round(b.clip_g / 3.75 * 0.825 * 100) / 100;
+    const 총돈 = Math.round((순금돈 + 고리돈) * 100) / 100;
+    const 가격 = Math.floor((총돈 * 골드바_살때 + b.gongim) * 1.1 / 1000) * 1000;
+    const el = document.getElementById(b.id);
+    if (el) el.textContent = fmt(가격);
   });
   ['c1','c2','c3','c4'].forEach(id => {
     const elc = document.getElementById('price-' + id);
@@ -393,8 +518,43 @@ function closeLightboxBg(e) {
   if (e.target === document.getElementById('lightbox')) closeLightbox();
 }
 
+
+function toggleAcc(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+  const btn = el.previousElementSibling;
+  btn.textContent = el.classList.contains('open') ? '▲ 닫기' : '▼ 다른 중량으로 제작 가능';
+}
+
+function updateAccordion() {
+  const fmt2 = n => n.toLocaleString('ko-KR') + ' 원';
+  // A라인 (공임 45000) - 반돈이 기본, 1돈/2돈 아코디언
+  ['a1','a2','a3','a4'].forEach(id => {
+    const el1 = document.getElementById('acc-' + id + '-1don');
+    const el2 = document.getElementById('acc-' + id + '-2don');
+    if(el1) el1.textContent = fmt2(Math.floor((골드바_살때 * 1 + 45000) * 1.1 / 1000) * 1000);
+    if(el2) el2.textContent = fmt2(Math.floor((골드바_살때 * 2 + 45000) * 1.1 / 1000) * 1000);
+  });
+  // B라인 (공임 40000) - 1돈이 기본, 반돈/2돈 아코디언
+  ['b1','b2','b3','b4'].forEach(id => {
+    const elH = document.getElementById('acc-' + id + '-half');
+    const el2 = document.getElementById('acc-' + id + '-2don');
+    if(elH) elH.textContent = fmt2(Math.floor((골드바_살때 * 0.5 + 40000) * 1.1 / 1000) * 1000);
+    if(el2) el2.textContent = fmt2(Math.floor((골드바_살때 * 2 + 40000) * 1.1 / 1000) * 1000);
+  });
+  // C라인 (공임 45000) - 1돈이 기본, 반돈/2돈 아코디언
+  ['c1','c2','c3','c4'].forEach(id => {
+    const elH = document.getElementById('acc-' + id + '-half');
+    const el2 = document.getElementById('acc-' + id + '-2don');
+    if(elH) elH.textContent = fmt2(Math.floor((골드바_살때 * 0.5 + 45000) * 1.1 / 1000) * 1000);
+    if(el2) el2.textContent = fmt2(Math.floor((골드바_살때 * 2 + 45000) * 1.1 / 1000) * 1000);
+  });
+}
 document.addEventListener('DOMContentLoaded', function() {
   updatePrices(현재돈수);
+  // 초기 반지만 보이게
+  showCat('ring', document.querySelector('.don-btn.active'));
+  updateAccordion();
 });
 </script>
 </body>
