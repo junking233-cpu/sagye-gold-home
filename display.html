@@ -138,6 +138,11 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf8f5; min-height:
 .purity-text { flex: 1; }
 .purity-title { font-size: 14px; font-weight: 700; color: #7a3e10; margin-bottom: 4px; }
 .purity-text p { font-size: 13px; color: #5a4a3a; line-height: 1.7; }
+
+.lb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;align-items:center;justify-content:center;}
+.lb-overlay.open{display:flex;}
+.lb-overlay img{max-width:90vw;max-height:88vh;object-fit:contain;border-radius:8px;}
+.lb-overlay-close{position:absolute;top:20px;right:24px;background:none;border:none;color:rgba(255,255,255,0.7);font-size:28px;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -303,63 +308,59 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf8f5; min-height:
           </button>
           <div class="acc-body-autumn">
 
-            <p style="font-size:13px;color:#7a5a40;line-height:1.8;margin-bottom:12px;padding:10px;background:#fffaf5;border-radius:8px;border-left:3px solid #c9a84c;">
-              저희도 최대한 높은 가격으로 드리고 싶습니다. 하지만 아래와 같은 제품들은 <strong>실제 순도가 낮게 측정</strong>되어 시세 그대로 드리기 어렵습니다. 양해 부탁드립니다.
-            </p>
-
             <div class="purity-item">
-              <img src="purity_1.jpeg" alt="S자 고리">
+              <img onclick="openLbAutumn('purity_1.jpeg','S자 고리')" style="cursor:zoom-in;" src="purity_1.jpeg" alt="S자 고리">
               <div class="purity-text">
                 <div class="purity-title">① S자 고리</div>
-                <p>S자 고리는 제조 특성상 납땜 부분이 많아 실제 감정 시 순도가 <strong>94% 수준</strong>으로 나옵니다. 저희가 낮게 드리는 게 아니라, 기계 감정 결과가 그렇게 나오기 때문입니다.</p>
+                <p>S자 고리 형태의 제품은 구조상 납땜 부분이 많아 순도가 <strong>94%</strong> 수준으로 측정되는 경우가 많습니다. 겉으로는 금처럼 보여도 실제 순도가 낮아 시세보다 낮게 매입될 수 있습니다.</p>
               </div>
             </div>
 
             <div class="purity-item">
-              <img src="purity_2.jpeg" alt="망사/뜰잠">
+              <img onclick="openLbAutumn('purity_2.jpeg','망사/뜰잠')" style="cursor:zoom-in;" src="purity_2.jpeg" alt="망사/뜰잠">
               <div class="purity-text">
-                <div class="purity-title">② 망사 · 나비코일 · 뜰잠</div>
-                <p>구조가 복잡한 이 제품들은 X-RAY 감정 시 순도가 정확히 측정되지 않습니다. 업계 기준에 따라 <strong>10% 감가</strong>가 불가피하며, 저희만 그런 게 아니라 어느 매장에서도 동일합니다.</p>
+                <div class="purity-title">② 망사 · 나비코일 · 뜰잠 제품</div>
+                <p>망사, 나비코일, 뜰잠 등의 제품은 구조가 복잡하여 순도가 정확히 나오지 않습니다. 이런 제품은 매입 시 <strong>10% 이상 감가</strong>하여 장부에 90%로 기재합니다.</p>
               </div>
             </div>
 
             <div class="purity-item">
-              <img src="purity_3.jpeg" alt="검인마크 없는 제품">
+              <img onclick="openLbAutumn('purity_3.jpeg','검인마크 없는 제품')" style="cursor:zoom-in;" src="purity_3.jpeg" alt="검인마크 없는 제품">
               <div class="purity-text">
-                <div class="purity-title">③ 검인마크 없는 오래된 제품</div>
-                <p>오래된 금 제품 중 검인마크가 없는 것들은 순도를 보증할 방법이 없습니다. 실제 감정 결과 <strong>94% 수준</strong>이 나오는 사례가 많아, 그 순도 기준으로 매입가를 산정합니다.</p>
+                <div class="purity-title">③ 옛날 검인마크 없는 제품</div>
+                <p>검인마크가 없는 오래된 금 제품은 순도를 보장할 수 없습니다. X-RAY 감정 결과 <strong>94%</strong> 수준으로 나오는 사례가 많습니다.</p>
               </div>
             </div>
 
             <div class="purity-item">
-              <img src="purity_4.jpeg" alt="99.9 각인 덩이">
+              <img onclick="openLbAutumn('purity_4.jpeg','99.9 각인 덩이')" style="cursor:zoom-in;" src="purity_4.jpeg" alt="99.9 각인 덩이">
               <div class="purity-text">
-                <div class="purity-title">④ 99.9 각인 덩이 (쓰리나인)</div>
-                <p>정품 골드바는 <strong>999.9</strong> 각인입니다. 99.9 각인은 쓰리나인으로, 골드바와 다른 등급입니다. 고객님께서 골드바로 알고 계셨더라도 저희는 덩이금 가격으로 드릴 수밖에 없습니다.</p>
+                <div class="purity-title">④ 99.9 각인 덩이금</div>
+                <p>진짜 골드바는 <strong>999.9</strong> 각인이지만, 99.9 각인 덩이는 쓰리나인(Three Nine)으로 골드바가 아닙니다. 반드시 <strong>덩이금 가격</strong>으로 매입합니다.</p>
               </div>
             </div>
 
             <div class="purity-item">
-              <img src="purity_5.jpeg" alt="검인마크 없는 금">
+              <img onclick="openLbAutumn('purity_5.jpeg','검인마크 없는 금')" style="cursor:zoom-in;" src="purity_5.jpeg" alt="검인마크 없는 금">
               <div class="purity-text">
-                <div class="purity-title">⑤ 검인마크 없는 일반 금</div>
-                <p>태극·금자·무궁화 3대 검인마크가 없으면 순도를 보증할 수 없습니다. 감정 결과 <strong>97~98% 수준</strong>이 나오는 경우가 많고, 그 순도에 맞게 매입가가 결정됩니다.</p>
+                <div class="purity-title">⑤ 검인마크 없는 금 (일반)</div>
+                <p>3대 검인마크(태극·금자·무궁화)가 없는 금은 순도 보증이 어렵습니다. 감정 결과 <strong>97~98%</strong> 수준으로 나오는 경우가 많아 감가가 발생합니다.</p>
               </div>
             </div>
 
             <div class="purity-item">
-              <img src="purity_6.jpeg" alt="메달·돌반지">
+              <img onclick="openLbAutumn('purity_6.jpeg','메달·돌반지')" style="cursor:zoom-in;" src="purity_6.jpeg" alt="메달·돌반지">
               <div class="purity-text">
                 <div class="purity-title">⑥ 검인마크 없는 메달 · 돌반지</div>
-                <p>검인마크 없는 메달이나 돌반지는 순도 편차가 큽니다. 실제 감정 시 <strong>90~96% 수준</strong>까지 낮게 나오는 경우가 있어, 감정 결과에 따라 매입가가 달라집니다.</p>
+                <p>검인마크 없는 메달이나 돌반지는 순도가 크게 낮을 수 있습니다. 실제 감정 결과 <strong>90~96%</strong> 수준으로 나오는 사례가 다수 있습니다.</p>
               </div>
             </div>
 
             <div class="purity-item">
-              <img src="purity_7.jpeg" alt="떨잠·칠보">
+              <img onclick="openLbAutumn('purity_7.jpeg','떨잠·칠보')" style="cursor:zoom-in;" src="purity_7.jpeg" alt="떨잠·칠보">
               <div class="purity-text">
                 <div class="purity-title">⑦ 떨잠 · 나비 · 브로치 · 칠보장식</div>
-                <p>이 제품들은 금 함량이 혼합되어 있어 순도가 낮게 나옵니다. 실제 감정 시 <strong>92% 수준</strong>이었으며, 18K보다 조금 높게 드리지만 순금 시세로는 드리기 어렵습니다. 저희 기준이 아니라 감정 결과 기준입니다.</p>
+                <p>떨잠, 나비, 브로치, 칠보장식 등은 18K보다 조금 높은 가격으로 매입하나, 순도가 낮게 나올 것을 감안하여 <strong>장부 90%로 기재</strong>합니다. 실제 감정 시 <strong>92%</strong> 수준이 나왔습니다.</p>
               </div>
             </div>
 
@@ -374,33 +375,29 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf8f5; min-height:
           </button>
           <div class="acc-body-autumn">
 
-            <p style="font-size:13px;color:#7a5a40;line-height:1.8;margin-bottom:12px;padding:10px;background:#fffaf5;border-radius:8px;border-left:3px solid #c9a84c;">
-              가짜금은 저희도 원치 않습니다. 꼼꼼히 확인하는 이유는 <strong>고객님께 정확한 가치만큼 드리기 위해서</strong>입니다. 아래 사례를 미리 알아두시면 도움이 됩니다.
-            </p>
-
             <!-- 스토리 사례 -->
             <div style="background:#fff3f3;border:1px solid #f0a0a0;border-radius:8px;padding:12px;margin-bottom:16px;">
-              <div style="font-size:13px;font-weight:700;color:#c03030;margin-bottom:8px;">📋 실제 감정 사례 — 명품 브랜드 디자인 팔찌</div>
+              <div style="font-size:13px;font-weight:700;color:#c03030;margin-bottom:8px;">⚠️ 실제 사례 — 까르띠에 러브링 형태 도금 팔찌</div>
               <div style="display:flex;gap:10px;margin-bottom:10px;">
                 <img src="fake_1.jpeg" style="width:45%;border-radius:6px;object-fit:cover;border:1px solid #f0c0c0;">
                 <img src="fake_2.jpeg" style="width:45%;border-radius:6px;object-fit:cover;border:1px solid #f0c0c0;">
               </div>
               <p style="font-size:13px;color:#5a3030;line-height:1.7;">
-                자호 750이 찍혀 있어 18K로 보이는 팔찌였지만, 정밀 감정 결과 <strong>도금 제품</strong>으로 확인되었습니다.<br><br>
-                이처럼 겉으로는 구분이 어려운 경우가 있습니다. 저희가 꼼꼼하게 확인하는 이유가 바로 이것입니다. <strong>감정 없이 드리는 가격은 고객님께도, 저희에게도 불공평합니다.</strong> 정확한 감정으로 정당한 가격을 드리겠습니다.
+                까르띠에 러브링처럼 생긴 <strong>화이트 도금 18K 팔찌</strong>가 들어왔습니다. 자호 750 확인, 시금까지 하였으나 안일하게 3원칙을 지키지 않아 <strong>가짜로 확인</strong>되었습니다.<br><br>
+                실 중량 4.7돈이었으나 4.2돈으로 매입하였고, 이후 고객에게 매입금액 전액을 돌려받았습니다. 이 사례를 통해 <strong>저희는 반드시 자호 확인 · 시금 · 3원칙을 철저히 지킵니다.</strong>
               </p>
             </div>
 
             <!-- GF/GP 도금 설명 -->
             <div style="background:#f8f5ff;border:1px solid #c8a0f0;border-radius:8px;padding:12px;">
-              <div style="font-size:13px;font-weight:700;color:#6030a0;margin-bottom:8px;">🔍 GF · GP 각인이 있다면 — 도금 제품입니다</div>
+              <div style="font-size:13px;font-weight:700;color:#6030a0;margin-bottom:8px;">🔍 GF · GP 각인 = 도금 제품 = 금 아님!</div>
               <div style="display:flex;gap:10px;align-items:flex-start;">
                 <img src="fake_3.jpeg" style="width:45%;border-radius:6px;object-fit:cover;border:1px solid #c8a0f0;">
                 <div style="flex:1;font-size:13px;color:#4a3060;line-height:1.7;">
-                  <p>금처럼 보이지만 <strong>GF(Gold Filled)</strong>나 <strong>GP(Gold Plate)</strong> 각인이 있는 제품은 도금 제품입니다.</p><br>
-                  <p>· <strong>GF</strong> — 베이스 메탈 위에 얇은 금 층을 입힌 것 (금 함량 5% 미만)</p>
-                  <p>· <strong>GP</strong> — 표면에 아주 얇게 도금 처리한 것</p><br>
-                  <p>이런 제품을 금으로 알고 계신 분들이 종종 있습니다. 억울하실 수 있지만, 저희도 감정 결과대로 드릴 수밖에 없습니다. 미리 확인해 드리는 것이 서로에게 최선입니다.</p>
+                  <p>금 도금은 크게 <strong>전기도금</strong>과 <strong>화학도금</strong>으로 나뉩니다.</p><br>
+                  <p>· <strong>GF (Gold Filled)</strong> — 베이스 메탈 위에 5% 금 레이어만 입힌 것</p>
+                  <p>· <strong>GP (Gold Plate)</strong> — 얇은 도금 처리</p><br>
+                  <p>GF · GP 각인이 있는 제품은 <strong>금이 아닙니다.</strong> 손님께서 금이라 생각하시는 경우가 있어 미리 안내드립니다.</p>
                 </div>
               </div>
             </div>
@@ -415,7 +412,31 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf8f5; min-height:
             <span class="acc-arrow">▼</span>
           </button>
           <div class="acc-body-autumn">
-            <p>내용을 입력해주세요</p>
+
+            <p style="font-size:13px;color:#7a5a40;line-height:1.8;margin-bottom:12px;padding:10px;background:#fffaf5;border-radius:8px;border-left:3px solid #c9a84c;">
+              혼합금은 저희가 가장 꼼꼼하게 확인하는 제품입니다. <strong>정확히 구분해서 드려야 고객님이 제대로 된 가격을 받으실 수 있기 때문입니다.</strong>
+            </p>
+
+            <!-- PT 섞인 금 -->
+            <div style="background:#f0f6fc;border:1px solid #8ec4e8;border-radius:8px;padding:12px;margin-bottom:14px;">
+              <div style="font-size:13px;font-weight:700;color:#1a3a5a;margin-bottom:8px;">💙 PT(백금)가 섞인 금제품</div>
+              <img src="mixed_1.jpeg" onclick="openLbAutumn(this.src,'PT 섞인 금제품 — 분리 전/후')" style="width:100%;border-radius:6px;margin-bottom:10px;cursor:zoom-in;border:1px solid #8ec4e8;">
+              <p style="font-size:13px;color:#2a4a6a;line-height:1.8;">
+                백금이 금보다 비쌀 것 같지만, 현재 시세는 <strong>금이 백금보다 훨씬 높습니다.</strong> 18K 안에도 백금 성분이 많이 포함되어 있어 겉으로는 구분이 거의 불가능합니다.<br><br>
+                저희는 시금 후 PT와 금을 각각 정확히 계산합니다. <strong>고객님이 받으실 수 있는 최대 금액을 드리기 위해서입니다.</strong>
+              </p>
+            </div>
+
+            <!-- 18K + 14K 혼합 -->
+            <div style="background:#f8f5ff;border:1px solid #c8a0f0;border-radius:8px;padding:12px;">
+              <div style="font-size:13px;font-weight:700;color:#6030a0;margin-bottom:8px;">💜 같은 제품 안에 18K + 14K가 혼합된 경우</div>
+              <img src="mixed_2.jpeg" onclick="openLbAutumn(this.src,'18K + 14K 혼합 귀걸이')" style="width:100%;border-radius:6px;margin-bottom:10px;cursor:zoom-in;border:1px solid #c8a0f0;">
+              <p style="font-size:13px;color:#4a3060;line-height:1.8;">
+                같은 제품이라도 부위별로 18K, 14K가 다르게 사용됩니다. 눈으로는 절대 구분할 수 없습니다.<br><br>
+                저희는 시금 후 부위별로 정확히 구분해 계산합니다. <strong>뭉뚱그려 드리지 않습니다. 정확하게 드립니다.</strong>
+              </p>
+            </div>
+
           </div>
         </div>
 
@@ -443,10 +464,25 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf8f5; min-height:
   </div>
 </div>
 
+
+<div class="lb-overlay" id="lb-autumn" onclick="if(event.target===this)closeLbAutumn()">
+  <button class="lb-overlay-close" onclick="closeLbAutumn()">✕</button>
+  <img id="lb-autumn-img" src="" alt="">
+</div>
 <div class="footer">© 사계절 금거래소 · Four Seasons Gold</div>
 
 <script>
 
+
+function openLbAutumn(src, caption) {
+  document.getElementById('lb-autumn-img').src = src;
+  document.getElementById('lb-autumn').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLbAutumn() {
+  document.getElementById('lb-autumn').classList.remove('open');
+  document.body.style.overflow = '';
+}
 function toggleAutumn(btn) {
   const body = btn.nextElementSibling;
   const isOpen = body.classList.contains('open');
