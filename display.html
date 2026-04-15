@@ -121,6 +121,17 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf8f5; min-height:
 .winter-bottom { background: #e8f4fc; border-radius: 10px; padding: 1rem; margin-top: 1rem; text-align: center; border: 1px solid #8ec4e8; }
 .winter-bottom-text { font-size: 12px; color: #1a3a5a; line-height: 1.9; font-weight: 500; }
 .footer { text-align: center; padding: 1.5rem; font-size: 11px; color: #c0b0a0; letter-spacing: 1px; }
+
+.acc-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.acc-item { border-radius: 10px; overflow: hidden; border: 1px solid #e8c49a; }
+.acc-header { width: 100%; background: #fff8f2; border: none; padding: 1rem; display: flex; align-items: center; gap: 10px; cursor: pointer; font-family: "Noto Sans KR", sans-serif; font-size: 16px; font-weight: 700; color: #2c2416; text-align: left; transition: background 0.2s; }
+.acc-header:hover { background: #fef0e0; }
+.acc-icon { font-size: 20px; }
+.acc-title { flex: 1; }
+.acc-arrow { font-size: 12px; color: #c9a84c; transition: transform 0.3s; }
+.acc-header.open .acc-arrow { transform: rotate(180deg); }
+.acc-body-autumn { display: none; background: #fff; padding: 1rem 1.2rem; font-size: 14px; color: #5a4a3a; line-height: 1.8; border-top: 1px solid #f0e0d0; }
+.acc-body-autumn.open { display: block; animation: fadeIn 0.3s ease; }
 </style>
 </head>
 <body>
@@ -269,9 +280,48 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf8f5; min-height:
     <!-- 가을 -->
     <div class="tab-panel autumn" id="panel-autumn">
       <span class="section-badge-autumn">🍁 Autumn · 가을</span>
-      <div class="grade-intro">
-        <div class="grade-intro-title">준비 중입니다</div>
-        <div class="grade-intro-text">곧 업데이트 됩니다 😊</div>
+
+      <div class="grade-intro" style="margin-bottom:1rem;">
+        <div class="grade-intro-title">매입가, 왜 다를 수 있을까요?</div>
+        <div class="grade-intro-text">금의 상태와 순도에 따라 매입가가 달라질 수 있습니다.<br>아래 항목을 확인하시면 이해에 도움이 됩니다.</div>
+      </div>
+
+      <!-- 아코디언 -->
+      <div class="acc-list">
+
+        <div class="acc-item">
+          <button class="acc-header" onclick="toggleAutumn(this)">
+            <span class="acc-icon">🔍</span>
+            <span class="acc-title">순도가 떨어지는 경우</span>
+            <span class="acc-arrow">▼</span>
+          </button>
+          <div class="acc-body-autumn">
+            <p>내용을 입력해주세요</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-header" onclick="toggleAutumn(this)">
+            <span class="acc-icon">⚠️</span>
+            <span class="acc-title">가짜금인 경우</span>
+            <span class="acc-arrow">▼</span>
+          </button>
+          <div class="acc-body-autumn">
+            <p>내용을 입력해주세요</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-header" onclick="toggleAutumn(this)">
+            <span class="acc-icon">⚖️</span>
+            <span class="acc-title">혼합금인 경우</span>
+            <span class="acc-arrow">▼</span>
+          </button>
+          <div class="acc-body-autumn">
+            <p>내용을 입력해주세요</p>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -299,6 +349,19 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf8f5; min-height:
 <div class="footer">© 사계절 금거래소 · Four Seasons Gold</div>
 
 <script>
+
+function toggleAutumn(btn) {
+  const body = btn.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  // 모두 닫기
+  document.querySelectorAll('.acc-body-autumn').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.acc-header').forEach(b => b.classList.remove('open'));
+  // 클릭한 거 열기 (이미 열려있으면 닫기)
+  if (!isOpen) {
+    body.classList.add('open');
+    btn.classList.add('open');
+  }
+}
 function switchTab(s) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
