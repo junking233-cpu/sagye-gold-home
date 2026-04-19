@@ -716,12 +716,15 @@ function goSlide(i){
   },2500);
 }
 const videos=['vid-spring','vid-summer','vid-autumn','vid-winter'];
+// 영상 재생 속도 (1.0=원본, 0.6=조금 천천히, 0.5=절반속도, 0.7=살짝 느리게)
+const PLAYBACK_RATE=0.6;
 function startTimer(){
   clearInterval(timer);
   // 현재 계절 영상 처음부터 재생, 끝나면 다음 계절로
   const v=document.getElementById(videos[cur]);
   if(v){
     v.currentTime=0;
+    v.playbackRate=PLAYBACK_RATE;
     v.play().catch(()=>{});
     v.onended=()=>{ goSlide((cur+1)%slides.length); };
   }
