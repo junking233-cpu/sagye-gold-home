@@ -700,27 +700,24 @@ let cur=0, timer;
 const dim=document.getElementById('hero-dim');
 
 function goSlide(i){
-  dim.classList.add('on');
   clearInterval(timer);
+  const oldIdx=cur;
+  slides[cur].classList.remove('active');
+  dots[cur].classList.remove('active');
+  cur=i;
+  slides[cur].classList.add('active');
+  dots[cur].classList.add('active');
+  document.getElementById('season-label').textContent=labels[cur];
+  startTimer();
+  // 크로스페이드 끝난 후 이전 영상 정지 (잔상 자연스럽게 + 리소스 절약)
   setTimeout(()=>{
-    slides[cur].classList.remove('active');
-    dots[cur].classList.remove('active');
-    cur=i;
-    slides[cur].classList.add('active');
-    dots[cur].classList.add('active');
-    document.getElementById('season-label').textContent=labels[cur];
-    startFx(FX[cur]||null);
-    setTimeout(()=>dim.classList.remove('on'),100);
-    startTimer();
-  },750);
+    const ov=document.getElementById(videos[oldIdx]);
+    if(ov && oldIdx!==cur) ov.pause();
+  },2500);
 }
 const videos=['vid-spring','vid-summer','vid-autumn','vid-winter'];
 function startTimer(){
   clearInterval(timer);
-  // 다른 계절 영상은 정지 (리소스 절약)
-  videos.forEach((id,i)=>{
-    if(i!==cur){const ov=document.getElementById(id); if(ov) ov.pause();}
-  });
   // 현재 계절 영상 처음부터 재생, 끝나면 다음 계절로
   const v=document.getElementById(videos[cur]);
   if(v){
@@ -774,7 +771,6 @@ function filterProducts(cat){
 window.onload=function(){
   ['spring.png','spring_dark.png','summer.png','summer_rain.png','autumn.png','autumn_dark.png','winter.png','winter_dark.png'].forEach(s=>{new Image().src=s;});
   startTimer();
-  startFx(FX[0]);
 };
 
 const nav=document.getElementById('nav');
