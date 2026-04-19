@@ -33,13 +33,9 @@ nav.scrolled{padding:14px 48px;background:rgba(10,10,8,0.92);backdrop-filter:blu
 .hero-slide{position:absolute;inset:0;background-size:cover;background-position:center top;opacity:0;transform:scale(1.05);transition:opacity 2.5s ease-in-out,transform 12s ease-out;will-change:opacity,transform;}
 .hero-slide.active{opacity:1;transform:scale(1.0);}
 #s1{background-image:url('spring.png');}
-#s2{background-image:url('spring_dark.png');}
 #s3{background-image:url('summer.png');}
-#s4{background-image:url('summer_rain.png');}
 #s5{background-image:url('autumn.png');}
-#s6{background-image:url('autumn_dark.png');}
 #s7{background-image:url('winter.png');}
-#s8{background-image:url('winter_dark.png');}
 
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,10,8,0.3) 0%,rgba(10,10,8,0.05) 40%,rgba(10,10,8,0.5) 75%,rgba(10,10,8,0.85) 100%);z-index:2;}
 .hero-dim{position:absolute;inset:0;background:rgba(0,0,0,0);z-index:3;pointer-events:none;transition:background .8s ease;}
@@ -253,14 +249,14 @@ footer{background:var(--dark);border-top:1px solid rgba(201,168,76,0.1);padding:
 
 <!-- HERO -->
 <div class="hero" id="hero">
-  <div class="hero-slide active" id="s1"></div>
-  <div class="hero-slide" id="s2"></div>
+  <div class="hero-slide active" id="s1" style="background:none;">
+  <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">
+    <source src="spring.mp4" type="video/mp4">
+  </video>
+</div>
   <div class="hero-slide" id="s3"></div>
-  <div class="hero-slide" id="s4"></div>
   <div class="hero-slide" id="s5"></div>
-  <div class="hero-slide" id="s6"></div>
   <div class="hero-slide" id="s7"></div>
-  <div class="hero-slide" id="s8"></div>
   <div class="hero-overlay"></div>
   <div class="hero-dim" id="hero-dim"></div>
 
@@ -285,10 +281,6 @@ footer{background:var(--dark);border-top:1px solid rgba(201,168,76,0.1);padding:
     <div class="sdot" onclick="goSlide(1)"></div>
     <div class="sdot" onclick="goSlide(2)"></div>
     <div class="sdot" onclick="goSlide(3)"></div>
-    <div class="sdot" onclick="goSlide(4)"></div>
-    <div class="sdot" onclick="goSlide(5)"></div>
-    <div class="sdot" onclick="goSlide(6)"></div>
-    <div class="sdot" onclick="goSlide(7)"></div>
   </div>
   <canvas id="fx-canvas" style="position:absolute;inset:0;pointer-events:none;z-index:5;width:100%;height:100%;"></canvas>
   <div class="season-label" id="season-label">봄 · Spring</div>
@@ -577,6 +569,53 @@ function drawPetals(){ctx.clearRect(0,0,W,H);petals.forEach(p=>{p.sw+=0.012;p.x+
 ctx.beginPath();ctx.ellipse(0,0,p.r*0.4,p.r,0,0,Math.PI*2);ctx.fillStyle=`rgba(255,210,225,${p.op})`;ctx.fill();// 중앙 라인 (꽃맥)
 ctx.beginPath();ctx.moveTo(0,-p.r);ctx.lineTo(0,p.r);ctx.strokeStyle=`rgba(255,170,200,${p.op*0.4})`;ctx.lineWidth=0.3;ctx.stroke();ctx.restore();});}
 
+// 태양빛 이펙트
+function drawSun(){
+  ctx.clearRect(0,0,W,H);
+  const cx=W*0.78, cy=H*0.18;
+  const t=Date.now()/1000;
+  // 바다까지 닿는 긴 광선
+  for(let i=0;i<16;i++){
+    const angle=(i/16)*Math.PI*2+t*0.05;
+    const len=300+Math.sin(t*1.2+i)*80+H*0.8;
+    const op=0.05+Math.sin(t*1.5+i)*0.02;
+    const grad=ctx.createLinearGradient(cx,cy,cx+Math.cos(angle)*len,cy+Math.sin(angle)*len);
+    grad.addColorStop(0,`rgba(255,240,180,${op*3})`);
+    grad.addColorStop(1,'rgba(255,240,180,0)');
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+Math.cos(angle)*len,cy+Math.sin(angle)*len);
+    ctx.strokeStyle=grad;
+    ctx.lineWidth=4+Math.sin(t+i)*2;
+    ctx.stroke();
+  }
+  // 아래 방향 집중 광선 (바다쪽)
+  for(let i=0;i<10;i++){
+    const angle=Math.PI*0.25+((i/10)*Math.PI*0.9)+Math.sin(t*0.3+i)*0.05;
+    const len=H*1.5;
+    const op=0.04+Math.sin(t*0.8+i)*0.02;
+    const grad=ctx.createLinearGradient(cx,cy,cx+Math.cos(angle)*len,cy+Math.sin(angle)*len);
+    grad.addColorStop(0,`rgba(255,235,150,${op*3})`);
+    grad.addColorStop(0.5,`rgba(255,220,120,${op})`);
+    grad.addColorStop(1,'rgba(255,200,100,0)');
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+Math.cos(angle)*len,cy+Math.sin(angle)*len);
+    ctx.strokeStyle=grad;
+    ctx.lineWidth=8+Math.sin(t*0.5+i)*4;
+    ctx.stroke();
+  }
+  // 태양 주변 헤일로
+  for(let r=40;r<180;r+=35){
+    const op=0.04+Math.sin(t*0.5+r)*0.015;
+    ctx.beginPath();
+    ctx.arc(cx,cy,r+Math.sin(t+r*0.1)*4,0,Math.PI*2);
+    ctx.strokeStyle=`rgba(255,230,150,${op})`;
+    ctx.lineWidth=1;
+    ctx.stroke();
+  }
+}
+
 // 반딧불
 const ff=Array.from({length:isMobile?15:38},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:1.5+Math.random()*2,ph:Math.random()*Math.PI*2,sx:(Math.random()-0.5)*0.6,sy:(Math.random()-0.5)*0.4}));
 let fft=0;
@@ -629,6 +668,7 @@ function startFx(type){
   if(!type){ctx.clearRect(0,0,W,H);return;}
   function loop(){
     if(type==='rain')drawRain();
+    else if(type==='sun')drawSun();
     else if(type==='petals')drawPetals();
     else if(type==='ff')drawFF();
     else if(type==='leaves')drawLeaves();
@@ -639,11 +679,11 @@ function startFx(type){
 }
 
 // 0:spring 1:spring_dark 2:summer 3:summer_rain 4:autumn 5:autumn_dark 6:winter 7:winter_dark
-const FX={0:'petals',1:'petals',2:'ff',3:'rain',4:'leaves',5:'leaves',6:'snow',7:'snow'};
+const FX={0:'petals',1:'sun',2:'leaves',3:'snow'};
 
 const slides=document.querySelectorAll('.hero-slide');
 const dots=document.querySelectorAll('.sdot');
-const labels=['봄 · Spring','봄밤 · Spring Night','여름 · Summer','여름비 · Summer Rain','가을 · Autumn','가을밤 · Autumn Night','겨울 · Winter','겨울밤 · Winter Night'];
+const labels=['봄 · Spring','여름 · Summer','가을 · Autumn','겨울 · Winter'];
 let cur=0, timer;
 const dim=document.getElementById('hero-dim');
 
