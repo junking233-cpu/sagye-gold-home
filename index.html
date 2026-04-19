@@ -250,13 +250,25 @@ footer{background:var(--dark);border-top:1px solid rgba(201,168,76,0.1);padding:
 <!-- HERO -->
 <div class="hero" id="hero">
   <div class="hero-slide active" id="s1" style="background:none;">
-  <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">
-    <source src="spring.mp4" type="video/mp4">
-  </video>
-</div>
-  <div class="hero-slide" id="s3"></div>
-  <div class="hero-slide" id="s5"></div>
-  <div class="hero-slide" id="s7"></div>
+    <video id="vid-spring" autoplay muted playsinline preload="auto" poster="spring.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">
+      <source src="spring.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-slide" id="s3" style="background:none;">
+    <video id="vid-summer" muted playsinline preload="auto" poster="summer.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">
+      <source src="summer.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-slide" id="s5" style="background:none;">
+    <video id="vid-autumn" muted playsinline preload="auto" poster="autumn.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">
+      <source src="autumn.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-slide" id="s7" style="background:none;">
+    <video id="vid-winter" muted playsinline preload="auto" poster="winter.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">
+      <source src="winter.mp4" type="video/mp4">
+    </video>
+  </div>
   <div class="hero-overlay"></div>
   <div class="hero-dim" id="hero-dim"></div>
 
@@ -689,6 +701,7 @@ const dim=document.getElementById('hero-dim');
 
 function goSlide(i){
   dim.classList.add('on');
+  clearInterval(timer);
   setTimeout(()=>{
     slides[cur].classList.remove('active');
     dots[cur].classList.remove('active');
@@ -698,11 +711,24 @@ function goSlide(i){
     document.getElementById('season-label').textContent=labels[cur];
     startFx(FX[cur]||null);
     setTimeout(()=>dim.classList.remove('on'),100);
+    startTimer();
   },750);
-  clearInterval(timer);
-  startTimer();
 }
-function startTimer(){timer=setInterval(()=>goSlide((cur+1)%slides.length),10000);}
+const videos=['vid-spring','vid-summer','vid-autumn','vid-winter'];
+function startTimer(){
+  clearInterval(timer);
+  // 다른 계절 영상은 정지 (리소스 절약)
+  videos.forEach((id,i)=>{
+    if(i!==cur){const ov=document.getElementById(id); if(ov) ov.pause();}
+  });
+  // 현재 계절 영상 처음부터 재생, 끝나면 다음 계절로
+  const v=document.getElementById(videos[cur]);
+  if(v){
+    v.currentTime=0;
+    v.play().catch(()=>{});
+    v.onended=()=>{ goSlide((cur+1)%slides.length); };
+  }
+}
 
 /* ── 팝업 ── */
 function closePopup(){
