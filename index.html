@@ -249,28 +249,10 @@ footer{background:var(--dark);border-top:1px solid rgba(201,168,76,0.1);padding:
 
 <!-- HERO -->
 <div class="hero" id="hero">
-  <div class="hero-slide active" id="s1" style="background:none;">
-    <video id="vid-spring" autoplay muted playsinline preload="auto" poster="spring.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">
-      <source src="spring.mp4" type="video/mp4">
-    </video>
-  </div>
-  <div class="hero-slide" id="s3" style="background:none;">
-    <video id="vid-summer" muted playsinline preload="auto" poster="summer.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">
-      <source src="summer.mp4" type="video/mp4">
-    </video>
-  </div>
-  <div class="hero-slide" id="s5" style="background:none;">
-    <video id="vid-autumn" muted playsinline preload="auto" poster="autumn.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">
-      <source src="autumn.mp4" type="video/mp4">
-    </video>
-  </div>
-  <div class="hero-slide" id="s7" style="background:none;">
-    <video id="vid-winter" muted playsinline preload="auto" poster="winter.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">
-      <source src="winter.mp4" type="video/mp4">
-    </video>
-  </div>
+  <video id="hero-video" autoplay muted loop playsinline preload="auto" poster="spring.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">
+    <source src="seasons.mp4" type="video/mp4">
+  </video>
   <div class="hero-overlay"></div>
-  <div class="hero-dim" id="hero-dim"></div>
 
   <!-- 상단 중앙 타이틀 -->
   <div class="hero-top">
@@ -289,10 +271,10 @@ footer{background:var(--dark);border-top:1px solid rgba(201,168,76,0.1);padding:
   </div>
 
   <div class="season-dots">
-    <div class="sdot active" onclick="goSlide(0)"></div>
-    <div class="sdot" onclick="goSlide(1)"></div>
-    <div class="sdot" onclick="goSlide(2)"></div>
-    <div class="sdot" onclick="goSlide(3)"></div>
+    <div class="sdot active" onclick="seekToSeason(0)"></div>
+    <div class="sdot" onclick="seekToSeason(1)"></div>
+    <div class="sdot" onclick="seekToSeason(2)"></div>
+    <div class="sdot" onclick="seekToSeason(3)"></div>
   </div>
   <canvas id="fx-canvas" style="position:absolute;inset:0;pointer-events:none;z-index:5;width:100%;height:100%;"></canvas>
   <div class="season-label" id="season-label">봄 · Spring</div>
@@ -693,41 +675,40 @@ function startFx(type){
 // 0:spring 1:spring_dark 2:summer 3:summer_rain 4:autumn 5:autumn_dark 6:winter 7:winter_dark
 const FX={0:'petals',1:'sun',2:'leaves',3:'snow'};
 
-const slides=document.querySelectorAll('.hero-slide');
-const dots=document.querySelectorAll('.sdot');
-const labels=['봄 · Spring','여름 · Summer','가을 · Autumn','겨울 · Winter'];
-let cur=0, timer;
-const dim=document.getElementById('hero-dim');
+// ── 합친 영상에서 각 계절이 시작되는 시간 (초) ──
+// 영상 만든 후 정확한 시간으로 조정하세요!
+// 예: 5초씩 4계절이면 [0, 5, 10, 15], 디졸브 1.5초 포함이면 [0, 4, 8.5, 13] 정도
+const SEASONS=[
+  {label:'봄 · Spring',   start:0},
+  {label:'여름 · Summer', start:5},
+  {label:'가을 · Autumn', start:10},
+  {label:'겨울 · Winter', start:15}
+];
 
-function goSlide(i){
-  clearInterval(timer);
-  const oldIdx=cur;
-  slides[cur].classList.remove('active');
-  dots[cur].classList.remove('active');
-  cur=i;
-  slides[cur].classList.add('active');
-  dots[cur].classList.add('active');
-  document.getElementById('season-label').textContent=labels[cur];
-  startTimer();
-  // 크로스페이드 끝난 후 이전 영상 정지 (잔상 자연스럽게 + 리소스 절약)
-  setTimeout(()=>{
-    const ov=document.getElementById(videos[oldIdx]);
-    if(ov && oldIdx!==cur) ov.pause();
-  },2500);
+const heroVideo=document.getElementById('hero-video');
+const dots=document.querySelectorAll('.sdot');
+const seasonLabel=document.getElementById('season-label');
+let lastSeason=-1;
+
+function seekToSeason(i){
+  if(!heroVideo) return;
+  heroVideo.currentTime=SEASONS[i].start;
+  heroVideo.play().catch(()=>{});
 }
-const videos=['vid-spring','vid-summer','vid-autumn','vid-winter'];
-// 영상 재생 속도 (1.0=원본, 0.6=조금 천천히, 0.5=절반속도, 0.7=살짝 느리게)
-const PLAYBACK_RATE=0.6;
-function startTimer(){
-  clearInterval(timer);
-  // 현재 계절 영상 처음부터 재생, 끝나면 다음 계절로
-  const v=document.getElementById(videos[cur]);
-  if(v){
-    v.currentTime=0;
-    v.playbackRate=PLAYBACK_RATE;
-    v.play().catch(()=>{});
-    v.onended=()=>{ goSlide((cur+1)%slides.length); };
-  }
+
+if(heroVideo){
+  heroVideo.addEventListener('timeupdate',()=>{
+    const t=heroVideo.currentTime;
+    let idx=0;
+    for(let i=SEASONS.length-1;i>=0;i--){
+      if(t>=SEASONS[i].start){idx=i;break;}
+    }
+    if(idx!==lastSeason){
+      lastSeason=idx;
+      seasonLabel.textContent=SEASONS[idx].label;
+      dots.forEach((d,i)=>d.classList.toggle('active',i===idx));
+    }
+  });
 }
 
 /* ── 팝업 ── */
@@ -773,7 +754,6 @@ function filterProducts(cat){
 
 window.onload=function(){
   ['spring.png','spring_dark.png','summer.png','summer_rain.png','autumn.png','autumn_dark.png','winter.png','winter_dark.png'].forEach(s=>{new Image().src=s;});
-  startTimer();
 };
 
 const nav=document.getElementById('nav');
