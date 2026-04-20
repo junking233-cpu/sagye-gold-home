@@ -71,8 +71,10 @@ export default async function handler(req, res) {
         `✨ K 쥬얼리 (1돈)\n` +
         `  18K: ${fmt(prices.buying.K18)}\n` +
         `  14K: ${fmt(prices.buying.K14)}\n` +
-        `  10K: ${fmt(prices.buying.K10)}\n` +
-        `  치금: ${fmt(prices.special_buying.치금)} (천원/g)\n\n` +
+        `  10K: ${fmt(prices.buying.K10)}\n\n` +
+        `🦷 치금 (1돈)\n` +
+        `  인레이: ${fmt(prices.chigum.인레이)}\n` +
+        `  크라운: ${fmt(prices.chigum.크라운)}\n\n` +
         `⚪ 기타\n` +
         `  백금: ${fmt(prices.buying.백금)}\n` +
         `  실버바(1kg): ${fmt(prices.buying.실버바_1kg)}\n\n` +
@@ -161,6 +163,9 @@ export default async function handler(req, res) {
       `  18K: ${fmt(prices.base.K18)}\n` +
       `  14K: ${fmt(prices.base.K14)}\n` +
       `  10K: ${fmt(prices.base.K10)}\n\n` +
+      `[ 치금 매입 (1돈) ]\n` +
+      `  인레이: ${fmt(prices.chigum.인레이)}\n` +
+      `  크라운: ${fmt(prices.chigum.크라운)}\n\n` +
       `[ 실버바 1kg ]\n` +
       `  매입: ${fmt(prices.base.실버바_팔때)}\n` +
       `  판매: ${fmt(prices.base.실버바_살때)}\n\n` +
