@@ -47,7 +47,10 @@ const 검인반지메달 = extractNumber(pricesJsContent, '검인반지메달');
 const 검인목걸이팔찌 = extractNumber(pricesJsContent, '검인목걸이팔찌');
 const 열쇠가격 = extractString(pricesJsContent, '열쇠가격');
 const 상패동물골프공 = extractString(pricesJsContent, '상패동물골프공');
-const 치금가격 = extractString(pricesJsContent, '치금가격');
+
+// 치금 세분화 (인레이/크라운)
+const 치금_인레이 = extractNumber(pricesJsContent, '치금_인레이');
+const 치금_크라운 = extractNumber(pricesJsContent, '치금_크라운');
 
 // ── 오늘 날짜 (한국 시간) ─────────────────────────
 const now = new Date();
@@ -73,8 +76,12 @@ const pricesJson = {
     검인반지메달: 검인반지메달,
     검인목걸이팔찌: 검인목걸이팔찌,
     열쇠: 열쇠가격,
-    상패동물골프공: 상패동물골프공,
-    치금: 치금가격
+    상패동물골프공: 상패동물골프공
+  },
+
+  chigum: {
+    인레이: 치금_인레이,
+    크라운: 치금_크라운
   },
 
   // 매입가 (손님이 팔때) — 덩이금 등급 자동 계산
@@ -92,9 +99,10 @@ const pricesJson = {
     K10: K10,
     백금: 백금,
     실버바_1kg: 실버바_팔때,
+    치금_인레이: 치금_인레이,
+    치금_크라운: 치금_크라운,
     열쇠_돈: 열쇠가격 + ' (천원 단위)',
-    상패동물골프공_돈: 상패동물골프공 + ' (천원 단위)',
-    치금_g: 치금가격 + ' (천원 단위/g)'
+    상패동물골프공_돈: 상패동물골프공 + ' (천원 단위)'
   },
 
   // 판매가 (손님이 살때) — prices.js 로직과 동일하게 계산
@@ -138,3 +146,5 @@ console.log('✅ prices.json 생성 완료!');
 console.log(`📅 업데이트 날짜: ${updated}`);
 console.log(`💰 골드바 살때: ${골드바_살때.toLocaleString()}원`);
 console.log(`💰 골드바 팔때: ${골드바_팔때.toLocaleString()}원`);
+console.log(`🦷 치금 인레이: ${치금_인레이.toLocaleString()}원`);
+console.log(`🦷 치금 크라운: ${치금_크라운.toLocaleString()}원`);
