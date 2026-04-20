@@ -179,6 +179,8 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf8f5; min-height:
       <div id="gold-rows"></div>
       <div class="section-title">✦ 기타 귀금속</div>
       <div id="other-rows"></div>
+      <div class="section-title">✦ 치금</div>
+      <div id="chigum-rows"></div>
     </div>
 
     <!-- 여름 -->
@@ -193,21 +195,21 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf8f5; min-height:
       <div class="mark-cards">
         <div class="mark-card taeguk">
           <div class="mark-card-header">
-            <img src="mark_taeguk.png" alt="태극마크" style="width:48px;height:48px;object-fit:contain;border-radius:6px;background:#f0f0f0;padding:4px;">
+            <img src="mark_taeguk.png" alt="태극마크" onclick="openLbAutumn('mark_taeguk.png','태극마크')" style="width:48px;height:48px;object-fit:contain;border-radius:6px;background:#f0f0f0;padding:4px;cursor:zoom-in;">
             <div><div class="mark-name">태극마크</div><div class="mark-org">(사)한국귀금속감정원</div></div>
           </div>
           <div class="mark-desc">육각형 태극 문양의 마크. 국내에서 가장 오래된 귀금속 감정 기관으로 순도 및 중량을 공식 보증합니다.</div>
         </div>
         <div class="mark-card geumja">
           <div class="mark-card-header">
-            <img src="mark_geumja.png" alt="금자마크" style="width:48px;height:48px;object-fit:contain;border-radius:6px;background:#fdf8e8;padding:4px;">
+            <img src="mark_geumja.png" alt="금자마크" onclick="openLbAutumn('mark_geumja.png','금자마크')" style="width:48px;height:48px;object-fit:contain;border-radius:6px;background:#fdf8e8;padding:4px;cursor:zoom-in;">
             <div><div class="mark-name">금자마크</div><div class="mark-org">(사)한국귀금속판매업중앙회</div></div>
           </div>
           <div class="mark-desc">원형 금(金) 자 문양의 마크. 판매업 중앙회에서 인증한 공인 순도 보증 마크입니다.</div>
         </div>
         <div class="mark-card mugung">
           <div class="mark-card-header">
-            <img src="mark_mugung.png" alt="무궁화홀마크" style="width:48px;height:48px;object-fit:contain;border-radius:6px;background:#fff3ee;padding:4px;">
+            <img src="mark_mugung.png" alt="무궁화홀마크" onclick="openLbAutumn('mark_mugung.png','무궁화홀마크')" style="width:48px;height:48px;object-fit:contain;border-radius:6px;background:#fff3ee;padding:4px;cursor:zoom-in;">
             <div><div class="mark-name">무궁화홀마크</div><div class="mark-org">(사)한국귀금속보석기술협회</div></div>
           </div>
           <div class="mark-desc">무궁화 문양의 홀마크. 영국 홀마크 제도를 기반으로 순도와 제조사를 함께 각인합니다.</div>
@@ -220,7 +222,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf8f5; min-height:
           <div class="grade-intro-title">마크별 매입 등급표</div>
         </div>
         <!-- 3대마크 실사사진 꽉 차게 -->
-        <img src="mark_photo.png" alt="3대 마크 실사" style="width:100%;border-radius:8px;display:block;margin-bottom:6px;">
+        <img src="mark_photo.png" alt="3대 마크 실사" onclick="openLbAutumn('mark_photo.png','3대 마크 실사')" style="width:100%;border-radius:8px;display:block;margin-bottom:6px;cursor:zoom-in;">
         <!-- 등급표 세로 나열 -->
         <div class="grade-list">
           <div class="grade-card grade-1">
@@ -229,50 +231,50 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf8f5; min-height:
               <div class="grade-name" style="font-size:12px;">검증덩이 (3대마크)</div>
               <div class="grade-desc">태극 · 금자 · 무궁화홀마크</div>
             </div>
-            <div class="grade-right"><div class="grade-price" id="autumn-g1" style="font-size:14px;"></div><div class="grade-unit">원/g</div><div class="grade-badge badge-best">최고가</div></div>
+            <div class="grade-right"><div class="grade-price" id="autumn-g1" style="font-size:14px;"></div><div class="grade-unit">원/돈</div><div class="grade-badge badge-best">최고가</div></div>
           </div>
           <div style="display:flex;gap:6px;align-items:center;">
-            <img src="grade2.png" style="width:70px;height:70px;object-fit:cover;border-radius:6px;flex-shrink:0;">
+            <img src="grade2.png" onclick="openLbAutumn('grade2.png','GRADE 2 · 검증덩이')" style="width:70px;height:70px;object-fit:cover;border-radius:6px;flex-shrink:0;cursor:zoom-in;">
             <div class="grade-card grade-2" style="flex:1;margin:0;">
               <div class="grade-left">
                 <div class="grade-rank">GRADE 2</div>
                 <div class="grade-name" style="font-size:12px;">검증덩이</div>
                 <div class="grade-desc">태극마크 · 파인골드 · SJ</div>
               </div>
-              <div class="grade-right"><div class="grade-price" id="autumn-g2" style="font-size:14px;"></div><div class="grade-unit">원/g</div></div>
+              <div class="grade-right"><div class="grade-price" id="autumn-g2" style="font-size:14px;"></div><div class="grade-unit">원/돈</div></div>
             </div>
           </div>
           <div style="display:flex;gap:6px;align-items:center;">
-            <img src="grade3.png" style="width:70px;height:70px;object-fit:cover;border-radius:6px;flex-shrink:0;">
+            <img src="grade3.png" onclick="openLbAutumn('grade3.png','GRADE 3 · 기타덩이')" style="width:70px;height:70px;object-fit:cover;border-radius:6px;flex-shrink:0;cursor:zoom-in;">
             <div class="grade-card grade-3" style="flex:1;margin:0;">
               <div class="grade-left">
                 <div class="grade-rank">GRADE 3</div>
                 <div class="grade-name" style="font-size:12px;">기타덩이</div>
                 <div class="grade-desc">공방 이름 각인된 것</div>
               </div>
-              <div class="grade-right"><div class="grade-price" id="autumn-g3" style="font-size:14px;"></div><div class="grade-unit">원/g</div></div>
+              <div class="grade-right"><div class="grade-price" id="autumn-g3" style="font-size:14px;"></div><div class="grade-unit">원/돈</div></div>
             </div>
           </div>
           <div style="display:flex;gap:6px;align-items:center;">
-            <img src="grade4.png" style="width:70px;height:70px;object-fit:cover;border-radius:6px;flex-shrink:0;">
+            <img src="grade4.png" onclick="openLbAutumn('grade4.png','GRADE 4 · 무검덩이')" style="width:70px;height:70px;object-fit:cover;border-radius:6px;flex-shrink:0;cursor:zoom-in;">
             <div class="grade-card grade-4" style="flex:1;margin:0;">
               <div class="grade-left">
                 <div class="grade-rank">GRADE 4</div>
                 <div class="grade-name" style="font-size:12px;">무검덩이</div>
                 <div class="grade-desc">별표 · 999 표기만 있는 것</div>
               </div>
-              <div class="grade-right"><div class="grade-price" id="autumn-g4" style="font-size:14px;"></div><div class="grade-unit">원/g</div></div>
+              <div class="grade-right"><div class="grade-price" id="autumn-g4" style="font-size:14px;"></div><div class="grade-unit">원/돈</div></div>
             </div>
           </div>
           <div style="display:flex;gap:6px;align-items:center;">
-            <img src="grade5.png" style="width:70px;height:70px;object-fit:cover;border-radius:6px;flex-shrink:0;">
+            <img src="grade5.png" onclick="openLbAutumn('grade5.png','GRADE 5 · 한자 金 표기')" style="width:70px;height:70px;object-fit:cover;border-radius:6px;flex-shrink:0;cursor:zoom-in;">
             <div class="grade-card grade-5" style="flex:1;margin:0;">
               <div class="grade-left">
                 <div class="grade-rank">GRADE 5 · 감가</div>
                 <div class="grade-name" style="font-size:12px;">한자 金 표기</div>
                 <div class="grade-desc">칠보 · 마고자 · 99금 등</div>
               </div>
-              <div class="grade-right"><div class="grade-price" id="autumn-g5" style="font-size:14px;"></div><div class="grade-unit">원/g</div><div class="grade-badge badge-caution2">감가</div></div>
+              <div class="grade-right"><div class="grade-price" id="autumn-g5" style="font-size:14px;"></div><div class="grade-unit">원/돈</div><div class="grade-badge badge-caution2">감가</div></div>
             </div>
           </div>
         </div>
@@ -541,8 +543,12 @@ document.addEventListener('DOMContentLoaded', function() {
     { name: '18K', desc: '', badge: '', price: BUYING.k18 },
     { name: '14K', desc: '', badge: '', price: BUYING.k14 },
     { name: '10K', desc: '', badge: '', price: BUYING.k10 },
-    { name: '치금', desc: '', badge: '', price: BUYING.치금 },
     { name: '백금 99', desc: '', badge: '', price: BUYING.백금99 },
+  ];
+
+  const chigumItems = [
+    { name: '인레이', desc: '', badge: '', price: BUYING.치금_인레이 },
+    { name: '크라운', desc: '', badge: '', price: BUYING.치금_크라운 },
   ];
 
   function makeRow(item) {
@@ -554,13 +560,15 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
       <div class="row-price">
         <div class="price-num">${item.price}</div>
-        <div class="price-unit">원/g</div>
+        <div class="price-unit">원/돈</div>
       </div>
     </div>`;
   }
 
   document.getElementById('gold-rows').innerHTML = goldItems.map(makeRow).join('');
   document.getElementById('other-rows').innerHTML = otherItems.map(makeRow).join('');
+  const chigumEl = document.getElementById('chigum-rows');
+  if (chigumEl) chigumEl.innerHTML = chigumItems.map(makeRow).join('');
 });
 </script>
 </body>
