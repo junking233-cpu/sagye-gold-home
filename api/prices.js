@@ -1,20 +1,18 @@
 // ================================================
 // 사계절 금거래소 - 카카오 챗봇 가격 API
 // ================================================
-// 이 API는 카카오 오픈빌더 "스킬"에서 호출됩니다.
+// Basic Card 디자인으로 업그레이드 (이미지 + 가격 + 버튼)
 //
 // 엔드포인트:
-//   GET  https://sagye-gold-home.vercel.app/api/prices
-//   POST https://sagye-gold-home.vercel.app/api/prices (카카오 챗봇용)
+//   GET/POST https://sagye-gold-home.vercel.app/api/prices
 //
-// 작동 방식:
-//   1. GitHub Pages에서 prices.json 읽어옴
-//   2. 카카오 챗봇 형식의 응답으로 변환
-//   3. 챗봇이 사용자에게 시세표 표시
+// 이미지 URL:
+//   summer.png - 매입가
+//   autumn.png - 판매가
 // ================================================
 
 export default async function handler(req, res) {
-  // CORS 허용 (카카오에서 호출 가능하도록)
+  // CORS 허용
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -27,7 +25,7 @@ export default async function handler(req, res) {
     // ── prices.json 가져오기 ─────────────────────
     const pricesUrl = 'https://www.sagyegold.co.kr/prices.json';
     const response = await fetch(pricesUrl, {
-      cache: 'no-store' // 항상 최신 가격
+      cache: 'no-store'
     });
 
     if (!response.ok) {
@@ -36,23 +34,42 @@ export default async function handler(req, res) {
 
     const prices = await response.json();
 
-    // ── 숫자를 "860,000원" 형식으로 ─────────────────
+    // ── 숫자 포맷 ─────────────────────────────────
     const fmt = (n) => {
       if (typeof n === 'string') return n;
       return n.toLocaleString('ko-KR') + '원';
     };
 
-    // ── 쿼리 파라미터로 어떤 응답 줄지 결정 ──────────
-    // 카카오 챗봇에서: ?type=buying / ?type=selling / ?type=all
+    // ── 타입 파라미터 ─────────────────────────────
     const type = req.query.type || req.body?.action?.params?.type || 'all';
 
+    // ────────────────────────────────────────────
+    // 🖼️ 이미지 베이스 URL
+    // ────────────────────────────────────────────
+    const IMG_BASE = 'https://www.sagyegold.co.kr';
+
+    // ────────────────────────────────────────────
+    // 📞 공통 버튼 (모든 카드에 추가)
+    // ────────────────────────────────────────────
+    const commonButtons = [
+      {
+        action: 'phone',
+        label: '📞 매장 전화',
+        phoneNumber: '01089499683'
+      },
+      {
+        action: 'webLink',
+        label: '🌐 홈페이지',
+        webLinkUrl: 'https://www.sagyegold.co.kr'
+      }
+    ];
+
     // ================================================
-    // 응답 1: 매입가 (손님이 팔때)
+    // 💰 응답 1: 매입가 (summer.png 배경)
     // ================================================
     if (type === 'buying') {
-      const buyingText =
-        `💰 오늘의 매입 시세\n` +
-        `(${prices.updated} 기준 · 1돈 / g당)\n` +
+      const buyingDescription =
+        `📅 ${prices.updated} 기준\n` +
         `━━━━━━━━━━━━━━\n\n` +
         `🟡 골드바\n` +
         `  ${fmt(prices.buying.골드바)}\n\n` +
@@ -79,16 +96,23 @@ export default async function handler(req, res) {
         `  백금: ${fmt(prices.buying.백금)}\n` +
         `  실버바(1kg): ${fmt(prices.buying.실버바_1kg)}\n\n` +
         `━━━━━━━━━━━━━━\n` +
-        `※ 실제 매입가는 감정 후 결정됩니다.\n` +
-        `📞 상담: 010-8949-9683`;
+        `※ 실제 매입가는 감정 후 결정됩니다.`;
 
       return res.status(200).json({
         version: '2.0',
         template: {
           outputs: [
             {
-              simpleText: {
-                text: buyingText
+              basicCard: {
+                title: '💰 오늘의 매입 시세',
+                description: buyingDescription,
+                thumbnail: {
+                  imageUrl: `${IMG_BASE}/summer.png`,
+                  fixedRatio: true,
+                  width: 800,
+                  height: 400
+                },
+                buttons: commonButtons
               }
             }
           ]
@@ -97,12 +121,11 @@ export default async function handler(req, res) {
     }
 
     // ================================================
-    // 응답 2: 판매가 (손님이 살때)
+    // 🏆 응답 2: 판매가 (autumn.png 배경)
     // ================================================
     if (type === 'selling') {
-      const sellingText =
-        `🏆 오늘의 판매 시세\n` +
-        `(${prices.updated} 기준)\n` +
+      const sellingDescription =
+        `📅 ${prices.updated} 기준\n` +
         `━━━━━━━━━━━━━━\n\n` +
         `🟡 골드바\n` +
         `  1돈: ${fmt(prices.selling.골드바_1돈)}\n` +
@@ -132,16 +155,23 @@ export default async function handler(req, res) {
         `  99.9: ${fmt(prices.selling.실버바_999)}\n` +
         `  999.9: ${fmt(prices.selling.실버바_9999)}\n\n` +
         `━━━━━━━━━━━━━━\n` +
-        `※ 밀당없는 정찰제\n` +
-        `📞 상담: 010-8949-9683`;
+        `※ 밀당없는 정찰제`;
 
       return res.status(200).json({
         version: '2.0',
         template: {
           outputs: [
             {
-              simpleText: {
-                text: sellingText
+              basicCard: {
+                title: '🏆 오늘의 판매 시세',
+                description: sellingDescription,
+                thumbnail: {
+                  imageUrl: `${IMG_BASE}/autumn.png`,
+                  fixedRatio: true,
+                  width: 800,
+                  height: 400
+                },
+                buttons: commonButtons
               }
             }
           ]
@@ -150,12 +180,10 @@ export default async function handler(req, res) {
     }
 
     // ================================================
-    // 응답 3: 기본(전체) - type 없거나 all일 때
+    // 🍀 응답 3: 기본(전체) - 요약형
     // ================================================
-    const mainText =
-      `🍀 사계절 금거래소 시세\n` +
-      `(${prices.updated} 기준)\n` +
-      `━━━━━━━━━━━━━━\n\n` +
+    const mainDescription =
+      `📅 ${prices.updated} 기준\n\n` +
       `[ 골드바 1돈 ]\n` +
       `  매입: ${fmt(prices.base.골드바_팔때)}\n` +
       `  판매: ${fmt(prices.base.골드바_살때)}\n\n` +
@@ -168,18 +196,23 @@ export default async function handler(req, res) {
       `  크라운: ${fmt(prices.chigum.크라운)}\n\n` +
       `[ 실버바 1kg ]\n` +
       `  매입: ${fmt(prices.base.실버바_팔때)}\n` +
-      `  판매: ${fmt(prices.base.실버바_살때)}\n\n` +
-      `━━━━━━━━━━━━━━\n` +
-      `📞 010-8949-9683\n` +
-      `🌐 www.sagyegold.co.kr`;
+      `  판매: ${fmt(prices.base.실버바_살때)}`;
 
     return res.status(200).json({
       version: '2.0',
       template: {
         outputs: [
           {
-            simpleText: {
-              text: mainText
+            basicCard: {
+              title: '🍀 사계절 금거래소 시세',
+              description: mainDescription,
+              thumbnail: {
+                imageUrl: `${IMG_BASE}/spring.png`,
+                fixedRatio: true,
+                width: 800,
+                height: 400
+              },
+              buttons: commonButtons
             }
           }
         ]
@@ -187,7 +220,6 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    // ── 에러 처리 ─────────────────────────────────
     console.error('API 에러:', error);
     return res.status(200).json({
       version: '2.0',
