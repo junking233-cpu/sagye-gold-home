@@ -59,17 +59,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
 .lb-close:hover{color:var(--gold-light);}
 .lb-caption{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);font-family:"Cormorant Garamond",serif;font-size:17px;letter-spacing:3px;color:var(--gold-light);white-space:nowrap;}
 .product-img{cursor:zoom-in;}
-
-/* 케이렛/색상 토글 (14K·18K 쥬얼리용) */
-.kt-toggle-row{display:flex;gap:6px;margin-bottom:10px;}
-.kt-toggle-label{font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;min-width:42px;align-self:center;}
-.kt-btn{flex:1;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.15);padding:7px 6px;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--text-muted);cursor:pointer;transition:all .2s;}
-.kt-btn:hover{color:var(--gold-light);border-color:rgba(201,168,76,0.4);}
-.kt-btn.active{background:rgba(201,168,76,0.15);border-color:var(--gold);color:var(--gold-light);}
-.color-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:middle;border:1px solid rgba(255,255,255,0.2);}
-.color-dot.rose{background:#E8B4A0;}
-.color-dot.white{background:#E8E8E8;}
-.color-dot.yellow{background:#E8C547;}
 </style>
 </head>
 <body>
@@ -84,7 +73,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
   <div class="page-hero-content">
     <div class="page-eyebrow">Jewellery Collection</div>
     <div class="page-title">쥬얼리</div>
-    <div class="page-sub">링 · 팔찌 · 목걸이 · 14K · 18K · 24K</div>
+    <div class="page-sub">반지 · 팔찌 · 목걸이 · 999.9 · 24K</div>
     <div class="gold-line"></div>
   </div>
 </div>
@@ -96,9 +85,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
     <button class="tab-btn" onclick="showTab('goldring')">순금 반지</button>
     <button class="tab-btn" onclick="showTab('goldbracelet')">순금 팔찌</button>
     <button class="tab-btn" onclick="showTab('goldnecklace')">순금 목걸이</button>
-    <button class="tab-btn" onclick="showTab('ring')"><span style="font-size:9px;color:var(--gold);font-family:'Montserrat',sans-serif;">14K·18K</span> 링·반지</button>
-    <button class="tab-btn" onclick="showTab('bracelet')"><span style="font-size:9px;color:var(--gold);font-family:'Montserrat',sans-serif;">14K·18K</span> 팔찌</button>
-    <button class="tab-btn" onclick="showTab('necklace')"><span style="font-size:9px;color:var(--gold);font-family:'Montserrat',sans-serif;">14K·18K</span> 목걸이</button>
   </div>
 </div>
 
@@ -146,93 +132,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
     <div class="products-grid"><div class="product-card"><div class="product-img" style="background:#0a0a08;" onclick="openLb('tmr5039 8.08g 0.58 70.png','원형목걸이')"><img src="tmr5039 8.08g 0.58 70.png" alt="원형목걸이" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">원형목걸이</div><div class="product-desc">순금 24K · 8.08g (18K 고리 0.58g 포함)</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-n4">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div><div class="product-card"><div class="product-img" style="background:#0a0a08;" onclick="openLb('tmr5032 8.05g 0.55 65.png','십자가목걸이')"><img src="tmr5032 8.05g 0.55 65.png" alt="십자가목걸이" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">십자가목걸이</div><div class="product-desc">순금 24K · 8.05g (18K 고리 0.55g 포함)</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-n5">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div><div class="product-card"><div class="product-img" style="background:#0a0a08;" onclick="openLb('tma5033n 8.07g 0.57 65.png','열쇠목걸이')"><img src="tma5033n 8.07g 0.57 65.png" alt="열쇠목걸이" style="height:100%;width:100%;object-fit:cover;"></div><div class="product-info"><div class="product-name">열쇠목걸이</div><div class="product-desc">순금 24K · 8.07g (18K 고리 0.57g 포함)</div><div class="product-price-box"><div class="product-price-label">현금 판매가</div><div class="product-price" id="j-n6">-</div><div class="product-price-unit">※ 시세 연동</div></div></div></div></div>
   </div>
 
-  <div class="section-divider" id="div-ring"></div>
-
-  <!-- 링 섹션 -->
-  <div id="sec-ring">
-    <div class="category-title">링 · 반지</div>
-    <div class="category-sub">14K · 18K</div>
-    <div class="products-grid">
-      <!-- 볼 반지 (14K/18K 전환 + 3색 전환) -->
-      <div class="product-card">
-        <div class="product-img" style="background:#0a0a08;" onclick="openLb(document.getElementById('img-r01').src, document.getElementById('img-r01').alt)">
-          <img id="img-r01" src="kt_ring_01_rose.png" alt="볼 반지" style="height:100%;width:100%;object-fit:cover;">
-        </div>
-        <div class="product-info">
-          <div class="product-name">볼 반지</div>
-          <div class="product-desc"><span id="desc-r01">14K · 3.05g</span><br>현금 판매 · 시세 연동</div>
-          <div class="kt-toggle-row">
-            <div class="kt-toggle-label">케이렛</div>
-            <button class="kt-btn active" onclick="setKt('r01',14,this)">14K</button>
-            <button class="kt-btn" onclick="setKt('r01',18,this)">18K</button>
-          </div>
-          <div class="kt-toggle-row">
-            <div class="kt-toggle-label">색상</div>
-            <button class="kt-btn active" onclick="setColor('r01','rose',this)"><span class="color-dot rose"></span>로즈</button>
-            <button class="kt-btn" onclick="setColor('r01','white',this)"><span class="color-dot white"></span>화이트</button>
-            <button class="kt-btn" onclick="setColor('r01','yellow',this)"><span class="color-dot yellow"></span>옐로우</button>
-          </div>
-          <div class="product-price-box">
-            <div class="product-price-label">현금 판매가</div>
-            <div class="product-price" id="price-r01">-</div>
-            <div class="product-price-unit">※ 시세 연동 · 중량 ±10% 오차 가능</div>
-          </div>
-        </div>
-      </div>
-      <div class="product-card">
-        <div class="product-img" style="background:#0a0a08;" onclick="openLb(document.getElementById('img-r02').src, document.getElementById('img-r02').alt)">
-          <img id="img-r02" src="kt_ring_02_rose.png" alt="펄 웨이브 링" style="height:100%;width:100%;object-fit:cover;">
-        </div>
-        <div class="product-info">
-          <div class="product-name">펄 웨이브 링</div>
-          <div class="product-desc"><span id="desc-r02">14K · 1.79g</span><br>현금 판매 · 시세 연동</div>
-          <div class="kt-toggle-row">
-            <div class="kt-toggle-label">케이렛</div>
-            <button class="kt-btn active" onclick="setKt('r02',14,this)">14K</button>
-            <button class="kt-btn" onclick="setKt('r02',18,this)">18K</button>
-          </div>
-          <div class="kt-toggle-row">
-            <div class="kt-toggle-label">색상</div>
-            <button class="kt-btn active" onclick="setColor('r02','rose',this)"><span class="color-dot rose"></span>로즈</button>
-            <button class="kt-btn" onclick="setColor('r02','white',this)"><span class="color-dot white"></span>화이트</button>
-            <button class="kt-btn" onclick="setColor('r02','yellow',this)"><span class="color-dot yellow"></span>옐로우</button>
-          </div>
-          <div class="product-price-box">
-            <div class="product-price-label">현금 판매가</div>
-            <div class="product-price" id="price-r02">-</div>
-            <div class="product-price-unit">※ 시세 연동 · 중량 ±10% 오차 가능</div>
-          </div>
-        </div>
-      </div>
-      <div class="product-card"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">상품명</div><div class="product-desc">상품 설명이 들어갑니다</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">정확한 가격은 매장으로 문의해 주세요</div></div></div></div>
-    </div>
-  </div>
-
-  <div class="section-divider" id="div-bracelet"></div>
-
-  <!-- 팔찌 섹션 -->
-  <div id="sec-bracelet">
-    <div class="category-title">팔찌 · 브레이슬릿</div>
-    <div class="category-sub">14K · 18K · 24K</div>
-    <div class="products-grid">
-      <div class="product-card"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">상품명</div><div class="product-desc">상품 설명이 들어갑니다</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">정확한 가격은 매장으로 문의해 주세요</div></div></div></div>
-      <div class="product-card"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">상품명</div><div class="product-desc">상품 설명이 들어갑니다</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">정확한 가격은 매장으로 문의해 주세요</div></div></div></div>
-      <div class="product-card"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">상품명</div><div class="product-desc">상품 설명이 들어갑니다</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">정확한 가격은 매장으로 문의해 주세요</div></div></div></div>
-    </div>
-  </div>
-
-  <div class="section-divider" id="div-necklace"></div>
-
-  <!-- 목걸이 섹션 -->
-  <div id="sec-necklace">
-    <div class="category-title">목걸이 · 네크리스</div>
-    <div class="category-sub">14K · 18K · 24K</div>
-    <div class="products-grid">
-      <div class="product-card"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">상품명</div><div class="product-desc">상품 설명이 들어갑니다</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">정확한 가격은 매장으로 문의해 주세요</div></div></div></div>
-      <div class="product-card"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">상품명</div><div class="product-desc">상품 설명이 들어갑니다</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">정확한 가격은 매장으로 문의해 주세요</div></div></div></div>
-      <div class="product-card"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">상품명</div><div class="product-desc">상품 설명이 들어갑니다</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">정확한 가격은 매장으로 문의해 주세요</div></div></div></div>
-    </div>
-  </div>
 
 </div>
 
@@ -266,12 +165,6 @@ function showTab(tab){
   v('sec-goldbracelet',tab==='all'||tab==='goldbracelet');
   v('div-goldnecklace',tab==='all'||tab==='goldnecklace');
   v('sec-goldnecklace',tab==='all'||tab==='goldnecklace');
-  v('div-ring',        tab==='all'||tab==='ring');
-  v('sec-ring',        tab==='all'||tab==='ring');
-  v('div-bracelet',    tab==='all'||tab==='bracelet');
-  v('sec-bracelet',    tab==='all'||tab==='bracelet');
-  v('div-necklace',    tab==='all'||tab==='necklace');
-  v('sec-necklace',    tab==='all'||tab==='necklace');
 }
 </script>
 <script src="prices.js"></script>
@@ -279,17 +172,18 @@ function showTab(tab){
 document.addEventListener('DOMContentLoaded',function(){
   var fmt=function(n){return n.toLocaleString('ko-KR')+' 원';};
   var set=function(id,v){var e=document.getElementById(id);if(e)e.textContent=fmt(v);};
-  var cb=function(g,cl,go){var sd=Math.round((g-cl)/3.75*100)/100;var cd=Math.round(cl/3.75*0.825*100)/100;return Math.floor((Math.round((sd+cd)*100)/100*골드바_살때+go)*1.1/1000)*1000;};
-  // A라인 반돈
+  // 반지 (×1.1)
   var pa=Math.floor((골드바_살때*0.5+45000)*1.1/1000)*1000;
   set('j-a1',pa); set('j-a2',pa); set('j-a3',pa); set('j-a4',pa);
-  // B라인 1돈
   var pb=Math.floor((골드바_살때*1+40000)*1.1/1000)*1000;
   set('j-b1',pb); set('j-b2',pb); set('j-b3',pb); set('j-b4',pb);
-  // C라인 1돈
   var pc=Math.floor((골드바_살때*1+45000)*1.1/1000)*1000;
   set('j-c1',pc); set('j-c2',pc); set('j-c3',pc); set('j-c4',pc);
-  // 팔찌
+  // 팔찌 (×1.1)
+  function cb(g,cl,go){var sd=Math.round((g-cl)/3.75*100)/100;var cd=Math.round(cl/3.75*0.825*100)/100;return Math.floor((Math.round((sd+cd)*100)/100*골드바_살때+go)*1.1/1000)*1000;}
+  set('j-br1',cb(4.34,0.56,70000));
+  set('j-br2',cb(8.04,0.54,65000));
+  set('j-br4',cb(8.08,0.58,58000));
   // 목걸이 (×1.15)
   function cn(g,cl,go){var sd=Math.round((g-cl)/3.75*100)/100;var cd=Math.round(cl/3.75*0.825*100)/100;return Math.floor((Math.round((sd+cd)*100)/100*골드바_살때+go)*1.15/1000)*1000;}
   set('j-n1',cn(4.08,0.33,65000));
@@ -298,64 +192,6 @@ document.addEventListener('DOMContentLoaded',function(){
   set('j-n4',cn(8.08,0.58,70000));
   set('j-n5',cn(8.05,0.55,65000));
   set('j-n6',cn(8.07,0.57,65000));
-  function cn(g,cl,go){var sd=Math.round((g-cl)/3.75*100)/100;var cd=Math.round(cl/3.75*0.825*100)/100;return Math.floor((Math.round((sd+cd)*100)/100*골드바_살때+go)*1.15/1000)*1000;}
-  set('j-n1',cn(4.08,0.33,65000));
-  set('j-n2',cn(4.07,0.32,60000));
-  set('j-n3',cn(6.23,0.60,65000));
-  set('j-n4',cn(8.08,0.58,70000));
-  set('j-n5',cn(8.05,0.55,65000));
-  set('j-n6',cn(8.07,0.57,65000));
-    set('j-br1',cb(4.34,0.56,70000));
-  set('j-br2',cb(8.04,0.54,65000));
-  set('j-br4',cb(8.08,0.58,58000));
-
-  // ===== 14K · 18K 쥬얼리 =====
-  // 상품 데이터 (중량은 baseKarat 기준, 색상은 실제 사진 파일)
-  window.ktProducts = {
-    'r01': {name:'볼 반지', baseWeight:3.05, baseKarat:14, fee:55000, imageBase:'kt_ring_01', state:{karat:14, color:'rose'}},
-    'r02': {name:'펄 웨이브 링', baseWeight:1.79, baseKarat:14, fee:50000, imageBase:'kt_ring_02', state:{karat:14, color:'rose'}}
-  };
-
-  // 가격 공식: (중량/3.75 × 케이렛비율 × 골드바 + 공임) × 1.2 → 천원 버림
-  function calcKt(id){
-    var p = ktProducts[id];
-    var weight = p.baseWeight;
-    if(p.state.karat !== p.baseKarat){
-      weight = p.state.karat===18 ? weight*1.2 : weight*0.8;
-    }
-    weight = Math.round(weight*100)/100;
-    var ratio = p.state.karat===18 ? 0.825 : 0.6435;
-    var price = (weight/3.75 * ratio * 골드바_살때 + p.fee) * 1.2;
-    return {price: Math.floor(price/1000)*1000, weight: weight};
-  }
-
-  function renderKt(id){
-    var p = ktProducts[id];
-    var r = calcKt(id);
-    var d = document.getElementById('desc-'+id);
-    var pr = document.getElementById('price-'+id);
-    var im = document.getElementById('img-'+id);
-    if(d) d.textContent = p.state.karat+'K · '+r.weight+'g';
-    if(pr) pr.textContent = fmt(r.price);
-    if(im) im.src = p.imageBase+'_'+p.state.color+'.png';
-  }
-
-  window.setKt = function(id, karat, btn){
-    ktProducts[id].state.karat = karat;
-    btn.parentElement.querySelectorAll('.kt-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    renderKt(id);
-  };
-
-  window.setColor = function(id, color, btn){
-    ktProducts[id].state.color = color;
-    btn.parentElement.querySelectorAll('.kt-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    renderKt(id);
-  };
-
-  // 초기 렌더링
-  Object.keys(ktProducts).forEach(renderKt);
 });
 </script>
 </body>
