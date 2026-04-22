@@ -59,6 +59,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
 .lb-close:hover{color:var(--gold-light);}
 .lb-caption{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);font-family:"Cormorant Garamond",serif;font-size:17px;letter-spacing:3px;color:var(--gold-light);white-space:nowrap;}
 .product-img{cursor:zoom-in;}
+
+/* 케이렛/색상 토글 (14K·18K 쥬얼리용) */
+.kt-toggle-row{display:flex;gap:6px;margin-bottom:10px;}
+.kt-toggle-label{font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;min-width:42px;align-self:center;}
+.kt-btn{flex:1;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.15);padding:7px 6px;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--text-muted);cursor:pointer;transition:all .2s;}
+.kt-btn:hover{color:var(--gold-light);border-color:rgba(201,168,76,0.4);}
+.kt-btn.active{background:rgba(201,168,76,0.15);border-color:var(--gold);color:var(--gold-light);}
+.color-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:middle;border:1px solid rgba(255,255,255,0.2);}
+.color-dot.rose{background:#E8B4A0;}
+.color-dot.white{background:#E8E8E8;}
+.color-dot.yellow{background:#E8C547;}
 </style>
 </head>
 <body>
@@ -140,9 +151,34 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
   <!-- 링 섹션 -->
   <div id="sec-ring">
     <div class="category-title">링 · 반지</div>
-    <div class="category-sub">14K · 18K · 24K</div>
+    <div class="category-sub">14K · 18K</div>
     <div class="products-grid">
-      <div class="product-card"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">상품명</div><div class="product-desc">상품 설명이 들어갑니다</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">정확한 가격은 매장으로 문의해 주세요</div></div></div></div>
+      <!-- 볼 반지 (14K/18K 전환 + 3색 전환) -->
+      <div class="product-card">
+        <div class="product-img" style="background:#0a0a08;" onclick="openLb(document.getElementById('img-r01').src, document.getElementById('img-r01').alt)">
+          <img id="img-r01" src="kt_ring_01_rose.png" alt="볼 반지" style="height:100%;width:100%;object-fit:cover;">
+        </div>
+        <div class="product-info">
+          <div class="product-name">볼 반지</div>
+          <div class="product-desc"><span id="desc-r01">14K · 3.05g</span><br>현금 판매 · 시세 연동</div>
+          <div class="kt-toggle-row">
+            <div class="kt-toggle-label">케이렛</div>
+            <button class="kt-btn active" onclick="setKt('r01',14,this)">14K</button>
+            <button class="kt-btn" onclick="setKt('r01',18,this)">18K</button>
+          </div>
+          <div class="kt-toggle-row">
+            <div class="kt-toggle-label">색상</div>
+            <button class="kt-btn active" onclick="setColor('r01','rose',this)"><span class="color-dot rose"></span>로즈</button>
+            <button class="kt-btn" onclick="setColor('r01','white',this)"><span class="color-dot white"></span>화이트</button>
+            <button class="kt-btn" onclick="setColor('r01','yellow',this)"><span class="color-dot yellow"></span>옐로우</button>
+          </div>
+          <div class="product-price-box">
+            <div class="product-price-label">현금 판매가</div>
+            <div class="product-price" id="price-r01">-</div>
+            <div class="product-price-unit">※ 시세 연동 · 중량 ±10% 오차 가능</div>
+          </div>
+        </div>
+      </div>
       <div class="product-card"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">상품명</div><div class="product-desc">상품 설명이 들어갑니다</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">정확한 가격은 매장으로 문의해 주세요</div></div></div></div>
       <div class="product-card"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">상품명</div><div class="product-desc">상품 설명이 들어갑니다</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">정확한 가격은 매장으로 문의해 주세요</div></div></div></div>
     </div>
@@ -248,6 +284,53 @@ document.addEventListener('DOMContentLoaded',function(){
     set('j-br1',cb(4.34,0.56,70000));
   set('j-br2',cb(8.04,0.54,65000));
   set('j-br4',cb(8.08,0.58,58000));
+
+  // ===== 14K · 18K 쥬얼리 =====
+  // 상품 데이터 (중량은 baseKarat 기준, 색상은 실제 사진 파일)
+  window.ktProducts = {
+    'r01': {name:'볼 반지', baseWeight:3.05, baseKarat:14, fee:55000, imageBase:'kt_ring_01', state:{karat:14, color:'rose'}}
+  };
+
+  // 가격 공식: (중량/3.75 × 케이렛비율 × 골드바 + 공임) × 1.2 → 천원 버림
+  function calcKt(id){
+    var p = ktProducts[id];
+    var weight = p.baseWeight;
+    if(p.state.karat !== p.baseKarat){
+      weight = p.state.karat===18 ? weight*1.2 : weight*0.8;
+    }
+    weight = Math.round(weight*100)/100;
+    var ratio = p.state.karat===18 ? 0.825 : 0.6435;
+    var price = (weight/3.75 * ratio * 골드바_살때 + p.fee) * 1.2;
+    return {price: Math.floor(price/1000)*1000, weight: weight};
+  }
+
+  function renderKt(id){
+    var p = ktProducts[id];
+    var r = calcKt(id);
+    var d = document.getElementById('desc-'+id);
+    var pr = document.getElementById('price-'+id);
+    var im = document.getElementById('img-'+id);
+    if(d) d.textContent = p.state.karat+'K · '+r.weight+'g';
+    if(pr) pr.textContent = fmt(r.price);
+    if(im) im.src = p.imageBase+'_'+p.state.color+'.png';
+  }
+
+  window.setKt = function(id, karat, btn){
+    ktProducts[id].state.karat = karat;
+    btn.parentElement.querySelectorAll('.kt-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderKt(id);
+  };
+
+  window.setColor = function(id, color, btn){
+    ktProducts[id].state.color = color;
+    btn.parentElement.querySelectorAll('.kt-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderKt(id);
+  };
+
+  // 초기 렌더링
+  Object.keys(ktProducts).forEach(renderKt);
 });
 </script>
 </body>
