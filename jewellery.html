@@ -179,7 +179,31 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:fl
           </div>
         </div>
       </div>
-      <div class="product-card"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">상품명</div><div class="product-desc">상품 설명이 들어갑니다</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">정확한 가격은 매장으로 문의해 주세요</div></div></div></div>
+      <div class="product-card">
+        <div class="product-img" style="background:#0a0a08;" onclick="openLb(document.getElementById('img-r02').src, document.getElementById('img-r02').alt)">
+          <img id="img-r02" src="kt_ring_02_rose.png" alt="펄 웨이브 링" style="height:100%;width:100%;object-fit:cover;">
+        </div>
+        <div class="product-info">
+          <div class="product-name">펄 웨이브 링</div>
+          <div class="product-desc"><span id="desc-r02">14K · 1.79g</span><br>현금 판매 · 시세 연동</div>
+          <div class="kt-toggle-row">
+            <div class="kt-toggle-label">케이렛</div>
+            <button class="kt-btn active" onclick="setKt('r02',14,this)">14K</button>
+            <button class="kt-btn" onclick="setKt('r02',18,this)">18K</button>
+          </div>
+          <div class="kt-toggle-row">
+            <div class="kt-toggle-label">색상</div>
+            <button class="kt-btn active" onclick="setColor('r02','rose',this)"><span class="color-dot rose"></span>로즈</button>
+            <button class="kt-btn" onclick="setColor('r02','white',this)"><span class="color-dot white"></span>화이트</button>
+            <button class="kt-btn" onclick="setColor('r02','yellow',this)"><span class="color-dot yellow"></span>옐로우</button>
+          </div>
+          <div class="product-price-box">
+            <div class="product-price-label">현금 판매가</div>
+            <div class="product-price" id="price-r02">-</div>
+            <div class="product-price-unit">※ 시세 연동 · 중량 ±10% 오차 가능</div>
+          </div>
+        </div>
+      </div>
       <div class="product-card"><div class="product-img"><div class="product-img-label">사진 준비 중</div></div><div class="product-info"><div class="product-name">상품명</div><div class="product-desc">상품 설명이 들어갑니다</div><div class="product-price-box"><div class="product-price-label">판매가</div><div class="product-price">매장 문의</div><div class="product-price-unit">정확한 가격은 매장으로 문의해 주세요</div></div></div></div>
     </div>
   </div>
@@ -288,7 +312,8 @@ document.addEventListener('DOMContentLoaded',function(){
   // ===== 14K · 18K 쥬얼리 =====
   // 상품 데이터 (중량은 baseKarat 기준, 색상은 실제 사진 파일)
   window.ktProducts = {
-    'r01': {name:'볼 반지', baseWeight:3.05, baseKarat:14, fee:55000, imageBase:'kt_ring_01', state:{karat:14, color:'rose'}}
+    'r01': {name:'볼 반지', baseWeight:3.05, baseKarat:14, fee:55000, imageBase:'kt_ring_01', state:{karat:14, color:'rose'}},
+    'r02': {name:'펄 웨이브 링', baseWeight:1.79, baseKarat:14, fee:50000, imageBase:'kt_ring_02', state:{karat:14, color:'rose'}}
   };
 
   // 가격 공식: (중량/3.75 × 케이렛비율 × 골드바 + 공임) × 1.2 → 천원 버림
