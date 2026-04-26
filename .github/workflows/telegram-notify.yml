@@ -1,0 +1,41 @@
+name: 텔레그램 가격 알림
+
+# prices.json이 변경될 때마다 자동 실행
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prices.json'
+      - 'store-bg.png'
+      - 'notify_telegram.py'
+      - '.github/workflows/telegram-notify.yml'
+
+  # 수동 실행도 가능 (Actions 탭에서 "Run workflow" 버튼)
+  workflow_dispatch:
+
+jobs:
+  send-card:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Python 설치
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 한글 폰트 설치
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
+
+      - name: Pillow 설치
+        run: pip install Pillow
+
+      - name: 카드 생성 + 텔레그램 전송
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python notify_telegram.py
