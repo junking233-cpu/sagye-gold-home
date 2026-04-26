@@ -61,10 +61,24 @@ def get_kst_today():
     return f"{now.year}년 {now.month}월 {now.day}일"
 
 
+def get_kst_time():
+    """한국 시간 기준 현재 시각 (오전/오후 HH:MM)"""
+    kst = timezone(timedelta(hours=9))
+    now = datetime.now(kst)
+    hour = now.hour
+    if hour < 12:
+        ampm = "오전"
+        h12 = hour if hour != 0 else 12
+    else:
+        ampm = "오후"
+        h12 = hour - 12 if hour > 12 else 12
+    return f"{ampm} {h12}:{now.minute:02d}"
+
+
 # ──────────────────────────────────────────────────
 # 카드 이미지 생성
 # ──────────────────────────────────────────────────
-def make_card(prices_data, date_str):
+def make_card(prices_data, date_str, time_str):
     """가격 카드 이미지 생성"""
 
     base = prices_data["base"]
@@ -137,6 +151,10 @@ def make_card(prices_data, date_str):
            font=font(FONT_BOLD, 26), fill=GOLD_BRIGHT, anchor="mm")
     d.text((W//2, 1045), "www.sagyegold.co.kr",
            font=font(FONT_BOLD, 24), fill=GOLD_BRIGHT, anchor="mm")
+
+    # 우측 하단 모서리에 작게 업데이트 시간 (오전/오후 + 시:분)
+    d.text((W-65, H-65), time_str, font=font(FONT_BOLD, 20),
+           fill=GOLD_BRIGHT, anchor="rm")
 
     img.save(OUTPUT_CARD)
     print(f"✅ 카드 이미지 생성 완료: {OUTPUT_CARD}")
@@ -248,10 +266,11 @@ def main():
     print(f"📅 prices.json 업데이트 날짜: {prices_data.get('updated')}")
 
     date_str = get_kst_today()
-    print(f"📅 오늘 날짜 (KST): {date_str}")
+    time_str = get_kst_time()
+    print(f"📅 오늘 날짜 (KST): {date_str} {time_str}")
 
     # 카드 이미지 생성
-    make_card(prices_data, date_str)
+    make_card(prices_data, date_str, time_str)
 
     # 캡션 만들기
     caption = make_caption(prices_data, date_str)
