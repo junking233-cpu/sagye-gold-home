@@ -1,5 +1,4 @@
 name: prices.json 자동 업데이트
-
 on:
   push:
     branches:
@@ -8,36 +7,40 @@ on:
       - 'prices.js'
       - 'convert-prices.js'
   workflow_dispatch:
-
 jobs:
   update-prices:
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
-
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
     steps:
       - name: 📥 레포지토리 체크아웃
         uses: actions/checkout@v4
-
       - name: 📦 Node.js 설정
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
       - name: 🔄 prices.json 생성
         run: node convert-prices.js
-
       - name: 📝 변경사항 커밋 & 푸시
+        id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
           if git diff --quiet prices.json; then
             echo "✅ prices.json 변경사항 없음"
+            echo "changed=false" >> $GITHUB_OUTPUT
           else
             git add prices.json
             git commit -m "🤖 prices.json 자동 업데이트"
             git push
             echo "✅ prices.json 업데이트 완료!"
+            echo "changed=true" >> $GITHUB_OUTPUT
           fi
+
+  notify-telegram:
+    needs: update-prices
+    if: needs.update-prices.outputs.changed == 'true'
+    uses: ./.github/workflows/telegram-notify.yml
+    secrets: inherit
