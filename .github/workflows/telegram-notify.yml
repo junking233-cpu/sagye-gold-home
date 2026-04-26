@@ -1,17 +1,17 @@
 name: 텔레그램 가격 알림
 
-# prices.json이 변경될 때마다 자동 실행
 on:
   push:
     branches: [main]
     paths:
-      - 'prices.json'
       - 'store-bg.png'
       - 'notify_telegram.py'
       - '.github/workflows/telegram-notify.yml'
 
-  # 수동 실행도 가능 (Actions 탭에서 "Run workflow" 버튼)
   workflow_dispatch:
+
+  # 다른 워크플로우에서 호출 가능하게
+  workflow_call:
 
 jobs:
   send-card:
