@@ -9,6 +9,8 @@
 //
 // 🔴 루트에 prices.json 을 만들어 커밋하지 마세요 — 정적 파일이 함수를 가려 장부 값이 안 나갑니다.
 // 아래 정규식 · 객체 부분은 옛 판 그대로입니다 (바꾸면 회귀 시험의 기준이 흔들립니다).
+//   단 하나 — 덩이 한 단계 차이(덩이금_단계)를 읽어 덩이 등급 넷에 씁니다 (2026-11-02 · 장부 163).
+//   옛 prices.js 에는 그 줄이 없어 10000 (옛 식에 박혀 있던 수) → 옛 판은 결과가 한 글자도 안 바뀝니다.
 // ================================================
 const fs = require('fs');
 const path = require('path');
@@ -39,6 +41,12 @@ function extractString(code, varName) {
   return match[1];
 }
 
+// 그 줄이 아예 없으면 기본값 (옛 prices.js) · 줄은 있는데 숫자가 아니면 extractNumber 처럼 멈춤
+function extractNumberOr(code, varName, dflt) {
+  if (!new RegExp(`const\\s+${varName}\\s*=`).test(code)) return dflt;
+  return extractNumber(code, varName);
+}
+
 const 골드바_살때 = extractNumber(pricesJsContent, '골드바_살때');
 const 골드바_팔때 = extractNumber(pricesJsContent, '골드바_팔때');
 const K18 = extractNumber(pricesJsContent, 'K18');
@@ -48,6 +56,7 @@ const 백금 = extractNumber(pricesJsContent, '백금');
 const 실버바_살때 = extractNumber(pricesJsContent, '실버바_살때');
 const 실버바_팔때 = extractNumber(pricesJsContent, '실버바_팔때');
 const 덩이금_최고가 = extractNumber(pricesJsContent, '덩이금_최고가');
+const 덩이금_단계 = extractNumberOr(pricesJsContent, '덩이금_단계', 10000);
 const 검인반지메달 = extractNumber(pricesJsContent, '검인반지메달');
 const 검인목걸이팔찌 = extractNumber(pricesJsContent, '검인목걸이팔찌');
 const 열쇠가격 = extractString(pricesJsContent, '열쇠가격');
@@ -84,10 +93,10 @@ const pricesJson = {
   buying: {
     골드바: 골드바_팔때,
     검증3대마크: 덩이금_최고가,
-    검증덩이:    덩이금_최고가 - 10000,
-    기타덩이:    덩이금_최고가 - 20000,
-    무검덩이:    덩이금_최고가 - 30000,
-    칠보마고자등: 덩이금_최고가 - 40000,
+    검증덩이:    덩이금_최고가 - 덩이금_단계,
+    기타덩이:    덩이금_최고가 - 덩이금_단계 * 2,
+    무검덩이:    덩이금_최고가 - 덩이금_단계 * 3,
+    칠보마고자등: 덩이금_최고가 - 덩이금_단계 * 4,
     검인반지메달: 검인반지메달,
     검인목걸이팔찌: 검인목걸이팔찌,
     K18: K18,
@@ -134,6 +143,6 @@ console.log('✅ prices.json 생성 완료!');
 console.log(`📅 업데이트 날짜: ${updated}`);
 console.log(`💰 골드바 살때: ${골드바_살때.toLocaleString()}원`);
 console.log(`💰 골드바 팔때: ${골드바_팔때.toLocaleString()}원`);
-console.log(`🔶 덩이금 최고가: ${덩이금_최고가.toLocaleString()}원`);
+console.log(`🔶 덩이금 최고가: ${덩이금_최고가.toLocaleString()}원 · 한 단계 ${덩이금_단계.toLocaleString()}원`);
 console.log(`🦷 치금 인레이: ${치금_인레이.toLocaleString()}원`);
 console.log(`🦷 치금 크라운: ${치금_크라운.toLocaleString()}원`);
