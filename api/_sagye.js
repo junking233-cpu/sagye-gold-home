@@ -5,19 +5,21 @@
 //
 // 흐름: 장부 Supabase site_rates id 3 (공개 publishable 키로 읽기만)
 //         → 15칸 꼴 검사 → prices.js 글자 (15칸 + 시세날짜 + 식 FORMULA) · prices.json 글자 (옛 convert-prices.js 와 같은 객체)
-//       못 읽으면 (꼴 틀림 · 2초 넘김 · 5xx · 빈 줄 · 끊김): 이 함수 메모리의 마지막 장부 값 → 그것도 없으면 예비 값(FALLBACK)
+//       못 읽으면 (꼴 틀림 · 2초 넘김 · 5xx · 빈 줄 · 끊김): 이 함수 메모리의 마지막 장부 값
+//         → 그것도 없으면 예비 값(FALLBACK) — 단 그 날짜부터 FALLBACK_MAX_DAYS 일 안에서만
+//         → 그보다 낡았으면 숫자를 안 내고 503 (화면은 가격 칸 「-」 · 카카오는 「전화 주세요」) — 낡은 매입가가 손님에게 안 나가게
 //
 // 🔴 시세는 장부에서만 바꿉니다. GitHub 에 prices.js · prices.json 을 다시 만들면 Vercel 이 그 정적 파일을
 //    rewrite 보다 먼저 줘서 장부 값이 가려집니다 (.vercelignore 가 한 번 더 막지만 만들지 마세요).
-// 🔴 sb_secret_ 키는 절대 여기 넣지 않습니다. 아래 키는 리턴 홈페이지에도 이미 공개된 publishable 키입니다.
-// 🔴 장부 쪽 꼴: kh-jangbu-v3 supabase/migrations/161_site_rates_stores.sql (site_rates_build · sagye) ·
+// 🔴 sb_secret_ 키는 절대 여기 넣지 않습니다. 아래 키는 손님 읽기 전용 공개(publishable) 키입니다.
+// 🔴 장부 쪽 꼴 (site_rates_build · sagye):
 //    data = {updated:'YYYY.MM.DD', at:'YYYY-MM-DDTHH:MI:SS+09:00', hero, live, buy, extra:{base:{15칸}}}
 // ================================================
 import { FORMULA } from './_sagye-formula.js';
 
 export const LEDGER_URL = 'https://odbwpyiavenrwfsjsppk.supabase.co';
 export const LEDGER_KEY = 'sb_publishable_vfQOB-gVznQAHNHswDy_jg_-CK6ATiZ';
-export const RATES_ID = 3;            // site_rates 번호 — 1 리턴 · 2 금사랑 · 3 사계절 (영구히 안 바꿈 · 장부 설정 표 site_rates_stores 와 같은 값)
+export const RATES_ID = 3;            // site_rates 의 사계절 줄 번호 (영구히 안 바꿈 · 장부 설정 표 site_rates_stores 와 같은 값)
 export const TIMEOUT_MS = 2000;       // 장부 읽기 시간 제한 (카카오 5초 안에 들게)
 
 // prices.js 맨 위 15칸 — 이름 · 순서 · 종류 · 범위 (장부 161 site_rates_parse 와 같은 규칙)
@@ -43,22 +45,30 @@ export const FIELDS = [
 export const RANGE = { '1돈': [10000, 5000000], '1kg': [100000, 50000000] };
 export const TEXT_RE = /^[0-9]{1,4}(~[0-9]{1,4})?$/;
 
-// 예비 값 — 장부를 한 번도 못 읽었을 때만 (전환하는 날 GitHub main 의 prices.js 8935fb5 · prices.json updated 2026-10-31)
+// 예비 값 — 이 함수가 장부를 한 번도 못 읽었을 때만 (GitHub main 의 마지막 prices.js 3ab30f2 · prices.json a14408e updated 2026-11-02)
 //   🔴 날짜는 그 값의 날짜 그대로 — 홈페이지 UPDATED 가 오늘처럼 보이지 않게
-export const FALLBACK_YMD = '2026-10-31';
+//   🔴 올리기 전에 GitHub main 에 prices.js 가 또 바뀌었으면 그 값으로 맞춥니다 (node scripts/regress.mjs 가 FAIL 로 알려 줌)
+export const FALLBACK_YMD = '2026-11-02';
 export const FALLBACK_BASE = Object.freeze({
-  골드바_살때: 670000, 골드바_팔때: 635000, K18: 470000, K14: 365000, K10: 150000, 백금: 150000,
-  실버바_살때: 2450000, 실버바_팔때: 2100000,
-  덩이금_최고가: 630000,
-  검인반지메달: 625000, 검인목걸이팔찌: 620000, 열쇠가격: '615~625', 상패동물골프공: '600~630',
-  치금_인레이: 317000, 치금_크라운: 220000,
+  골드바_살때: 670000, 골드바_팔때: 645000, K18: 478000, K14: 372000, K10: 160000, 백금: 135000,
+  실버바_살때: 2400000, 실버바_팔때: 1850000,
+  덩이금_최고가: 640000,
+  검인반지메달: 635000, 검인목걸이팔찌: 632000, 열쇠가격: '620~625', 상패동물골프공: '625~630',
+  치금_인레이: 322000, 치금_크라운: 225000,
 });
+// 예비 값을 낼 수 있는 날 수 — FALLBACK_YMD(한국 날짜)부터 이 날 수까지만 (2026-11-02 → 11-05 23:59 한국 시각까지)
+//   그 뒤엔 메모리도 없고 장부도 못 읽으면 숫자 대신 503 (낡은 숫자 · 낡은 매입가가 손님 화면 · 카톡에 안 나가게)
+//   전환하는 날 · 첫 저장 전 며칠만 예비 값이 필요해서 짧게 둡니다. 예전처럼 늘 예비 값을 내려면 큰 수로.
+export const FALLBACK_MAX_DAYS = 3;
 
 // ── 캐시 (Vercel CDN) ─────────────────────────────
+//   장부 값: 30초 묶음 + 뒤에서 다시 받는 동안 270초까지 옛 값 → 저장 뒤 길어도 300초(5분) (장부 화면 「길어도 5분」 과 같게)
+//   못 읽음(none · 503): 캐시에 안 남김
 export const CACHE = {
-  ledger: 'public, max-age=0, s-maxage=30, stale-while-revalidate=300',
+  ledger: 'public, max-age=0, s-maxage=30, stale-while-revalidate=270',
   memory: 'public, max-age=0, s-maxage=10',
   fallback: 'public, max-age=0, s-maxage=10',
+  none: 'no-store',
 };
 
 // ── 꼴 검사 ───────────────────────────────────────
@@ -295,7 +305,30 @@ export function selfCheck(base, js) {
   }
 }
 
-// ── 고르기: 장부 → 메모리 → 예비 ──────────────────
+// ── 시각 (시험에서 바꿔 끼움) ─────────────────────
+let nowFn = () => Date.now();
+/** 시험용 — 지금 시각을 바꿔 끼움 (ms) · 인자 없으면 진짜 시각으로 */
+export function setNow(fn) { nowFn = typeof fn === 'function' ? fn : () => Date.now(); }
+/** 한국 날짜 'YYYY-MM-DD' */
+export function kstYmd(ms) { return new Date(ms + 9 * 3600 * 1000).toISOString().slice(0, 10); }
+const dayNo = (ymd) => Date.UTC(+ymd.slice(0, 4), +ymd.slice(5, 7) - 1, +ymd.slice(8, 10)) / 86400000;
+/** 예비 값을 아직 낼 수 있나 — 한국 날짜로 FALLBACK_YMD + FALLBACK_MAX_DAYS 일까지 */
+export function fallbackFresh(ms = nowFn()) {
+  if (!Number.isFinite(ms)) return false;   // 시각을 모르면 낡은 것으로 (숫자를 안 내는 쪽)
+  return dayNo(kstYmd(ms)) - dayNo(FALLBACK_YMD) <= FALLBACK_MAX_DAYS;
+}
+
+// ── 못 읽음 (503) — 숫자를 안 냄 ────────────────────
+//   prices.js: 아무 이름도 안 만드는 주석 한 덩이 (브라우저가 503 몸을 돌려도 · 안 돌려도 같은 화면 — 가격 칸 「-」)
+//   prices.json: base 없는 오류 객체 (카카오 api/prices.js 는 !ok 라 「전화 주세요」 · 카드 스크립트는 멈춤)
+export const NONE_JS = '/* 사계절 금거래소 — 시세를 불러오지 못했습니다. 매장으로 문의해 주세요.\n'
+  + '   (장부를 못 읽었고 예비 값도 낡아서 숫자를 내지 않습니다 — 낡은 가격이 손님에게 안 나가게) */\n';
+export const NONE_JSON = JSON.stringify({ error: '시세를 불러오지 못했습니다. 매장으로 문의해 주세요.' });
+export function none(reason = 'unknown') {
+  return { src: 'none', reason, base: null, ymd: null, js: NONE_JS, json: NONE_JSON };
+}
+
+// ── 고르기: 장부 → 메모리 → 예비(FALLBACK_MAX_DAYS 일 안) → 못 읽음(503) ──
 let memo = null;   // 이 함수 인스턴스가 마지막으로 읽은 «검사 통과한» 장부 값 {base, ymd, js, json}
 
 function make(base, ymd, src) {
@@ -312,11 +345,17 @@ export function fallback(reason = 'unknown') {
   return { ...m, src: 'fallback', reason };
 }
 
+/** 메모리가 없을 때 — 예비 값이 아직 낼 만하면 예비 값, 낡았으면 못 읽음(503) */
+export function fallbackOrNone(reason = 'unknown', ms = nowFn()) {
+  return fallbackFresh(ms) ? fallback(reason) : none(reason);
+}
+
 /**
- * 손님에게 낼 값 하나 — {src: 'ledger'|'memory'|'fallback', base, ymd, js, json, reason?}
- *   장부 값이 꼴 검사나 스스로 확인을 못 넘으면 그 값은 버리고 메모리(이미 검사 통과) → 예비 값
+ * 손님에게 낼 값 하나 — {src: 'ledger'|'memory'|'fallback'|'none', base, ymd, js, json, reason?}
+ *   장부 값이 꼴 검사나 스스로 확인을 못 넘으면 그 값은 버리고 메모리(이미 검사 통과) → 예비 값(낼 만할 때만) → 못 읽음
  */
-export async function pick(opts) {
+export async function pick(opts = {}) {
+  const ms = typeof opts.now === 'number' ? opts.now : nowFn();
   let reason;
   try {
     const got = await readLedger(opts);
@@ -330,18 +369,19 @@ export async function pick(opts) {
     reason = (e && e.reason) || 'error';
   }
   if (memo) return { ...memo, src: 'memory', reason };
-  return fallback(reason);
+  return fallbackOrNone(reason, ms);
 }
 
 /** 시험용 — 메모리 비우기 */
 export function resetMemory() { memo = null; }
 
-/** 함수 응답 머리글 (prices-js · prices-json 공통) */
+/** 함수 응답 머리글 + 상태 (prices-js · prices-json 공통) — 못 읽음(none)이면 503 · 캐시 안 남김 */
 export function setRatesHeaders(res, r, contentType) {
+  res.statusCode = r.src === 'none' ? 503 : 200;
   res.setHeader('Content-Type', contentType);
-  res.setHeader('Cache-Control', CACHE[r.src] || CACHE.fallback);
+  res.setHeader('Cache-Control', CACHE[r.src] || CACHE.none);
   res.setHeader('X-Rates-Source', r.src);
-  res.setHeader('X-Rates-Date', r.ymd);
+  if (r.ymd) res.setHeader('X-Rates-Date', r.ymd);
   if (r.reason) res.setHeader('X-Rates-Reason', String(r.reason).replace(/[^A-Za-z0-9._-]/g, '').slice(0, 40) || 'error');
   res.setHeader('Access-Control-Allow-Origin', '*');
 }

@@ -3,15 +3,19 @@
 //
 //   node scripts/regress.mjs          모두
 //   node scripts/regress.mjs --live   + 진짜 장부 id 3 을 공개 키로 한 번 읽어 결과만 보여 줌 (쓰기 없음)
+//                                     + 실전 홈페이지 /prices.js · /prices.json 공개 GET — 아직 정적 파일이면(올리기 전) 예비 값과 같아야
+//   🔴 올리기 직전엔 git fetch origin 을 먼저 — origin/main 의 prices.js (받아 둔 때 기준) 와 예비 값을 견줍니다
 //
-// (가) git 역사의 prices.js 판 모두:
+// (가) git 역사의 prices.js 판 모두 (git log --full-history — main 을 합친 뒤에도 main 쪽 판을 빠뜨리지 않게):
 //      그 판 15칸 → 지금 식으로 renderJs → 옛 convert-prices.js 로 돌린 prices.json
 //        == 옛 판을 옛 convert 로 돌린 것 == buildJson(15칸)  (updated 만 빼고 글자 하나까지)
 //      식이 지금과 같은 판은 vm 으로 옛 파일 · 새 파일을 돌려 맨 위 이름(15칸 · prices · BUYING · fmt) 값과
 //        set() 호출(칸 id · 글자 · 순서 · 횟수)이 같아야 · 새 파일에 더 있는 이름은 시세날짜 하나뿐
 //      15칸이 없는 옛 판(식이 다르던 때)은 옛 convert 도 똑같이 실패해야
 //      맨 마지막 판 = FALLBACK_BASE · 그때 prices.json = jsonText(FALLBACK_BASE, FALLBACK_YMD) 글자 그대로
+//      origin/main 이 아직 prices.js 를 가지면(올리기 전) 그 판 = FALLBACK_BASE · origin/main 이 이 브랜치에 합쳐져 있어야
 // (나) 장부 id 3 꼴 가짜 서버로 readLedger → renderJs/buildJson · 꼴 틀림/2초 넘김/5xx/빈 줄/끊김 → memory → fallback · 머리글
+//      예비 값이 FALLBACK_MAX_DAYS 일을 넘으면 → 503 · no-store · 숫자 없음 (시각은 setNow 로 고정)
 // (다) 식 원본(scripts/formula.src.js) = api/_sagye-formula.js
 //
 // 하나라도 FAIL 이면 종료 코드 1 — 올리기 전에 모두 ok 여야 합니다.
@@ -120,10 +124,12 @@ ok(!FORMULA.includes('\r'), 'FORMULA 에 CR 없음 (LF 만)');
 // (가) 역사
 // ================================================
 console.log('\n── (가) git 역사 prices.js 판 모두 ──');
-const revs = git('log', '--format=%H %cs', '--', 'prices.js').trim().split('\n').map((l) => l.split(' '));
+// --full-history: 기본 기록 단순화는 main 을 합친 뒤 main 쪽 prices.js 커밋을 버린다 (합친 커밋이 「지움」 쪽 부모와 같다고 봄)
+//   → 마지막 판을 낡은 판으로 잘못 고르고 「예비 값 = 마지막 판」 이 거짓 ok 가 된다. 세 곳 모두 붙인다.
+const revs = git('log', '--full-history', '--format=%H %cs', '--', 'prices.js').trim().split('\n').map((l) => l.split(' '));
 const texts = blobs(revs.map(([h]) => `${h}:prices.js`));
 // 옛 convert-prices.js = 경로 인자를 받기 전 마지막 판
-const convRevs = git('log', '--format=%H', '--', 'convert-prices.js').trim().split('\n');
+const convRevs = git('log', '--full-history', '--format=%H', '--', 'convert-prices.js').trim().split('\n');
 const convTexts = blobs(convRevs.map((h) => `${h}:convert-prices.js`));
 const oldConvert = convTexts.find((t) => t && t.includes("path.join(__dirname, 'prices.js')"));
 ok(!!oldConvert, '옛 convert-prices.js 를 역사에서 찾음');
@@ -196,11 +202,33 @@ console.log('\n── (가) 맨 마지막 판 = 예비 값 ──');
 ok(!!newest && JSON.stringify(newest.base) === JSON.stringify({ ...S.FALLBACK_BASE }),
   `FALLBACK_BASE == 마지막 prices.js (${newest && newest.h.slice(0, 7)} ${newest && newest.day})`,
   newest && JSON.stringify(newest.base) !== JSON.stringify({ ...S.FALLBACK_BASE }) ? '다르면 api/_sagye.js FALLBACK_BASE 를 이 값으로: ' + JSON.stringify(newest.base) : '');
-const jrevs = git('log', '--format=%H', '--', 'prices.json').trim().split('\n');
+const jrevs = git('log', '--full-history', '--format=%H', '--', 'prices.json').trim().split('\n');
 const jtexts = blobs(jrevs.map((h) => `${h}:prices.json`));
 const lastJson = jtexts.find((t) => t !== null);
 ok(lastJson !== undefined && lf(lastJson) === S.jsonText(S.FALLBACK_BASE, S.FALLBACK_YMD),
   `jsonText(FALLBACK_BASE, '${S.FALLBACK_YMD}') == 마지막 정적 prices.json (updated 까지 글자 그대로)`);
+{
+  // 받아 둔 GitHub main(origin/main) 이 아직 prices.js 를 가진 때 (= 올리기 전) — 그 판이 예비 값이어야 하고 이 브랜치에 합쳐져 있어야
+  //   역사 비교만으로는 main 을 안 합친 브랜치에서 낡은 판과 견주게 된다. origin/main 은 받아 둔 때 기준이라 올리기 직전엔 git fetch 먼저.
+  let om = null;
+  try { om = git('rev-parse', '--verify', '-q', 'origin/main^{commit}').trim(); } catch {}
+  const [omJs, omJson] = om ? blobs([`${om}:prices.js`, `${om}:prices.json`]) : [null, null];
+  if (!om) console.log('     (origin/main 없음 — main 비교 건너뜀)');
+  else if (omJs === null) console.log(`     (origin/main ${om.slice(0, 7)} 에 prices.js 없음 — 이미 올린 뒤라 main 비교 건너뜀)`);
+  else {
+    let omBase = null; try { omBase = S.extractBase(omJs); } catch {}
+    const same = !!omBase && JSON.stringify(omBase) === JSON.stringify({ ...S.FALLBACK_BASE });
+    ok(same, `FALLBACK_BASE == origin/main prices.js (${om.slice(0, 7)} · 받아 둔 때 기준 — 올리기 직전엔 git fetch 먼저)`,
+      same ? '' : 'api/_sagye.js FALLBACK_BASE 를 이 값으로: ' + JSON.stringify(omBase));
+    if (omJson !== null) {
+      const updated = (/"updated": "([^"]*)"/.exec(omJson) || [])[1];
+      ok(lf(omJson) === S.jsonText(S.FALLBACK_BASE, S.FALLBACK_YMD), `jsonText(FALLBACK) == origin/main prices.json (updated ${updated})`,
+        updated !== S.FALLBACK_YMD ? `FALLBACK_YMD 를 '${updated}' 로` : '');
+    }
+    const anc = spawnSync('git', ['merge-base', '--is-ancestor', om, 'HEAD'], { cwd: ROOT }).status === 0;
+    ok(anc, `origin/main(${om.slice(0, 7)}) 이 이 브랜치에 합쳐져 있음`, anc ? '' : 'git merge origin/main 먼저 (충돌 푸는 법은 README 「GitHub main 을 합칠 때」)');
+  }
+}
 {
   const fb = S.fallback('x');
   ok(fb.src === 'fallback' && fb.ymd === S.FALLBACK_YMD && S.selfCheck(S.FALLBACK_BASE, fb.js) && fb.js.includes(`const 시세날짜 = "${S.FALLBACK_YMD}";`),
@@ -302,13 +330,18 @@ S.resetMemory(); mode = 'good'; route = FAKE;
   ok(r.status === 200 && r.headers['x-rates-source'] === 'ledger' && r.headers['cache-control'] === S.CACHE.ledger
      && r.headers['content-type'] === 'application/javascript; charset=utf-8' && r.headers['x-rates-date'] === '2026-10-28'
      && r.headers['access-control-allow-origin'] === '*' && !('x-rates-reason' in r.headers),
-    '/prices.js 장부 값 — X-Rates-Source ledger · s-maxage=30, stale-while-revalidate=300', r.headers['cache-control']);
+    '/prices.js 장부 값 — X-Rates-Source ledger · s-maxage=30, stale-while-revalidate=270', r.headers['cache-control']);
   ok(JSON.stringify(S.extractBase(r.body)) === JSON.stringify(GOOD_BASE) && r.body.includes('const 시세날짜 = "2026-10-28";') && r.body.endsWith(FORMULA),
     '/prices.js 글자 — 15칸 = 장부 · 시세날짜 = 장부 저장 날짜 · 식 그대로');
   const j = await call(handlerJson);
   ok(j.headers['x-rates-source'] === 'ledger' && j.headers['content-type'] === 'application/json; charset=utf-8' && j.headers['cache-control'] === S.CACHE.ledger
      && j.body === S.jsonText(GOOD_BASE, '2026-10-28') && JSON.parse(j.body).updated === '2026-10-28',
     '/prices.json 장부 값 — buildJson 글자 · updated 2026-10-28');
+  {
+    // 저장 뒤 CDN 이 옛 값을 줄 수 있는 가장 긴 시간 = s-maxage + stale-while-revalidate ≤ 300초 (장부 화면 「길어도 5분」)
+    const sm = +(/s-maxage=(\d+)/.exec(S.CACHE.ledger) || [])[1]; const swr = +(/stale-while-revalidate=(\d+)/.exec(S.CACHE.ledger) || [])[1];
+    ok(sm > 0 && swr >= 0 && sm + swr <= 300, `장부 값 캐시 s-maxage ${sm} + stale-while-revalidate ${swr} = ${sm + swr}초 ≤ 300초 (길어도 5분)`);
+  }
   // 옛 방식으로 돌린 것과 같은지 (새 prices.js → 옛 convert)
   ok(dropUpdated(runConvert(oldConvert, r.body)) === dropUpdated(j.body), '/prices.js → 옛 convert == /prices.json (updated 빼고)');
 }
@@ -369,7 +402,13 @@ custom = [{ data: { ...ledgerData(GOOD_BASE, { updated: 'x', at: '2026-10-29T09:
   ok(got.ymd === '2026-10-29' && JSON.stringify(got.base) === JSON.stringify(GOOD_BASE), 'updated 틀림 → at 날짜 (2026-10-29) · 모르는 키 무시');
 }
 
-// 4) 메모리 없음 → 예비 값
+// 4) 메모리 없음 → 예비 값 (예비 값 날짜부터 FALLBACK_MAX_DAYS 일 안 — 시각을 그 날 낮 12시 한국으로 고정)
+const KST = (ymd, hms = '12:00:00') => Date.parse(`${ymd}T${hms}+09:00`);
+const addDays = (ymd, n) => new Date(Date.parse(ymd + 'T00:00:00Z') + n * 86400000).toISOString().slice(0, 10);
+const FRESH_MS = KST(S.FALLBACK_YMD);
+const LAST_FRESH_YMD = addDays(S.FALLBACK_YMD, S.FALLBACK_MAX_DAYS);
+const STALE_MS = KST(addDays(S.FALLBACK_YMD, S.FALLBACK_MAX_DAYS + 1), '00:00:00');
+S.setNow(() => FRESH_MS);
 S.resetMemory();
 for (const [m, reason] of [['empty', 'empty'], ['503', 'http-503'], ['slow', 'timeout']]) {
   mode = m;
@@ -379,7 +418,7 @@ for (const [m, reason] of [['empty', 'empty'], ['503', 'http-503'], ['slow', 'ti
      && r.headers['x-rates-date'] === S.FALLBACK_YMD && r.body.includes(`const 시세날짜 = "${S.FALLBACK_YMD}";`)
      && JSON.stringify(S.extractBase(r.body)) === JSON.stringify({ ...S.FALLBACK_BASE })
      && j.headers['x-rates-source'] === 'fallback' && j.body === S.jsonText(S.FALLBACK_BASE, S.FALLBACK_YMD),
-    `메모리 없음 + ${m} → fallback · s-maxage=10 · 날짜 ${S.FALLBACK_YMD} (오늘처럼 안 보임)`, `${r.headers['x-rates-source']}/${r.headers['x-rates-reason']}`);
+    `메모리 없음 + ${m} → fallback · s-maxage=10 · 날짜 ${S.FALLBACK_YMD} (예비 값 날짜 그대로 · 휴대폰 날짜 아님)`, `${r.headers['x-rates-source']}/${r.headers['x-rates-reason']}`);
 }
 route = DEAD;
 {
@@ -387,6 +426,44 @@ route = DEAD;
   ok(r.headers['x-rates-source'] === 'fallback' && r.headers['x-rates-reason'] === 'network', '메모리 없음 + 끊김 → fallback');
 }
 route = FAKE;
+
+// 4-2) 예비 값이 낡음 (FALLBACK_MAX_DAYS 일 넘음) + 메모리 없음 → 숫자 안 냄 · 503 · 캐시 안 남김
+console.log(`     (예비 값 ${S.FALLBACK_YMD} → ${LAST_FRESH_YMD} 23:59 한국 시각까지만 · 그 뒤 503)`);
+ok(S.fallbackFresh(KST(S.FALLBACK_YMD, '00:00:00')) && S.fallbackFresh(KST(LAST_FRESH_YMD, '23:59:59')) && !S.fallbackFresh(STALE_MS)
+   && !S.fallbackFresh(Date.parse(addDays(S.FALLBACK_YMD, S.FALLBACK_MAX_DAYS) + 'T15:00:00Z')) && S.fallbackFresh(Date.parse(addDays(S.FALLBACK_YMD, S.FALLBACK_MAX_DAYS) + 'T14:59:59Z')) && !S.fallbackFresh(NaN),
+  `예비 값 날짜 경계는 한국 날짜 (${LAST_FRESH_YMD} 23:59:59 ok · 다음 날 00:00 = UTC 15:00 부터 낡음 · 시각 모르면 낡음)`);
+S.setNow(() => STALE_MS);
+const vmNames = (code) => { const ctx = vm.createContext({}); vm.runInContext(code, ctx); return vm.runInContext('Object.keys(globalThis).length + (typeof 골드바_살때) + (typeof BUYING) + (typeof 시세날짜)', ctx); };
+for (const [m, reason] of [['empty', 'empty'], ['503', 'http-503'], ['slow', 'timeout'], ['custom', 'shape']]) {
+  mode = m; if (m === 'custom') custom = [{ data: [] }];
+  S.resetMemory();
+  const r = await call(handlerJs);
+  const j = await call(handlerJson);
+  let jb = null; try { jb = JSON.parse(j.body); } catch {}
+  let threw = false; try { S.extractBase(r.body); } catch { threw = true; }
+  ok(r.status === 503 && r.headers['x-rates-source'] === 'none' && r.headers['x-rates-reason'] === reason && r.headers['cache-control'] === 'no-store'
+     && !('x-rates-date' in r.headers) && r.headers['content-type'] === 'application/javascript; charset=utf-8' && r.body === S.NONE_JS && threw
+     && vmNames(r.body) === '0undefinedundefinedundefined'
+     && j.status === 503 && j.headers['x-rates-source'] === 'none' && j.headers['cache-control'] === 'no-store' && !!jb && typeof jb.error === 'string' && !('base' in jb) && !('updated' in jb),
+    `예비 값 낡음 + 메모리 없음 + ${m} → 503 · no-store · 숫자 없음 (prices.js 는 이름 0개 · prices.json 은 base 없음)`, `${r.status}/${r.headers['x-rates-source']}/${r.headers['x-rates-reason']}`);
+}
+{
+  // 낡아도 메모리가 있으면 그 값 (메모리는 이 인스턴스가 읽은 진짜 장부 값과 그 저장 날짜)
+  mode = 'good'; S.resetMemory();
+  const r1 = await call(handlerJs);
+  mode = '503';
+  const r2 = await call(handlerJs);
+  ok(r1.status === 200 && r1.headers['x-rates-source'] === 'ledger' && r2.status === 200 && r2.headers['x-rates-source'] === 'memory'
+     && JSON.stringify(S.extractBase(r2.body)) === JSON.stringify(GOOD_BASE),
+    '예비 값이 낡아도 장부 → ledger · 그 뒤 실패 → memory (200)');
+  const p = await S.pick({ url: DEAD, now: FRESH_MS });
+  ok(p.src === 'memory', 'pick({now}) 도 받음 (메모리 우선)');
+  S.resetMemory();
+  const p2 = await S.pick({ url: DEAD, now: FRESH_MS }); const p3 = await S.pick({ url: DEAD, now: STALE_MS });
+  ok(p2.src === 'fallback' && p3.src === 'none' && p3.js === S.NONE_JS, 'pick({now}) — 예비 값 날짜 안 fallback · 넘으면 none');
+}
+S.setNow(() => FRESH_MS);
+mode = 'good';
 // 5) 다시 살아나면 장부 값 · 메모리도 새 값으로
 mode = 'good';
 {
@@ -404,6 +481,7 @@ mode = 'good';
   ok(st === 204 && headers['access-control-allow-origin'] === '*', 'OPTIONS → 204 · CORS');
 }
 
+S.setNow();
 globalThis.fetch = realFetch;
 await new Promise((r) => server.close(r));
 
@@ -414,7 +492,33 @@ if (process.argv.includes('--live')) {
   const t0 = Date.now();
   const r = await S.pick();
   console.log(`     X-Rates-Source=${r.src}${r.reason ? ' · 까닭=' + r.reason : ''} · 날짜=${r.ymd} · ${Date.now() - t0}ms`);
-  if (r.src === 'fallback' && r.reason === 'empty') console.log('     ⚠ 장부 사계절 탭 첫 저장 전입니다 — 올리기 전에 첫 저장을 꼭 하세요');
+  if ((r.src === 'fallback' || r.src === 'none') && r.reason === 'empty') console.log('     ⚠ 장부 사계절 탭 첫 저장 전입니다 — 올리기 전에 첫 저장을 꼭 하세요');
+  if (r.src === 'none') console.log(`     ⚠ 예비 값(${S.FALLBACK_YMD})이 ${S.FALLBACK_MAX_DAYS}일을 넘어 지금 올리면 장부를 못 읽을 때 503 (가격 칸 「-」) 입니다`);
+
+  // 실전 홈페이지 (공개 GET 두 번) — 아직 정적 파일(머리글 X-Rates-Source 없음)이면 = 올리기 전: 그 값이 예비 값이어야
+  console.log('\n── --live 실전 홈페이지 /prices.js · /prices.json (공개 GET) ──');
+  for (const path of ['/prices.js', '/prices.json']) {
+    let res = null, body = '';
+    try {
+      res = await fetch(`https://www.sagyegold.co.kr${path}?t=${Date.now()}`, { signal: AbortSignal.timeout(10000) });
+      body = lf(await res.text());
+    } catch (e) {
+      ok(false, `실전 ${path} 읽기`, String(e && e.message));
+      continue;
+    }
+    const src = res.headers.get('x-rates-source');
+    if (src) {
+      console.log(`     실전 ${path}: ${res.status} · X-Rates-Source=${src} · 날짜=${res.headers.get('x-rates-date') || '-'} · 캐시=${res.headers.get('x-vercel-cache') || '-'} (이미 올린 뒤 — 예비 값 비교 건너뜀)`);
+    } else if (path === '/prices.js') {
+      let b = null; try { b = S.extractBase(body); } catch {}
+      const same = !!b && JSON.stringify(b) === JSON.stringify({ ...S.FALLBACK_BASE });
+      ok(same, '실전 정적 /prices.js 15칸 == FALLBACK_BASE (올리기 전 · 오늘 GitHub 값)', same ? '' : 'api/_sagye.js FALLBACK_BASE 를 이 값으로: ' + JSON.stringify(b));
+    } else {
+      const updated = (/"updated": "([^"]*)"/.exec(body) || [])[1];
+      ok(body === S.jsonText(S.FALLBACK_BASE, S.FALLBACK_YMD), `실전 정적 /prices.json == jsonText(FALLBACK) (updated ${updated})`,
+        updated !== S.FALLBACK_YMD ? `FALLBACK_YMD 를 '${updated}' 로` : '');
+    }
+  }
 }
 
 console.log(fails ? `\n❌ FAIL ${fails}개` : '\n✅ 모두 ok');
