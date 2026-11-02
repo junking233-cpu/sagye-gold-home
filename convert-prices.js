@@ -1,11 +1,27 @@
 // ================================================
-// prices.js → prices.json 자동 변환 스크립트
+// prices.js → prices.json 변환 스크립트 — 🔴 이제 회귀 시험 전용 (손님 화면에 안 쓰임)
+// ================================================
+// 사계절 시세는 장부 「손님 시세」 사계절 탭에서 바꾸고, /prices.js · /prices.json 은
+// Vercel 함수(api/prices-js.js · api/prices-json.js)가 만듭니다. 이 파일은 그 함수가
+// 옛 방식과 «같은 글자» 를 내는지 견주는 기준으로만 남겨 둡니다 (scripts/regress.mjs).
+//
+//   node convert-prices.js <읽을 prices.js 경로> <쓸 prices.json 경로>
+//
+// 🔴 루트에 prices.json 을 만들어 커밋하지 마세요 — 정적 파일이 함수를 가려 장부 값이 안 나갑니다.
+// 아래 정규식 · 객체 부분은 옛 판 그대로입니다 (바꾸면 회귀 시험의 기준이 흔들립니다).
 // ================================================
 const fs = require('fs');
 const path = require('path');
 
+const [inPath, outPath] = process.argv.slice(2);
+if (!inPath || !outPath) {
+  console.error('쓰는 법: node convert-prices.js <읽을 prices.js 경로> <쓸 prices.json 경로>');
+  console.error('(사계절 시세는 장부 「손님 시세」 에서 바꿉니다 — 이 스크립트는 회귀 시험 전용)');
+  process.exit(1);
+}
+
 const pricesJsContent = fs.readFileSync(
-  path.join(__dirname, 'prices.js'),
+  path.resolve(inPath),
   'utf8'
 );
 
@@ -109,7 +125,7 @@ const pricesJson = {
 };
 
 fs.writeFileSync(
-  path.join(__dirname, 'prices.json'),
+  path.resolve(outPath),
   JSON.stringify(pricesJson, null, 2),
   'utf8'
 );
