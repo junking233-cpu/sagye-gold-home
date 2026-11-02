@@ -1,8 +1,11 @@
 """
 사계절 금거래소 - 가격 카드 생성 + 텔레그램 전송
 
-prices.js를 직접 읽어서 카드 이미지를 만들고, 텔레그램 봇으로 전송합니다.
-GitHub Actions에서 자동 실행됩니다.
+홈페이지 https://www.sagyegold.co.kr/prices.json 을 읽어서 카드 이미지를 만들고, 텔레그램 봇으로 전송합니다.
+(prices.json 은 Vercel 함수가 장부 「손님 시세」 사계절 탭 값으로 만듭니다 — 저장소에는 prices.js · prices.json 이 없습니다)
+
+GitHub Actions 「텔레그램 가격 알림」 을 손으로 돌릴 때만 실행됩니다 (workflow_dispatch).
+평소 가격이 바뀌면 장부가 그 매장 텔레그램 알림 방에 한 줄을 보냅니다.
 """
 
 import json
@@ -21,7 +24,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 # ──────────────────────────────────────────────────
 ROOT = Path(__file__).parent
 
-PRICES_JS = ROOT / "prices.js"
+# 가격은 홈페이지에서 읽습니다 (장부 값 · 저장소 파일 아님). 시험할 때만 PRICES_URL 로 바꿀 수 있습니다.
+PRICES_URL = os.environ.get("PRICES_URL") or "https://www.sagyegold.co.kr/prices.json"
 BG_IMAGE = ROOT / "store-bg.png"
 OUTPUT_CARD = ROOT / "today_card.png"
 
@@ -42,28 +46,37 @@ CREAM = "#f5ebd9"
 
 
 # ──────────────────────────────────────────────────
-# prices.js에서 가격 직접 추출
+# 홈페이지 prices.json 에서 가격 읽기 (장부 「손님 시세」 사계절 탭 값)
 # ──────────────────────────────────────────────────
-def extract_prices_from_js():
-    """prices.js 파일을 읽어서 가격 변수들을 추출"""
-    with open(PRICES_JS, "r", encoding="utf-8") as f:
-        content = f.read()
+CARD_KEYS = ["골드바_살때", "골드바_팔때", "K18", "K14", "백금", "실버바_살때", "실버바_팔때"]
 
-    def find_num(varname):
-        m = re.search(rf"const\s+{varname}\s*=\s*(\d+)", content)
-        if not m:
-            raise ValueError(f"변수 못 찾음: {varname}")
-        return int(m.group(1))
 
-    return {
-        "골드바_살때": find_num("골드바_살때"),
-        "골드바_팔때": find_num("골드바_팔때"),
-        "K18": find_num("K18"),
-        "K14": find_num("K14"),
-        "백금": find_num("백금"),
-        "실버바_살때": find_num("실버바_살때"),
-        "실버바_팔때": find_num("실버바_팔때"),
-    }
+def fetch_prices():
+    """prices.json 의 base 에서 카드에 쓰는 7칸을 읽음 → (가격, updated, X-Rates-Source)"""
+    req = urllib.request.Request(
+        PRICES_URL,
+        headers={"User-Agent": "sagye-telegram-card", "Cache-Control": "no-cache"},
+    )
+    with urllib.request.urlopen(req, timeout=20) as response:
+        source = response.headers.get("X-Rates-Source") or "?"
+        data = json.loads(response.read().decode("utf-8"))
+
+    base = data.get("base") or {}
+    prices = {}
+    for key in CARD_KEYS:
+        value = base.get(key)
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise ValueError(f"prices.json base 에 {key} 숫자가 없음: {value!r}")
+        prices[key] = value
+    return prices, data.get("updated"), source
+
+
+def date_from_updated(updated):
+    """prices.json updated 'YYYY-MM-DD' (장부 저장 날짜) → '2026년 11월 2일' · 못 읽으면 None"""
+    m = re.fullmatch(r"(\d{4})-(\d{2})-(\d{2})", str(updated or ""))
+    if not m:
+        return None
+    return f"{int(m.group(1))}년 {int(m.group(2))}월 {int(m.group(3))}일"
 
 
 # ──────────────────────────────────────────────────
@@ -246,13 +259,21 @@ def send_telegram(image_path, caption):
 def main():
     print("🍀 사계절 금거래소 - 텔레그램 알림 시작")
 
-    # prices.js에서 직접 가격 추출 (타이밍 문제 해결!)
-    prices = extract_prices_from_js()
-    print(f"💰 prices.js에서 직접 추출:")
+    # 홈페이지 prices.json 에서 가격 읽기 (장부 값)
+    prices, updated, source = fetch_prices()
+    print(f"💰 {PRICES_URL} 에서 읽음 (X-Rates-Source: {source} · updated: {updated})")
     for k, v in prices.items():
         print(f"   {k}: {v:,}")
 
-    date_str = get_kst_today()
+    if source == "fallback":
+        # 장부를 못 읽어 예비 값(옛 숫자)이 나가는 중 — 옛 숫자로 카드를 보내지 않음
+        print("❌ 홈페이지가 예비 값을 내고 있습니다 (장부를 못 읽음) — 카드를 보내지 않습니다")
+        sys.exit(1)
+    if source not in ("ledger", "memory"):
+        print("⚠️ X-Rates-Source 머리글이 없습니다 — 저장소에 prices.json 정적 파일이 다시 생긴 건 아닌지 보세요")
+
+    # 카드 날짜 = 장부 저장 날짜 (못 읽으면 오늘)
+    date_str = date_from_updated(updated) or get_kst_today()
     time_str = get_kst_time()
     print(f"📅 {date_str} {time_str}")
 

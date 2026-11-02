@@ -519,13 +519,26 @@ function switchTab(s) {
   document.getElementById('panel-' + s).classList.add('active');
 }
 
-const d = new Date();
-document.getElementById('today-date').textContent = d.getFullYear() + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + String(d.getDate()).padStart(2,'0');
+// 날짜 = 장부 「손님 시세」 저장 날짜 (prices.js 의 시세날짜 · 한국 날짜)
+// prices.js 가 이 스크립트 뒤에 읽히므로 DOMContentLoaded 에서 봅니다
+// 보는 사람 휴대폰 날짜는 쓰지 않습니다 — prices.js 를 못 받았는데 「오늘」 로 보이면 안 되므로
+//   시세날짜 없음 + 가격도 없음(불러오기 실패) → 「시세를 불러오지 못했습니다」
+document.addEventListener('DOMContentLoaded', function() {
+  let m = null, has = false;
+  try { m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(시세날짜); } catch (e) {}
+  try { has = typeof BUYING === 'object' && BUYING !== null; } catch (e) {}
+  document.getElementById('today-date').textContent = m ? m[1] + '.' + m[2] + '.' + m[3] : (has ? '' : '시세를 불러오지 못했습니다');
+});
 </script>
 <script src="prices.js"></script>
 <script>
 // prices.js의 BUYING 객체로 봄 탭 가격표 렌더링
 document.addEventListener('DOMContentLoaded', function() {
+  // prices.js 를 못 받았으면(BUYING 없음) 빈 표 대신 안내 한 줄 — 아래 숫자 그리는 부분은 그대로
+  if (typeof BUYING === 'undefined') {
+    document.getElementById('gold-rows').innerHTML = '<div class="price-row"><div class="row-left"><div class="row-name">시세를 불러오지 못했습니다 · 매장으로 문의해 주세요</div></div></div>';
+    return;
+  }
   const goldItems = [
     { name: '골드바 (9999)', desc: '10돈 초과시 삼대마크 덩이로 매입', badge: 'gold', price: BUYING.골드바 },
     { name: '검증덩이 (3대마크)', desc: '', badge: '', price: BUYING.검증3대마크 },

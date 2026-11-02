@@ -1,17 +1,11 @@
 name: 텔레그램 가격 알림
 
+# 🔴 손으로만 돌립니다 (Actions → 텔레그램 가격 알림 → Run workflow).
+#    사계절 시세는 장부 「손님 시세」 사계절 탭에서 바꾸고, 그때마다 장부가 알림 방에 한 줄을 보냅니다.
+#    카드 그림이 필요할 때만 이 워크플로를 돌리면 홈페이지 https://www.sagyegold.co.kr/prices.json (장부 값)을 읽어 카드를 보냅니다.
+# 🔴 어떤 워크플로도 prices.js · prices.json 을 저장소에 커밋하지 마세요 — 정적 파일이 장부 값을 가립니다.
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'store-bg.png'
-      - 'notify_telegram.py'
-      - '.github/workflows/telegram-notify.yml'
-
   workflow_dispatch:
-
-  # 다른 워크플로우에서 호출 가능하게
-  workflow_call:
 
 jobs:
   send-card:
