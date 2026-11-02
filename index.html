@@ -762,7 +762,9 @@ const obs=new IntersectionObserver((entries)=>entries.forEach((e,i)=>{if(e.isInt
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
 const now=new Date();
-document.getElementById('price-updated').textContent=`UPDATED · ${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
+// UPDATED = 장부 「손님 시세」 저장 날짜 (prices.js 의 시세날짜 · 한국 날짜) · 없으면 예전처럼 보는 사람 휴대폰 날짜
+// prices.js 가 이 스크립트 뒤에 읽히므로 DOMContentLoaded 에서 봅니다
+document.addEventListener('DOMContentLoaded',()=>{let m=null;try{m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(시세날짜);}catch(e){}document.getElementById('price-updated').textContent=m?`UPDATED · ${m[1]}.${m[2]}.${m[3]}`:`UPDATED · ${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;});
 </script>
 <script src="prices.js"></script>
 </body>
