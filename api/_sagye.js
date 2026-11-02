@@ -4,7 +4,8 @@
 // 밑줄(_)로 시작해서 Vercel 이 주소로 열지 않습니다. api/prices-js.js · api/prices-json.js 가 import 합니다.
 //
 // 흐름: 장부 Supabase site_rates id 3 (공개 publishable 키로 읽기만)
-//         → 15칸 꼴 검사 → prices.js 글자 (15칸 + 시세날짜 + 식 FORMULA) · prices.json 글자 (옛 convert-prices.js 와 같은 객체)
+//         → 16칸 꼴 검사 → prices.js 글자 (16칸 + 시세날짜 + 식 FORMULA) · prices.json 글자 (옛 convert-prices.js 와 같은 객체)
+//         (16칸 = 옛 15칸 + 덩이금_단계 「덩이 한 단계 차이」 — 그 칸만 없어도 됨 · 없으면 10000 = 옛 식에 박혀 있던 수)
 //       못 읽으면 (꼴 틀림 · 2초 넘김 · 5xx · 빈 줄 · 끊김): 이 함수 메모리의 마지막 장부 값
 //         → 그것도 없으면 예비 값(FALLBACK) — 단 그 날짜부터 FALLBACK_MAX_DAYS 일 안에서만
 //         → 그보다 낡았으면 숫자를 안 내고 503 (화면은 가격 칸 「-」 · 카카오는 「전화 주세요」) — 낡은 매입가가 손님에게 안 나가게
@@ -13,7 +14,7 @@
 //    rewrite 보다 먼저 줘서 장부 값이 가려집니다 (.vercelignore 가 한 번 더 막지만 만들지 마세요).
 // 🔴 sb_secret_ 키는 절대 여기 넣지 않습니다. 아래 키는 손님 읽기 전용 공개(publishable) 키입니다.
 // 🔴 장부 쪽 꼴 (site_rates_build · sagye):
-//    data = {updated:'YYYY.MM.DD', at:'YYYY-MM-DDTHH:MI:SS+09:00', hero, live, buy, extra:{base:{15칸}}}
+//    data = {updated:'YYYY.MM.DD', at:'YYYY-MM-DDTHH:MI:SS+09:00', hero, live, buy, extra:{base:{15칸 (+ 덩이금_단계)}}}
 // ================================================
 import { FORMULA } from './_sagye-formula.js';
 
@@ -22,9 +23,12 @@ export const LEDGER_KEY = 'sb_publishable_vfQOB-gVznQAHNHswDy_jg_-CK6ATiZ';
 export const RATES_ID = 3;            // site_rates 의 사계절 줄 번호 (영구히 안 바꿈 · 장부 설정 표 site_rates_stores 와 같은 값)
 export const TIMEOUT_MS = 2000;       // 장부 읽기 시간 제한 (카카오 5초 안에 들게)
 
-// prices.js 맨 위 15칸 — 이름 · 순서 · 종류 · 범위 (장부 161 site_rates_parse 와 같은 규칙)
+// prices.js 맨 위 16칸 — 이름 · 순서 · 종류 · 범위 (장부 161 site_rates_parse 와 같은 규칙 · 덩이금_단계 는 163)
 //   num  : 원 단위 정수 · 1돈 1만 ~ 500만 · 1kg 10만 ~ 5천만
 //   text : 「615」 또는 「615~625」 (1~4자리 · 앞 ≤ 뒤) — 스크립트 글자에 끼우므로 이 꼴만
+//   step : 덩이금_단계 만 — 원 단위 정수 · 1,000원 단위 · 1,000 ~ 50,000 (경계 포함)
+//          칸이 없으면(옛 저장 · 옛 prices.js) dflt 10000 — 옛 식에 박혀 있던 수라 숫자가 한 원도 안 바뀜
+//          칸이 있는데 틀리면(글자 · null · 소수 · 1,000원 단위 아님 · 범위 밖) 다른 칸처럼 그 줄을 못 쓴 것으로
 export const FIELDS = [
   { name: '골드바_살때',     kind: 'num',  unit: '1돈', note: '손님이 살때 (우리 판매가) 1돈 기준' },
   { name: '골드바_팔때',     kind: 'num',  unit: '1돈', note: '손님이 팔때 (우리 매입가) 1돈 기준' },
@@ -34,7 +38,8 @@ export const FIELDS = [
   { name: '백금',            kind: 'num',  unit: '1돈', note: '백금 손님이 팔때 원/돈' },
   { name: '실버바_살때',     kind: 'num',  unit: '1kg', note: '실버바 손님이 살때 1kg 99.9 기준' },
   { name: '실버바_팔때',     kind: 'num',  unit: '1kg', note: '실버바 손님이 팔때 1kg 99.9 기준' },
-  { name: '덩이금_최고가',   kind: 'num',  unit: '1돈', note: 'GRADE 1 기준가 → 등급별 -10,000원 자동 계산' },
+  { name: '덩이금_최고가',   kind: 'num',  unit: '1돈', note: 'GRADE 1 기준가 → 아래 단계만큼 등급별 자동 계산' },
+  { name: '덩이금_단계',     kind: 'step', unit: '단계', dflt: 10000, note: '덩이 한 단계 차이 — 등급마다 이만큼 내려감' },
   { name: '검인반지메달',    kind: 'num',  unit: '1돈', note: '검인 반지 · 회사메달 원/돈' },
   { name: '검인목걸이팔찌',  kind: 'num',  unit: '1돈', note: '검인 목걸이 · 팔찌 원/돈' },
   { name: '열쇠가격',        kind: 'text', unit: '1돈', note: '열쇠 원/돈 (범위로 표시)' },
@@ -42,7 +47,8 @@ export const FIELDS = [
   { name: '치금_인레이',     kind: 'num',  unit: '1돈', note: '치금 인레이 원/돈' },
   { name: '치금_크라운',     kind: 'num',  unit: '1돈', note: '치금 크라운 원/돈' },
 ];
-export const RANGE = { '1돈': [10000, 5000000], '1kg': [100000, 50000000] };
+export const RANGE = { '1돈': [10000, 5000000], '1kg': [100000, 50000000], '단계': [1000, 50000] };
+export const STEP_UNIT = 1000;        // 덩이금_단계 는 1,000원 단위만
 export const TEXT_RE = /^[0-9]{1,4}(~[0-9]{1,4})?$/;
 
 // 예비 값 — 이 함수가 장부를 한 번도 못 읽었을 때만 (GitHub main 의 마지막 prices.js 3ab30f2 · prices.json a14408e updated 2026-11-02)
@@ -52,7 +58,7 @@ export const FALLBACK_YMD = '2026-11-02';
 export const FALLBACK_BASE = Object.freeze({
   골드바_살때: 670000, 골드바_팔때: 645000, K18: 478000, K14: 372000, K10: 160000, 백금: 135000,
   실버바_살때: 2400000, 실버바_팔때: 1850000,
-  덩이금_최고가: 640000,
+  덩이금_최고가: 640000, 덩이금_단계: 10000,   // 단계: 그때 prices.js 엔 그 줄이 없음 → 식에 박혀 있던 10000
   검인반지메달: 635000, 검인목걸이팔찌: 632000, 열쇠가격: '620~625', 상패동물골프공: '625~630',
   치금_인레이: 322000, 치금_크라운: 225000,
 });
@@ -77,7 +83,7 @@ class ShapeError extends Error {
 }
 const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 
-/** 15칸 하나 검사 — 틀리면 글자(까닭), 맞으면 null */
+/** 16칸 하나 검사 — 틀리면 글자(까닭), 맞으면 null (덩이금_단계 가 «없는» 것은 여기 오기 전에 기본값으로) */
 export function fieldProblem(f, v) {
   if (f.kind === 'text') {
     if (typeof v !== 'string' || !TEXT_RE.test(v)) return `${f.name}: 「615~625」 꼴 글자가 아님`;
@@ -88,8 +94,13 @@ export function fieldProblem(f, v) {
   if (typeof v !== 'number' || !Number.isSafeInteger(v)) return `${f.name}: 원 단위 정수가 아님`;
   const [lo, hi] = RANGE[f.unit];
   if (v < lo || v > hi) return `${f.name}: 범위(${lo}~${hi}) 밖`;
+  if (f.kind === 'step' && v % STEP_UNIT !== 0) return `${f.name}: ${STEP_UNIT}원 단위가 아님`;
   return null;
 }
+
+/** 칸이 없어도 되는가 (덩이금_단계 — 옛 저장 · 옛 prices.js) */
+const optional = (f) => f.dflt !== undefined;
+const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 
 /** 'YYYY-MM-DD' 가 진짜 날짜인가 */
 function realYmd(s) {
@@ -103,6 +114,7 @@ function realYmd(s) {
  * 장부 응답(PostgREST 배열) → {base, ymd, at}
  *   빈 배열(아직 첫 저장 전) · 꼴 틀림이면 throw
  *   ymd = data.updated (장부 저장 날짜 · 한국) 'YYYY.MM.DD' → 'YYYY-MM-DD' · 없거나 틀리면 data.at 앞 10글자
+ *   덩이금_단계: 칸이 없으면(163 전 저장) 10000 · 있는데 틀리면(null 포함) 다른 칸처럼 throw(shape)
  */
 export function parseLedgerRows(rows) {
   if (!Array.isArray(rows)) throw new ShapeError('장부 응답이 배열이 아님', 'shape');
@@ -113,6 +125,7 @@ export function parseLedgerRows(rows) {
   if (!src) throw new ShapeError('extra.base 가 없음', 'shape');
   const base = {};
   for (const f of FIELDS) {
+    if (optional(f) && !has(src, f.name)) { base[f.name] = f.dflt; continue; }
     const p = fieldProblem(f, src[f.name]);
     if (p) throw new ShapeError(p, 'shape');
     base[f.name] = src[f.name];
@@ -163,8 +176,9 @@ const HEAD_NOTE = {
 };
 
 /**
- * prices.js 글자 — 15칸 + 시세날짜 + FORMULA (식은 한 글자도 안 바꿈)
+ * prices.js 글자 — 16칸 + 시세날짜 + FORMULA (식은 한 글자도 안 바꿈)
  *   숫자는 정수 그대로 · 글자 칸은 JSON.stringify ("615~625")
+ *   const 덩이금_단계 = N; — 덩이금_최고가 줄 바로 밑 · 늘 씀 (식이 이 이름을 읽음 · 장부에 칸이 없던 때도 10000 으로)
  *   const 시세날짜 = "YYYY-MM-DD" — 장부 저장 날짜 (index.html UPDATED · display.html 날짜가 읽음)
  */
 export function renderJs(base, ymd, src = 'ledger') {
@@ -187,7 +201,7 @@ export function renderJs(base, ymd, src = 'ledger') {
     by(['골드바_살때', '골드바_팔때', 'K18', 'K14', 'K10', '백금', '실버바_살때', '실버바_팔때']),
     '',
     '// ── 덩이금 매입가 ─────────────────────────────',
-    by(['덩이금_최고가']),
+    by(['덩이금_최고가', '덩이금_단계']),
     '',
     '// ── 개별 매입가 ───────────────────────────────',
     by(['검인반지메달', '검인목걸이팔찌', '열쇠가격', '상패동물골프공']),
@@ -202,9 +216,14 @@ export function renderJs(base, ymd, src = 'ledger') {
   ].join('\n') + FORMULA;
 }
 
-/** prices.json 객체 — 옛 convert-prices.js 의 객체 부분 글자 그대로 (updated 만 장부 날짜) */
+/**
+ * prices.json 객체 — 옛 convert-prices.js 의 객체 부분 글자 그대로 (updated 만 장부 날짜)
+ *   덩이 등급 넷만 「- 10000 · 20000 · 30000 · 40000」 → 「- 덩이금_단계 × 1 · 2 · 3 · 4」 (단계 10000 이면 옛것과 글자 하나까지 같음)
+ *   🔴 덩이금_단계 는 키로 «안» 넣는다 — base 는 시세 8칸뿐이고(덩이금_최고가 도 없음) 단계는 buying 등급 값에 이미 들어 있다.
+ *      읽는 곳(카카오 api/prices.js · notify_telegram.py)은 그 키를 안 쓰고, 넣으면 옛 convert 와 같은 글자라는 회귀 기준이 깨진다.
+ */
 export function buildJson(base, ymd) {
-  const { 골드바_살때, 골드바_팔때, K18, K14, K10, 백금, 실버바_살때, 실버바_팔때, 덩이금_최고가,
+  const { 골드바_살때, 골드바_팔때, K18, K14, K10, 백금, 실버바_살때, 실버바_팔때, 덩이금_최고가, 덩이금_단계,
           검인반지메달, 검인목걸이팔찌, 열쇠가격, 상패동물골프공, 치금_인레이, 치금_크라운 } = base;
   const updated = ymd;
   return {
@@ -232,10 +251,10 @@ export function buildJson(base, ymd) {
     buying: {
       골드바: 골드바_팔때,
       검증3대마크: 덩이금_최고가,
-      검증덩이:    덩이금_최고가 - 10000,
-      기타덩이:    덩이금_최고가 - 20000,
-      무검덩이:    덩이금_최고가 - 30000,
-      칠보마고자등: 덩이금_최고가 - 40000,
+      검증덩이:    덩이금_최고가 - 덩이금_단계,
+      기타덩이:    덩이금_최고가 - 덩이금_단계 * 2,
+      무검덩이:    덩이금_최고가 - 덩이금_단계 * 3,
+      칠보마고자등: 덩이금_최고가 - 덩이금_단계 * 4,
       검인반지메달: 검인반지메달,
       검인목걸이팔찌: 검인목걸이팔찌,
       K18: K18,
@@ -276,7 +295,7 @@ export function buildJson(base, ymd) {
 /** prices.json 글자 — 옛 파일과 같은 꼴 (JSON.stringify 2칸 · 끝 줄바꿈 없음) */
 export const jsonText = (base, ymd) => JSON.stringify(buildJson(base, ymd), null, 2);
 
-// ── prices.js → 15칸 (옛 convert-prices.js 의 정규식 그대로) ──
+// ── prices.js → 16칸 (옛 convert-prices.js 의 정규식 그대로) ──
 function extractNumber(code, varName) {
   const regex = new RegExp(`const\\s+${varName}\\s*=\\s*(\\d+)`);
   const match = code.match(regex);
@@ -289,13 +308,18 @@ function extractString(code, varName) {
   if (!match) throw new Error(`변수를 찾을 수 없습니다: ${varName}`);
   return match[1];
 }
+/** 덩이금_단계 — 옛 prices.js 처럼 그 줄(const 덩이금_단계 =)이 아예 없으면 10000 · 줄은 있는데 숫자가 아니면 throw */
+function extractOptional(code, f) {
+  if (!new RegExp(`const\\s+${f.name}\\s*=`).test(code)) return f.dflt;
+  return extractNumber(code, f.name);
+}
 export function extractBase(js) {
   const out = {};
-  for (const f of FIELDS) out[f.name] = f.kind === 'text' ? extractString(js, f.name) : extractNumber(js, f.name);
+  for (const f of FIELDS) out[f.name] = f.kind === 'text' ? extractString(js, f.name) : optional(f) ? extractOptional(js, f) : extractNumber(js, f.name);
   return out;
 }
 
-/** 스스로 확인 — 만든 prices.js 를 옛 정규식으로 다시 읽어 15칸이 같아야 */
+/** 스스로 확인 — 만든 prices.js 를 옛 정규식으로 다시 읽어 16칸이 같아야 (renderJs 는 단계 줄을 늘 쓰므로 기본값으로 지나가는 일 없음) */
 export function selfCheck(base, js) {
   try {
     const back = extractBase(js);
