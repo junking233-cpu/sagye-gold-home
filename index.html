@@ -298,28 +298,28 @@ footer{background:var(--dark);border-top:1px solid rgba(201,168,76,0.1);padding:
       </div>
       <div class="price-table-row">
         <div class="pt-item">골드바 · 1돈</div>
-        <div class="pt-buy" id="buy-gold">860,000 원</div>
-        <div class="pt-sell" id="sell-gold">835,000 원</div>
+        <div class="pt-buy" id="buy-gold">-</div>
+        <div class="pt-sell" id="sell-gold">-</div>
       </div>
       <div class="price-table-row">
         <div class="pt-item">18K · 1돈</div>
         <div class="pt-buy">제품시세 적용</div>
-        <div class="pt-sell" id="sell-18k">617,000 원</div>
+        <div class="pt-sell" id="sell-18k">-</div>
       </div>
       <div class="price-table-row">
         <div class="pt-item">14K · 1돈</div>
         <div class="pt-buy">제품시세 적용</div>
-        <div class="pt-sell" id="sell-14k">476,000 원</div>
+        <div class="pt-sell" id="sell-14k">-</div>
       </div>
       <div class="price-table-row">
         <div class="pt-item">백금 · 1돈</div>
         <div class="pt-buy">제품시세 적용</div>
-        <div class="pt-sell" id="sell-pt">200,000 원</div>
+        <div class="pt-sell" id="sell-pt">-</div>
       </div>
       <div class="price-table-row">
         <div class="pt-item">실버바 · 1kg</div>
-        <div class="pt-buy" id="buy-silver">4,200,000 원</div>
-        <div class="pt-sell" id="sell-silver">3,300,000 원</div>
+        <div class="pt-buy" id="buy-silver">-</div>
+        <div class="pt-sell" id="sell-silver">-</div>
       </div>
       </div>
     </div>※ 시세는 매일 업데이트됩니다. 정확한 가격은 매장으로 문의해 주세요.</p>
@@ -761,10 +761,11 @@ window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>60)
 const obs=new IntersectionObserver((entries)=>entries.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('visible'),i*100);}),{threshold:0.12});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-const now=new Date();
-// UPDATED = 장부 「손님 시세」 저장 날짜 (prices.js 의 시세날짜 · 한국 날짜) · 없으면 예전처럼 보는 사람 휴대폰 날짜
+// UPDATED = 장부 「손님 시세」 저장 날짜 (prices.js 의 시세날짜 · 한국 날짜)
 // prices.js 가 이 스크립트 뒤에 읽히므로 DOMContentLoaded 에서 봅니다
-document.addEventListener('DOMContentLoaded',()=>{let m=null;try{m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(시세날짜);}catch(e){}document.getElementById('price-updated').textContent=m?`UPDATED · ${m[1]}.${m[2]}.${m[3]}`:`UPDATED · ${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;});
+// 보는 사람 휴대폰 날짜는 쓰지 않습니다 — prices.js 를 못 받았는데 「오늘」 로 보이면 안 되므로
+//   시세날짜 없음 + 가격도 없음(불러오기 실패) → 「시세를 불러오지 못했습니다」 · 가격 칸은 「-」 그대로
+document.addEventListener('DOMContentLoaded',()=>{let m=null,has=false;try{m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(시세날짜);}catch(e){}try{has=typeof 골드바_살때==='number';}catch(e){}document.getElementById('price-updated').textContent=m?`UPDATED · ${m[1]}.${m[2]}.${m[3]}`:(has?'':'시세를 불러오지 못했습니다 · 매장으로 문의해 주세요');});
 </script>
 <script src="prices.js"></script>
 </body>
