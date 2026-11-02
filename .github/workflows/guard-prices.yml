@@ -1,0 +1,41 @@
+name: 시세 파일 막기
+
+# 🔴 사계절 시세는 장부 「손님 시세」 사계절 탭에서만 바꿉니다 (홈페이지 /prices.js · /prices.json 은 Vercel 함수가 장부 값으로 만듦).
+#    누가 main 에 prices.js · prices.json 을 다시 만들거나 고치면 — 그 값은 손님 화면에 안 나가는데(.vercelignore) 바꿨다고 믿기 쉬우므로 —
+#    이 워크플로가 빨간 X 로 실패하고(GitHub 메일) 텔레그램 알림 방에 한 줄을 보냅니다.
+#    지운 push(파일이 없음)는 아무것도 안 합니다.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prices.js'
+      - 'prices.json'
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: prices.js · prices.json 이 다시 생겼나
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          FOUND=""
+          for f in prices.js prices.json; do
+            if [ -e "$f" ]; then FOUND="$FOUND $f"; fi
+          done
+          if [ -z "$FOUND" ]; then
+            echo "✅ prices.js · prices.json 없음 (지운 push) — 할 일 없음"
+            exit 0
+          fi
+          MSG="⚠️ 사계절 홈페이지: GitHub 에${FOUND} 이 다시 올라왔습니다 (${GITHUB_SHA::7}). 이 값은 손님 화면에 안 나갑니다. 시세는 장부 「손님 시세」 사계절 탭에서 바꿔 주세요. (이 파일은 지워 주세요)"
+          echo "::error title=시세는 장부에서::${MSG}"
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+            curl -sS -m 15 -o /dev/null -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" --data-urlencode "text=${MSG}" \
+              || echo "텔레그램 알림 실패 (워크플로는 그래도 실패로 끝냄)"
+          fi
+          exit 1
